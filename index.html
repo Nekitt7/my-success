@@ -2,36 +2,390 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой Успех</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Мой Успех — Дневник целей</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: sans-serif;
-            background-color: var(--tg-theme-bg-color, #ffffff);
-            color: var(--tg-theme-text-color, #000000);
-            padding: 20px;
-            text-align: center;
+        :root {
+            --bg-color: #0F0C20;
+            --card-bg: #1A1635;
+            --primary: #6C5CE7;
+            --primary-shadow: #4834D4;
+            --accent-blue: #0984E3;
+            --accent-blue-shadow: #0097E6;
+            --success: #00B894;
+            --success-shadow: #00A885;
+            --text-color: #FFFFFF;
+            --text-sub: #A29BFE;
+            --border-color: #2D2755;
         }
-        .btn {
-            background-color: var(--tg-theme-button-color, #2481cc);
-            color: var(--tg-theme-button-text-color, #ffffff);
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Nunito', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 16px;
+            padding-bottom: 90px;
+        }
+
+        /* Шапка Duolingo со стриками */
+        .header-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 12px 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 0 var(--border-color);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .stat-fire { color: #FF7675; }
+        .stat-freeze { color: #74B9FF; }
+        .stat-trophy { color: #FDCB6E; }
+
+        /* Карточка главной цели */
+        .hero-card {
+            background: linear-gradient(135deg, #6C5CE7 0%, #3C40C6 100%);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 6px 0 #281E76;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-title {
+            font-size: 22px;
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+
+        .hero-subtitle {
+            color: #D6A2E8;
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        /* Прогресс-бар */
+        .progress-container {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 12px;
+            height: 18px;
+            width: 100%;
+            overflow: hidden;
+            margin-bottom: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00CEC9, #00B894);
+            width: 45%;
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+
+        /* Заголовок секции */
+        .section-title {
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 14px;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Список шагов / задач */
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .task-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 18px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 0 var(--border-color);
+            transition: transform 0.1s ease;
+        }
+
+        .task-card:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 var(--border-color);
+        }
+
+        .task-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .task-text {
             font-size: 16px;
+            font-weight: 800;
+        }
+
+        .task-day {
+            font-size: 13px;
+            color: var(--text-sub);
+            font-weight: 700;
+        }
+
+        /* Duolingo 3D Кнопки */
+        .btn-duo {
+            border: none;
+            border-radius: 16px;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 900;
             cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.1s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: #FFFFFF;
+            box-shadow: 0 5px 0 var(--success-shadow);
+        }
+
+        .btn-success:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 var(--success-shadow);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #FFFFFF;
+            box-shadow: 0 5px 0 var(--primary-shadow);
+            width: 100%;
+        }
+
+        .btn-primary:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 var(--primary-shadow);
+        }
+
+        .task-card.completed {
+            opacity: 0.5;
+            background: #120F28;
+            border-color: #201B42;
+            box-shadow: none;
+        }
+
+        .task-card.completed .task-text {
+            text-decoration: line-through;
+        }
+
+        /* Форма добавления цели */
+        .add-goal-box {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 18px;
+            box-shadow: 0 4px 0 var(--border-color);
+        }
+
+        .input-duo {
+            width: 100%;
+            background: var(--bg-color);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #FFF;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            outline: none;
+        }
+
+        .input-duo:focus {
+            border-color: var(--primary);
+        }
+
+        /* Нижнее меню */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-top: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-sub);
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 22px;
         }
     </style>
 </head>
 <body>
-    <h1>🎯 Ежедневник целей</h1>
-    <p>Мини-приложение успешно запущено!</p>
-    <button class="btn" onclick="tg.close()">Закрыть</button>
+
+    <!-- Вверхняя панель (Стрики и заморозки) -->
+    <div class="header-stats">
+        <div class="stat-item stat-fire">
+            🔥 <span id="streak-count">5</span>
+        </div>
+        <div class="stat-item stat-freeze">
+            🛡️ <span id="freeze-count">1</span>
+        </div>
+        <div class="stat-item stat-trophy">
+            🏆 <span id="best-streak">12</span>
+        </div>
+    </div>
+
+    <!-- Главная цель и прогресс -->
+    <div class="hero-card">
+        <div class="hero-title" id="main-goal-title">Выполнить МС по плаванию</div>
+        <div class="hero-subtitle">День 14 из 30</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="goal-progress" style="width: 46%;"></div>
+        </div>
+        <div style="font-size: 13px; font-weight: 800; text-align: right; color: #E0C3FC;">46% выполнено</div>
+    </div>
+
+    <!-- План на сегодня -->
+    <div class="section-title">
+        <span>📌 Задачи на сегодня</span>
+    </div>
+
+    <div class="task-list" id="tasks-container">
+        <!-- Задача 1 -->
+        <div class="task-card" id="task-1">
+            <div class="task-info">
+                <div class="task-text">Проплыть 2000м в темпе</div>
+                <div class="task-day">Шаг #14 • Тренировка</div>
+            </div>
+            <button class="btn-duo btn-success" onclick="completeTask('task-1')">ГОТОВО</button>
+        </div>
+
+        <!-- Задача 2 -->
+        <div class="task-card" id="task-2">
+            <div class="task-info">
+                <div class="task-text">Утренняя зарядка 15 мин</div>
+                <div class="task-day">Привычка</div>
+            </div>
+            <button class="btn-duo btn-success" onclick="completeTask('task-2')">ГОТОВО</button>
+        </div>
+    </div>
+
+    <!-- Форма создания цели -->
+    <div class="section-title" style="margin-top: 28px;">
+        <span>🎯 Новая цель</span>
+    </div>
+
+    <div class="add-goal-box">
+        <input type="text" class="input-duo" id="goal-input" placeholder="Например: Выучить 500 слов на английском">
+        <button class="btn-duo btn-primary" onclick="createGoal()">СОЗДАТЬ ЦЕЛЬ</button>
+    </div>
+
+    <!-- Нижняя навигация -->
+    <div class="bottom-nav">
+        <div class="nav-item active">
+            <span class="nav-icon">⚡</span>
+            <span>Сегодня</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">🎯</span>
+            <span>Цели</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">🏆</span>
+            <span>Успехи</span>
+        </div>
+    </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Разворачивает окно на весь экран Telegram
+        tg.expand(); // Развернуть окно приложения
+
+        // Обработка кнопки выполнено
+        function completeTask(taskId) {
+            const card = document.getElementById(taskId);
+            if (card) {
+                card.classList.add('completed');
+                const btn = card.querySelector('button');
+                btn.innerText = 'ВЫПОЛНЕНО';
+                btn.style.background = '#2D2755';
+                btn.style.boxShadow = 'none';
+                btn.disabled = true;
+
+                // Виброотклик Telegram
+                if (tg.HapticFeedback) {
+                    tg.HapticFeedback.notificationOccurred('success');
+                }
+
+                // Увеличиваем стрик для наглядности
+                const streakEl = document.getElementById('streak-count');
+                streakEl.innerText = parseInt(streakEl.innerText) + 1;
+            }
+        }
+
+        // Создание новой цели
+        function createGoal() {
+            const input = document.getElementById('goal-input');
+            const goalText = input.value.trim();
+
+            if (!goalText) return;
+
+            // Передаем данные боту
+            tg.sendData(JSON.stringify({
+                action: 'add_goal',
+                title: goalText
+            }));
+
+            input.value = '';
+            tg.showAlert('Цель сохранена и отправлена боту!');
+        }
     </script>
 </body>
 </html>
