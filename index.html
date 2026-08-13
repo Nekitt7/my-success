@@ -158,12 +158,6 @@ button,input,textarea{font-family:inherit}
 .badge.ok{background:rgba(124,224,208,.15);color:var(--mint)}
 .badge.main{background:rgba(255,178,63,.18);color:var(--amber);border:1px solid rgba(255,178,63,.4)}
 
-.tiles{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:22px}
-.tile{background:var(--surface);border:2px solid var(--line);border-radius:var(--r-md);
-  padding:15px;box-shadow:0 4px 0 var(--line-soft);animation:drop .45s both}
-.tile-n{font-size:28px;font-weight:900;line-height:1;margin-bottom:5px}
-.tile-l{font-size:12px;font-weight:800;color:var(--muted)}
-
 .empty{text-align:center;padding:34px 20px;animation:fade .5s both}
 .empty svg{opacity:.35;margin-bottom:14px}
 .empty-t{font-size:17px;font-weight:900;margin-bottom:7px}
@@ -174,7 +168,7 @@ button,input,textarea{font-family:inherit}
 .legend span{display:flex;align-items:center;gap:6px}
 .sw{width:12px;height:12px;border-radius:4px;display:block}
 
-/* ===== Профиль пользователя ===== */
+/* Профиль */
 .avatar-wrap{position:relative;width:84px;height:84px;margin:0 auto 12px}
 .avatar-img{width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid var(--violet);background:var(--surface-2);display:block}
 .avatar-btn{position:absolute;right:-2px;bottom:-2px;background:var(--violet);color:#fff;border-radius:50%;
@@ -183,11 +177,9 @@ button,input,textarea{font-family:inherit}
 .auth-btn{flex:1;background:var(--ink);border:2px solid var(--line);border-radius:var(--r-sm);
   padding:10px 4px;font-size:12px;font-weight:800;color:var(--muted);cursor:pointer;text-align:center;transition:all .2s}
 .auth-btn.on{border-color:var(--mint);color:#fff;background:rgba(124,224,208,.12)}
-
-/* Блок виджета Telegram Auth */
 .tg-widget-container{display:flex;justify-content:center;margin-top:12px;min-height:40px}
 
-/* ===== Соревнования ===== */
+/* Соревнования */
 .comp-card{background:var(--surface);border:2px solid var(--line);border-radius:var(--r-md);
   padding:15px;margin-bottom:14px;box-shadow:0 4px 0 var(--line-soft)}
 .comp-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
@@ -240,10 +232,6 @@ button,input,textarea{font-family:inherit}
 .sheet-s{font-size:13px;font-weight:700;color:var(--muted);margin-top:3px}
 .sheet-task{background:var(--ink);border:2px solid var(--line);border-radius:var(--r-md);
   padding:15px;margin-bottom:16px}
-.sheet-task-l{font-size:11px;font-weight:900;letter-spacing:1.2px;text-transform:uppercase;
-  color:var(--dim);margin-bottom:7px}
-.sheet-task-t{font-size:17px;font-weight:800;line-height:1.3}
-.sheet-task-s{font-size:12.5px;font-weight:700;color:var(--muted);margin-top:6px}
 
 @keyframes drop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes rise{from{opacity:0;transform:translateX(-50%) translateY(16px) scale(.8)}
@@ -268,10 +256,85 @@ button,input,textarea{font-family:inherit}
 <script>
 'use strict';
 
-const API_URL = '';
-const GROUP_URL = 'https://t.me/+5hxQMsAbPnZjMTky';
+/* ============================ ИНТЕГРАЦИЯ ИИ (GOOGLE GEMINI) ============================ */
+const GEMINI_API_KEY = "AIzaSyCm3wauLpYFTnfXc5xz80R8W0XiL2qPUOI";
 
-/* ============================ Telegram WebApp & Auth ============================ */
+async function generatePlanAI(title, days, description) {
+  const prompt = `Ты — эксперт по планированию и продуктивности.
+Составь пошаговый план для цели: "${title}".
+Срок выполнения: ${days} дней.
+Контекст и детали: "${description || 'Нет дополнительных деталей'}".
+
+ТРЕБОВАНИЯ К ОТВЕТУ:
+1. Выдай от 3 до 6 логичных и четких шагов.
+2. Каждый шаг напиши С НОВОЙ СТРОКИ.
+3. НЕ ИСПОЛЬЗУЙ нумерацию (1., 2.), дефисы, смайлики и вводный текст. Только текст самих шагов!`;
+
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }]
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error("Ошибка запроса к Gemini API");
+  }
+
+  const data = await response.json();
+  if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+    return data.candidates[0].content.parts[0].text.trim();
+  }
+  throw new Error("Пустой ответ от ИИ");
+}
+
+async function handleAIGenerate() {
+  syncDraft();
+  const titleEl = document.getElementById("d-title");
+  const daysEl = document.getElementById("d-days");
+  const descEl = document.getElementById("d-desc");
+  const stepsEl = document.getElementById("d-steps");
+  const btn = document.getElementById("btn-ai-gen");
+
+  const title = titleEl ? titleEl.value.trim() : "";
+  const days = daysEl && daysEl.value ? daysEl.value : (draft ? draft.days : 30);
+  const desc = descEl ? descEl.value.trim() : "";
+
+  if (!title) {
+    toast(t('needTitle'));
+    haptic('warn');
+    return;
+  }
+
+  try {
+    if(btn) {
+      btn.disabled = true;
+      btn.textContent = "⏳ Генерируем план...";
+    }
+    
+    const generatedSteps = await generatePlanAI(title, days, desc);
+    
+    if (stepsEl) {
+      stepsEl.value = generatedSteps;
+    }
+    if(draft) draft.steps = generatedSteps;
+    toast("✨ План сгенерирован ИИ!");
+    haptic('ok');
+  } catch (err) {
+    console.error(err);
+    toast("Ошибка генерации ИИ");
+    haptic('warn');
+  } finally {
+    if(btn) {
+      btn.disabled = false;
+      btn.textContent = "✨ Сгенерировать план с ИИ";
+    }
+  }
+}
+
+/* ============================ TELEGRAM WEBAPP ============================ */
+const GROUP_URL = 'https://t.me/+5hxQMsAbPnZjMTky';
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 if (tg){
   tg.ready(); tg.expand();
@@ -280,7 +343,6 @@ if (tg){
   try{ tg.onEvent('safeAreaChanged',applySafeArea); tg.onEvent('contentSafeAreaChanged',applySafeArea); }catch(e){}
 }
 
-/* Функция-callback для внешнего Telegram Login Widget */
 window.onTelegramAuth = function(user) {
   if(!S) return;
   S.name = ((user.first_name || '') + ' ' + (user.last_name || '')).trim() || S.name;
@@ -289,7 +351,7 @@ window.onTelegramAuth = function(user) {
   S.authMethod = 'telegram';
   S.tgId = user.id;
   saveState();
-  toast('Авторизация через Telegram успешна!');
+  toast('Авторизация успешна!');
   render();
 };
 
@@ -311,7 +373,7 @@ function haptic(type){
   }catch(e){}
 }
 
-/* ============================ Языки ============================ */
+/* ============================ ЯЗЫКИ ============================ */
 const T={
 ru:{today:'Сегодня',goals:'Цели',chains:'Цепочки',comp:'Соревнования',more:'Ещё',
  mainGoal:'Главная цель',planToday:'План на сегодня',myGoals:'Мои цели',
@@ -319,70 +381,58 @@ ru:{today:'Сегодня',goals:'Цели',chains:'Цепочки',comp:'Сор
  dayOf:'День {a} из {b}',left:'Осталось {n} {w}',overdue:'Срок вышел {n} {w} назад',
  behind:'Отставание {n} {w} от плана',reached:'Цель достигнута',
  allSteps:'Все шаги пройдены',allStepsSub:'Допиши план или поставь новую цель.',
- dayClosed:'День закрыт по этой цели',dayClosedSub:'Отлично! Работаем над другими целями.',
- noGoals:'Ни одной цели',
- noGoalsSub:'Большая цель, разбитая на дни, перестаёт быть страшной. Заведи первую!',
+ dayClosed:'День закрыт по этой цели',
+ noGoals:'Ни одной цели',noGoalsSub:'Большая цель, разбитая на дни, перестаёт быть страшной. Заведи первую!',
  emptyGoals:'Пока пусто',emptyGoalsSub:'Цель без плана — это желание. Раздели её на шаги.',
  what:'Что хочешь получить',howLong:'За сколько дней',ownNumber:'или своё число',
- stepsLabel:'Шаги — по одному в строке',
- stepsHint:'Дни распределятся по шагам поровну. Порядок важен.',
+ stepsLabel:'Шаги — по одному в строке',stepsHint:'Дни распределятся по шагам поровну.',
  titlePh:'Например: Выучить 500 новых слов',
  stepsPh:'Учить по 20 слов в день\nПовторять пройденное по выходным\nПройти финальное тестирование',
  deleteGoal:'Удалить цель',deleteAsk:'Удалить цель вместе с планом?',
  goalDeleted:'Цель удалена',goalCreated:'Цель создана',
  needTitle:'Впиши название цели',needStep:'Нужен хотя бы один шаг',
- stepDone:'Шаг пройден полностью',marked:'Отмечено',inRow:'{n} {w} подряд',
+ stepDone:'Шаг пройден полностью',marked:'Отмечено',
  streakDays:'Дней подряд',bestStreak:'Лучшая серия',totalMarked:'Всего отмечено',goalsClosed:'Целей закрыто',
- yourChain:'Цепочка цели',chainHint:'Каждый кружок — день выполнения цели.',
- legDone:'выполнено',legFreeze:'заморозка',legMiss:'пропущено',
+ yourChain:'Цепочка цели',legDone:'выполнено',legFreeze:'заморозка',legMiss:'пропущено',
  setMain:'⭐ Сделать главной',isMainBadge:'Главная',madeMain:'Цель сделана главной',
  profile:'Профиль пользователя',nameLabel:'Ваше имя',tgUserLabel:'Ник в Telegram',
  authProvider:'Способ входа',completedGoalsCount:'Выполнено целей',
  photoNotice:'Нажмите на камеру, чтобы выбрать аватарку',
  compTitle:'Соревнования целей',compSearchPh:'Ник в Telegram (@username)',
  findProfile:'Найти человека',inviteBtn:'Пригласить в соревнование',
- compEmpty:'Пока нет активных соревнований. Пригласите друга по нику Telegram!',
+ compEmpty:'Пока нет активных соревнований. Пригласите друга!',
  accept:'Принять',decline:'Отклонить',invitedMsg:'Приглашение отправлено!',
  duelHeader:'Дуэль с {name}',leaderMsg:'Ты лидируешь!',behindMsg:'Соперник впереди',
  settings:'Настройки',language:'Язык',community:'Сообщество',openGroup:'Войти в группу',
  reset:'Сбросить всё',resetAsk:'Удалить все данные?',resetOk:'Всё очищено',
- dayTitle:'День {n}',markDone:'Отметить выполненным',alreadyDone:'Уже отмечено сегодня',
- taskLabel:'Задача дня',noTask:'Нет задачи на этот день',close:'Закрыть'},
+ dayTitle:'День {n}',markDone:'Отметить выполненным',close:'Закрыть'},
 en:{today:'Today',goals:'Goals',chains:'Chains',comp:'Competitions',more:'More',
  mainGoal:'Main goal',planToday:"Today's plan",myGoals:'My goals',
  newGoal:'New goal',createGoal:'Create goal',cancel:'Cancel',done:'Done',
  dayOf:'Day {a} of {b}',left:'{n} {w} left',overdue:'Deadline passed {n} {w} ago',
  behind:'{n} {w} behind plan',reached:'Goal reached',
  allSteps:'All steps completed',allStepsSub:'Add more steps or set a new goal.',
- dayClosed:'Goal closed for today',dayClosedSub:'Great job! Move on to other goals.',
- noGoals:'No goals yet',
- noGoalsSub:'A big goal split into days stops being scary. Add your first one!',
+ noGoals:'No goals yet',noGoalsSub:'A big goal split into days stops being scary.',
  emptyGoals:'Nothing here',emptyGoalsSub:'A goal without a plan is a wish.',
  what:'What do you want',howLong:'In how many days',ownNumber:'or your own number',
- stepsLabel:'Steps — one per line',
- stepsHint:'Days are spread evenly across steps.',
- titlePh:'E.g.: Learn 500 new words',
- stepsPh:'Learn 20 words a day\nReview on weekends\nTake final exam',
+ stepsLabel:'Steps — one per line',stepsHint:'Days are spread evenly across steps.',
+ titlePh:'E.g.: Learn 500 new words',stepsPh:'Learn 20 words a day\nReview on weekends',
  deleteGoal:'Delete goal',deleteAsk:'Delete this goal and its plan?',
  goalDeleted:'Goal deleted',goalCreated:'Goal created',
  needTitle:'Enter a goal title',needStep:'At least one step is needed',
- stepDone:'Step completed',marked:'Marked',inRow:'{n} {w} in a row',
- streakDays:'Day streak',bestStreak:'Best streak',totalMarked:'Days marked',goalsClosed:'Goals closed',
- yourChain:'Goal chain',chainHint:'Each circle is a day of goal progress.',
- legDone:'done',legFreeze:'freeze',legMiss:'missed',
+ stepDone:'Step completed',marked:'Marked',
+ streakDays:'Day streak',bestStreak:'Best streak',totalMarked:'Days marked',goalsClosed:'Goals completed',
+ yourChain:'Goal chain',legDone:'done',legFreeze:'freeze',legMiss:'missed',
  setMain:'⭐ Make main goal',isMainBadge:'Main',madeMain:'Goal set as main',
  profile:'User profile',nameLabel:'Your name',tgUserLabel:'Telegram Username',
  authProvider:'Sign in method',completedGoalsCount:'Goals completed',
- photoNotice:'Tap camera to change avatar',
- compTitle:'Goal Competitions',compSearchPh:'Telegram username (@username)',
- findProfile:'Search user',inviteBtn:'Invite to competition',
- compEmpty:'No active competitions yet. Invite a friend using Telegram handle!',
- accept:'Accept',decline:'Decline',invitedMsg:'Invitation sent!',
+ photoNotice:'Tap camera to change avatar',compTitle:'Goal Competitions',
+ compSearchPh:'Telegram username (@username)',findProfile:'Search user',inviteBtn:'Invite',
+ compEmpty:'No active competitions yet.',accept:'Accept',decline:'Decline',invitedMsg:'Invitation sent!',
  duelHeader:'Duel with {name}',leaderMsg:'You lead!',behindMsg:'Opponent ahead',
  settings:'Settings',language:'Language',community:'Community',openGroup:'Join group',
  reset:'Reset all',resetAsk:'Reset all data?',resetOk:'Everything cleared',
- dayTitle:'Day {n}',markDone:'Mark done',alreadyDone:'Already marked today',
- taskLabel:'Task of day',noTask:'No task assigned',close:'Close'}
+ dayTitle:'Day {n}',markDone:'Mark done',close:'Close'}
 };
 
 function t(k,vars){
@@ -392,7 +442,7 @@ function t(k,vars){
   return s;
 }
 
-/* ============================ Хранилище ============================ */
+/* ============================ ХРАНИЛИЩЕ ============================ */
 const KEY='pathstate_v3';
 let memory=null;
 
@@ -418,7 +468,7 @@ function saveState(){
   }
 }
 
-/* ============================ Даты ============================ */
+/* ============================ ДАТЫ И УТИЛИТЫ ============================ */
 const pad=n=>String(n).padStart(2,'0');
 const key=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 const today=()=>key(new Date());
@@ -435,7 +485,6 @@ function plural(n,one,few,many){
 }
 const dayWord=n=>(S&&S.lang==='en')?(n===1?'day':'days'):plural(n,'день','дня','дней');
 
-/* ============================ Состояние ============================ */
 let S=null, screen='today', draft=null, openGoal=null, chainGoalId=null, searchUserResult=null;
 
 function tgLang(){
@@ -465,7 +514,7 @@ function liveStreak(){
 }
 function refillFreezes(){ if(S.freezeWeek!==weekTag()){ S.freezeWeek=weekTag(); S.freezes=1; } }
 
-/* ============================ Цели ============================ */
+/* ============================ ЦЕЛИ ============================ */
 function spread(count,total){
   if(count<=0) return [];
   if(count>=total) return Array(count).fill(1);
@@ -527,17 +576,15 @@ function completeStep(goalId,stepId){
   if(!g.doneDays) g.doneDays={};
   g.doneDays[today()]=true;
 
-  let grew=false;
   if(S.lastDone!==today()){
     S.streak=(S.lastDone===shift(-1))?S.streak+1:1;
     S.best=Math.max(S.best,S.streak);
-    S.lastDone=today(); S.days[today()]='done'; grew=true;
+    S.lastDone=today(); S.days[today()]='done';
   }
   saveState();
-  return{closed,grew,streak:S.streak,goalDone:goalStat(g).finished};
+  return{closed,streak:S.streak,goalDone:goalStat(g).finished};
 }
 
-/* ============================ Утилиты ============================ */
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 let toastTimer;
@@ -563,18 +610,11 @@ function sparks(x,y){
   }
 }
 
-/* ============================ Верхняя панель ============================ */
 function topbar(){
   return '<div class="topbar">'+
-    '<div class="metric m-fire" id="m-fire">'+
-    '<svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c.5 3.2-1.4 4.6-2.7 6C7.8 9.6 7 11 7 13a5 5 0 0 0 10 0c0-2.7-1.6-4.4-2.6-6.2-.4 .9-1 1.5-1.7 1.9.7-2.4.2-5-.7-6.7z"/></svg>'+
-    '<span>'+liveStreak()+'</span></div>'+
-    '<div class="metric m-ice">'+
-    '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/></svg>'+
-    '<span>'+S.freezes+'</span></div>'+
-    '<div class="metric m-best">'+
-    '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v6a5 5 0 0 1-10 0z"/><path d="M7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3M9 20h6M12 15v5"/></svg>'+
-    '<span>'+S.best+'</span></div></div>';
+    '<div class="metric m-fire"><svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c.5 3.2-1.4 4.6-2.7 6C7.8 9.6 7 11 7 13a5 5 0 0 0 10 0c0-2.7-1.6-4.4-2.6-6.2-.4 .9-1 1.5-1.7 1.9.7-2.4.2-5-.7-6.7z"/></svg><span>'+liveStreak()+'</span></div>'+
+    '<div class="metric m-ice"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/></svg><span>'+S.freezes+'</span></div>'+
+    '<div class="metric m-best"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v6a5 5 0 0 1-10 0z"/><path d="M7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3M9 20h6M12 15v5"/></svg><span>'+S.best+'</span></div></div>';
 }
 
 function emptyBlock(title,sub,btn,act){
@@ -584,7 +624,7 @@ function emptyBlock(title,sub,btn,act){
     '<button class="btn btn-main" data-act="'+act+'">'+btn+'</button></div>';
 }
 
-/* ============================ Экран: Сегодня ============================ */
+/* ============================ ЭКРАН: СЕГОДНЯ ============================ */
 function viewToday(){
   const mainG=getMainGoal();
   let h=topbar();
@@ -601,10 +641,7 @@ function viewToday(){
     '</svg><div class="ring-num">'+gs.pct+'%</div></div>'+
     '<div class="hero-meta"><div class="hero-day">'+t('dayOf',{a:gs.done,b:gs.total})+'</div>'+
     '<div class="hero-note'+(gs.behind>=3?' hero-warn':'')+'">'+
-    (gs.finished?t('reached')
-     :gs.left<0?t('overdue',{n:-gs.left,w:dayWord(-gs.left)})
-     :gs.behind>=3?t('behind',{n:gs.behind,w:dayWord(gs.behind)})
-     :t('left',{n:gs.left,w:dayWord(gs.left)}))+
+    (gs.finished?t('reached'):gs.left<0?t('overdue',{n:-gs.left,w:dayWord(-gs.left)}):gs.behind>=3?t('behind',{n:gs.behind,w:dayWord(gs.behind)}):t('left',{n:gs.left,w:dayWord(gs.left)}))+
     '</div></div></div></div>';
 
   const tasks=S.goals.map(g=>({g,s:nextStep(g)})).filter(x=>x.s);
@@ -623,18 +660,17 @@ function viewToday(){
     h+='<div class="card'+(gDone?' done':'')+'" style="animation-delay:'+(i*50)+'ms">'+
       '<div class="card-body">'+
       '<div class="card-t">'+esc(s.text)+'</div>'+
-      '<div class="card-s">'+(g.isMain?'⭐ ':'')+esc(g.title)+(s.days>1?' · '+t('dayNum',{n:Math.min(s.progress+(gDone?0:1),s.days),m:s.days}):'')+'</div>'+
+      '<div class="card-s">'+(g.isMain?'⭐ ':'')+esc(g.title)+'</div>'+
       (s.days>1?'<div class="mini"><i style="width:'+pct+'%"></i></div>':'')+
       '</div>'+
       (gDone?'<button class="btn btn-go btn-sm" disabled>'+t('done')+'</button>'
             :'<button class="btn btn-go btn-sm" data-act="done" data-g="'+g.id+'" data-s="'+s.id+'">'+t('done')+'</button>')+
       '</div>';
   });
-  h+='</div>';
-  return h;
+  return h+'</div>';
 }
 
-/* ============================ Экран: Цели ============================ */
+/* ============================ ЭКРАН: ЦЕЛИ ============================ */
 function viewGoals(){
   if(draft) return viewDraft();
   let h=topbar();
@@ -652,7 +688,7 @@ function viewGoals(){
       '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">'+
       (g.isMain?'<span class="badge main">'+t('isMainBadge')+'</span>':'')+
       '<div class="card-t">'+esc(g.title)+'</div></div>'+
-      '<div class="card-s">'+(gs.finished?t('reached'):gs.done+' / '+gs.total+' '+dayWord(gs.total)+' · осталось '+gs.stepsLeft+' шагов')+'</div>'+
+      '<div class="card-s">'+(gs.finished?t('reached'):gs.done+' / '+gs.total+' '+dayWord(gs.total))+'</div>'+
       '</div>'+
       '<div style="font-size:19px;font-weight:900;color:var(--violet);flex:none">'+gs.pct+'%</div></div>'+
       '<div class="mini" style="margin-top:11px"><i style="width:'+gs.pct+'%"></i></div>'+
@@ -676,10 +712,9 @@ function renderPath(g){
     if(s.done){
       cls='done';
       inner='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>';
-      sub=s.days+' '+dayWord(s.days)+' · '+t('passed');
+      sub=s.days+' '+dayWord(s.days);
     } else if(!marked){
-      marked=true; cls='now'; inner=String(i+1);
-      sub=s.days>1?t('dayNum',{n:s.progress+1,m:s.days}):t('now');
+      marked=true; cls='now'; inner=String(i+1); sub=s.days+' '+dayWord(s.days);
     } else { cls=''; inner=String(i+1); sub=s.days+' '+dayWord(s.days); }
     h+='<div class="node'+(cls===''?' locked':'')+'" style="margin-left:'+indent+'px;animation-delay:'+(i*40)+'ms">'+
       '<div class="dot '+cls+'">'+inner+'</div>'+
@@ -688,24 +723,34 @@ function renderPath(g){
   return h+'</div>';
 }
 
-/* ============================ Экран: Новая цель ============================ */
+/* ============================ ЭКРАН: НОВАЯ ЦЕЛЬ С ИИ ============================ */
 function viewDraft(){
   const presets=[14,30,60,90];
   return '<div class="sec"><div class="sec-t">'+t('newGoal')+'</div></div><div class="panel">'+
     '<div class="label">'+t('what')+'</div>'+
     '<input class="field" id="d-title" placeholder="'+t('titlePh')+'" value="'+esc(draft.title)+'">'+
+    
+    '<div class="gap"></div>'+
+    '<div class="label">Детали и пожелания (для ИИ)</div>'+
+    '<textarea class="field" id="d-desc" rows="2" placeholder="Например: хочу заниматься по 30 минут в день, уровень начальный...">'+esc(draft.desc||'')+'</textarea>'+
+    
+    '<div class="gap"></div>'+
+    '<button class="btn btn-accent" id="btn-ai-gen" onclick="handleAIGenerate()" style="width:100%">✨ Сгенерировать план с ИИ</button>'+
+
     '<div class="gap"></div><div class="label">'+t('howLong')+'</div><div class="chips">'+
     presets.map(n=>'<div class="chip'+(draft.days===n?' on':'')+'" data-act="days" data-n="'+n+'">'+n+'</div>').join('')+
     '</div><div style="height:8px"></div>'+
     '<input class="field" id="d-days" inputmode="numeric" placeholder="'+t('ownNumber')+'" value="'+(presets.indexOf(draft.days)>=0?'':(draft.days||''))+'">'+
+    
     '<div class="gap"></div><div class="label">'+t('stepsLabel')+'</div>'+
     '<textarea class="field" id="d-steps" rows="5" placeholder="'+esc(t('stepsPh'))+'">'+esc(draft.steps)+'</textarea>'+
     '<div class="card-s" style="margin:9px 3px 0">'+t('stepsHint')+'</div>'+
+    
     '<div class="gap"></div><button class="btn btn-main" data-act="save-goal">'+t('createGoal')+'</button>'+
     '<div style="height:9px"></div><button class="btn btn-ghost" data-act="cancel">'+t('cancel')+'</button></div>';
 }
 
-/* ============================ Экран: Цепочки ============================ */
+/* ============================ ЭКРАН: ЦЕПОЧКИ ============================ */
 function viewChains(){
   if(!S.goals.length){
     return topbar()+'<div class="sec"><div class="sec-t">'+t('yourChain')+'</div></div>'+
@@ -784,7 +829,7 @@ function renderGoalChain(g){
   return h+'</div>';
 }
 
-/* ============================ Экран: Соревнования ============================ */
+/* ============================ ЭКРАН: СОРЕВНОВАНИЯ ============================ */
 function viewCompetitions(){
   let h=topbar();
   h+='<div class="sec"><div class="sec-t">'+t('compTitle')+'</div></div>';
@@ -843,7 +888,7 @@ function viewCompetitions(){
   return h;
 }
 
-/* ============================ Экран: Профиль ============================ */
+/* ============================ ЭКРАН: ПРОФИЛЬ ============================ */
 function viewProfile(){
   const completedCount = S.goals.filter(g=>goalStat(g).finished).length;
 
@@ -869,9 +914,7 @@ function viewProfile(){
     '<div class="auth-btn '+(S.authMethod==='yandex'?'on':'')+'" data-act="auth" data-m="yandex">Яндекс</div>'+
     '</div>'+
 
-    /* Добавление Telegram Login Widget если вход совершается с браузера */
     '<div class="tg-widget-container" id="tg-widget-box"></div>'+
-
     '</div>'+
 
     '<div class="panel" style="margin-bottom:14px">'+
@@ -904,7 +947,6 @@ function uploadAvatar(e){
   reader.readAsDataURL(file);
 }
 
-/* ============================ Карточка дня ============================ */
 function openDay(dateStr, goalId){
   const g = S.goals.find(x=>x.id===goalId) || getMainGoal();
   if(!g) return;
@@ -934,12 +976,12 @@ function closeSheet(){
   setTimeout(()=>{ if(back) back.remove(); if(sheet) sheet.remove(); },300);
 }
 
-/* ============================ Навигация и Отрисовка ============================ */
+/* ============================ НАВИГАЦИЯ И ОБРАБОТЧИКИ ============================ */
 const NAV_ICONS={
   today:'<path d="M13 2 4 14h6l-1 8 9-12h-6z"/>',
   goals:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>',
   chains:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
-  comp:'<path d="M6 9V2h12v7a6 6 0 0 1-12 0z"/><path d="M18 5h3a2 2 0 0 1 2 2v1a3 3 0 0 1-3 3h-2M6 5H3a2 2 0 0 0-2 2v1a3 3 0 0 1 3 3h2"/>',
+  comp:'<path d="M6 9V2h12v7a6 6 0 0 1-12 0z"/><path d="M18 5h3a2 2 0 0 1 2 2v1a3 3 0 0 1-3 3h-2M6 5H3a2 2 0 0 1 2 2v1a3 3 0 0 1 3 3h2"/>',
   more:'<circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>'
 };
 
@@ -963,7 +1005,6 @@ function render(){
   const ring=app.querySelector('.ring-fg');
   if(ring) requestAnimationFrame(()=>{ ring.style.strokeDashoffset=ring.dataset.off; });
 
-  /* Отрисовка Telegram Login Widget для браузера */
   if(screen==='more'){
     setTimeout(()=>renderTgWidget(), 50);
   }
@@ -974,13 +1015,11 @@ function renderTgWidget(){
   if(!container) return;
   container.innerHTML = '';
 
-  /* Если уже внутри Telegram Mini App, авторизация происходит автоматически */
   if(tg && tg.initDataUnsafe && tg.initDataUnsafe.user){
     container.innerHTML = '<div style="color:var(--mint);font-weight:800;font-size:13px">✓ Авторизовано через Telegram WebApp</div>';
     return;
   }
 
-  /* Для браузера загружаем Telegram Login Widget */
   const script = document.createElement('script');
   script.src = "https://telegram.org/js/telegram-widget.js?22";
   script.setAttribute('data-telegram-login', 'Msuccess_bot');
@@ -992,7 +1031,6 @@ function renderTgWidget(){
   container.appendChild(script);
 }
 
-/* ============================ Обработчики ============================ */
 document.getElementById('nav').addEventListener('click',function(e){
   const tab=e.target.closest('.tab'); if(!tab) return;
   if(screen===tab.dataset.tab) return;
@@ -1006,12 +1044,10 @@ document.getElementById('app').addEventListener('click',function(e){
   const act=el.dataset.act;
 
   if(act==='day'){
-    haptic('tap');
-    openDay(el.dataset.d, Number(el.dataset.g));
-    return;
+    haptic('tap'); openDay(el.dataset.d, Number(el.dataset.g)); return;
   }
 
-  if(act==='go-new'){ draft={title:'',days:30,steps:''}; screen='goals'; haptic('tap'); render(); return; }
+  if(act==='go-new'){ draft={title:'',days:30,steps:'',desc:''}; screen='goals'; haptic('tap'); render(); return; }
   if(act==='cancel'){ draft=null; haptic('tap'); render(); return; }
   if(act==='days'){ syncDraft(); draft.days=Number(el.dataset.n); haptic('tap'); render(); return; }
 
@@ -1029,8 +1065,7 @@ document.getElementById('app').addEventListener('click',function(e){
   if(act==='toggle'){ const id=Number(el.dataset.g); openGoal=openGoal===id?null:id; haptic('tap'); render(); return; }
 
   if(act==='set-main'){
-    const id=Number(el.dataset.g);
-    setMainGoal(id); haptic('ok'); toast(t('madeMain')); render(); return;
+    const id=Number(el.dataset.g); setMainGoal(id); haptic('ok'); toast(t('madeMain')); render(); return;
   }
 
   if(act==='drop'){
@@ -1123,13 +1158,16 @@ document.getElementById('app').addEventListener('click',function(e){
 
 function syncDraft(){
   if(!draft) return;
-  const a=document.getElementById('d-title'),b=document.getElementById('d-days'),c=document.getElementById('d-steps');
+  const a=document.getElementById('d-title'),
+        b=document.getElementById('d-days'),
+        c=document.getElementById('d-steps'),
+        d=document.getElementById('d-desc');
   if(a) draft.title=a.value;
   if(c) draft.steps=c.value;
+  if(d) draft.desc=d.value;
   if(b&&b.value.trim()){ const n=parseInt(b.value,10); if(n>=1&&n<=365) draft.days=n; }
 }
 
-/* ============================ Инициализация ============================ */
 (async function init(){
   const saved=await loadState();
   S = (saved&&saved.goals) ? Object.assign(blank(),saved) : blank();
