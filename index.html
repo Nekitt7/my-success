@@ -334,7 +334,10 @@ ru:{today:'Сегодня',goals:'Цели',stats:'Путь',rivals:'Дуэли'
  rivalNotFound:'Такой человек не найден',rivalInvited:'Приглашение отправлено',
  rivalIncoming:'Входящие приглашения',rivalActive:'Активные дуэли',
  accept:'Принять',decline:'Отклонить',goalsDone:'целей закрыто',
- vs:'против',rivalEmpty:'Соперников пока нет'},
+ vs:'против',rivalEmpty:'Соперников пока нет',
+ genPlan:'Предложить план',genWait:'Собираю план…',genOk:'План готов — проверь и правь',
+ genFail:'Нейросеть не ответила',genNeedTitle:'Сначала впиши цель',
+ genAgain:'Другой вариант'},
 en:{today:'Today',goals:'Goals',stats:'Path',rivals:'Duels',more:'More',
  mainGoal:'Main goal',planToday:"Today's plan",myGoals:'My goals',
  newGoal:'New goal',createGoal:'Create goal',cancel:'Cancel',done:'Done',
@@ -384,7 +387,10 @@ en:{today:'Today',goals:'Goals',stats:'Path',rivals:'Duels',more:'More',
  rivalNotFound:'No such person found',rivalInvited:'Invitation sent',
  rivalIncoming:'Incoming invitations',rivalActive:'Active duels',
  accept:'Accept',decline:'Decline',goalsDone:'goals closed',
- vs:'vs',rivalEmpty:'No rivals yet'}
+ vs:'vs',rivalEmpty:'No rivals yet',
+ genPlan:'Suggest a plan',genWait:'Building the plan…',genOk:'Plan is ready — review and edit',
+ genFail:'The model did not answer',genNeedTitle:'Enter the goal first',
+ genAgain:'Another version'}
 };
 function t(k,v){
   const lang=(S&&S.lang)?S.lang:'ru';
@@ -528,6 +534,15 @@ function addGoal(title,targetDays,texts){
   const lens=spread(texts.length,targetDays);
   const g={id:S.seq++,title:title,targetDays:targetDays,created:today(),marks:{},
     steps:texts.map(function(x,i){ return {id:S.seq++,text:x,days:lens[i],progress:0,done:false}; })};
+  S.goals.push(g);
+  if(!S.mainGoal) S.mainGoal=g.id;
+  saveState(); return g;
+}
+function addGoalPlan(title,targetDays,plan){
+  const g={id:S.seq++,title:title,targetDays:targetDays,created:today(),marks:{},
+    steps:plan.map(function(x){
+      return {id:S.seq++,text:x.step,days:Math.max(1,x.days||1),progress:0,done:false};
+    })};
   S.goals.push(g);
   if(!S.mainGoal) S.mainGoal=g.id;
   saveState(); return g;
@@ -740,6 +755,9 @@ function viewDraft(){
     '<input class="field" id="d-days" inputmode="numeric" placeholder="'+t('ownNumber')+'" value="'+(presets.indexOf(draft.days)>=0?'':(draft.days||''))+'">'+
     '<div class="gap"></div><div class="label">'+t('stepsLabel')+'</div>'+
     '<textarea class="field" id="d-steps" rows="6" placeholder="'+esc(t('stepsPh'))+'">'+esc(draft.steps)+'</textarea>'+
+    (API_URL?'<div style="height:10px"></div><button class="btn btn-go" style="width:100%" data-act="gen-plan">'+
+      '<svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 1.9 5.6L19.5 9l-4.4 3.6 1.4 5.7L12 15.3 7.5 18.3l1.4-5.7L4.5 9l5.6-1.4z"/></svg>'+
+      (draft.aiPlan?t('genAgain'):t('genPlan'))+'</button>':'')+
     '<div class="card-s" style="margin:9px 3px 0">'+t('stepsHint')+'</div>'+
     '<div class="gap"></div><button class="btn btn-main" data-act="save-goal">'+t('createGoal')+'</button>'+
     '<div style="height:9px"></div><button class="btn btn-ghost" data-act="cancel">'+t('cancel')+'</button></div>';
@@ -1104,7 +1122,27 @@ document.getElementById('app').addEventListener('click',function(e){
     return;
   }
 
-  if(act==='go-new'){ draft={title:'',days:30,steps:''}; screen='goals'; haptic('tap'); render(); return; }
+  if(act==='gen-plan'){
+    syncDraft();
+    if(!draft.title.trim()){ toast(t('genNeedTitle')); haptic('warn'); return; }
+    haptic('tap');
+    el.disabled=true; el.textContent=t('genWait');
+    const prev=(draft.aiPlan||[]).map(function(x){ return x.step; });
+    api('/api/plan',{goal:draft.title.trim(),days:draft.days||30,
+                     about:'',avoid:prev.length?prev:null})
+      .then(function(d){
+        if(d&&d.plan&&d.plan.length){
+          draft.aiPlan=d.plan;
+          draft.steps=d.plan.map(function(x){ return x.step; }).join('\n');
+          haptic('ok'); toast(t('genOk'));
+        } else { toast(t('genFail')); }
+        render();
+      })
+      .catch(function(){ toast(t('genFail')); render(); });
+    return;
+  }
+
+  if(act==='go-new'){ draft={title:'',days:30,steps:'',aiPlan:null}; screen='goals'; haptic('tap'); render(); return; }
   if(act==='cancel'){ draft=null; haptic('tap'); render(); return; }
   if(act==='days'){ syncDraft(); draft.days=Number(el.dataset.n); haptic('tap'); render(); return; }
 
@@ -1131,7 +1169,11 @@ document.getElementById('app').addEventListener('click',function(e){
     const days=Math.max(1,Math.min(365,Number(draft.days)||30));
     if(!title){ toast(t('needTitle')); haptic('warn'); return; }
     if(!steps.length){ toast(t('needStep')); haptic('warn'); return; }
-    addGoal(title,days,steps);
+    // если шаги пришли от нейросети и не правились — сохраняем её распределение дней
+    const ai=draft.aiPlan;
+    const same=ai&&ai.length===steps.length&&ai.every(function(x,i){ return x.step===steps[i]; });
+    if(same) addGoalPlan(title,days,ai);
+    else addGoal(title,days,steps);
     if(tg&&tg.sendData){ try{ tg.sendData(JSON.stringify({action:'add_goal',title:title,days:days,steps:steps})); }catch(err){} }
     draft=null; haptic('ok'); toast(t('goalCreated')); screen='today'; render(); return;
   }
