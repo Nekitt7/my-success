@@ -136,6 +136,24 @@ button,input,textarea{font-family:inherit}
   align-items:center;gap:6px;font-size:11px;font-weight:900;letter-spacing:1px;
   text-transform:uppercase;color:var(--mint)}
 
+.subs{margin:8px 0 0 63px;display:flex;flex-direction:column;gap:7px}
+.sub{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;font-weight:700;
+  color:var(--muted);line-height:1.35}
+.sub-box{width:19px;height:19px;border-radius:6px;flex:none;margin-top:1px;
+  border:2px solid var(--line);background:var(--ink);
+  display:flex;align-items:center;justify-content:center;transition:all .2s}
+.sub.on .sub-box{background:var(--blue);border-color:var(--blue-deep)}
+.sub.on span{color:var(--dim);text-decoration:line-through}
+.sub-box svg{width:12px;height:12px;opacity:0;transition:opacity .2s}
+.sub.on .sub-box svg{opacity:1}
+.sheet-subs{display:flex;flex-direction:column;gap:10px;margin:12px 0 4px}
+.sheet-sub{display:flex;align-items:flex-start;gap:11px;background:var(--ink);
+  border:2px solid var(--line);border-radius:var(--r-sm);padding:12px 13px;
+  font-size:14.5px;font-weight:700;cursor:pointer;transition:all .2s;line-height:1.35}
+.sheet-sub.on{border-color:var(--blue-deep);background:rgba(76,141,255,.09)}
+.sheet-sub.on span{color:var(--dim);text-decoration:line-through}
+.sheet-sub:active{transform:scale(.985)}
+
 .panel{background:var(--surface);border:2px solid var(--line);border-radius:var(--r-lg);
   padding:16px;box-shadow:0 4px 0 var(--line-soft);animation:drop .45s both}
 .field{width:100%;background:var(--ink);border:2px solid var(--line);border-radius:var(--r-sm);
@@ -287,7 +305,7 @@ function haptic(k){
 const T={
 ru:{today:'Сегодня',goals:'Цели',stats:'Путь',rivals:'Дуэли',more:'Ещё',
  mainGoal:'Главная цель',planToday:'План на сегодня',myGoals:'Мои цели',
- newGoal:'Новая цель',createGoal:'Создать цель',cancel:'Отмена',done:'Готово',
+ newGoal:'Новая цель',createGoal:'Запустить цель',cancel:'Отмена',done:'Готово',
  dayOf:'День {a} из {b}',left:'Осталось {n} {w}',overdue:'Срок вышел {n} {w} назад',
  behind:'Отставание {n} {w} от плана',reached:'Цель достигнута',
  allSteps:'Все шаги пройдены',allStepsSub:'Допиши план или поставь новую цель.',
@@ -295,11 +313,13 @@ ru:{today:'Сегодня',goals:'Цели',stats:'Путь',rivals:'Дуэли'
  noGoals:'Ни одной цели',
  noGoalsSub:'Большая цель, разбитая на дни, перестаёт быть страшной. Заведи первую — и завтра уже будет что отметить.',
  emptyGoals:'Пока пусто',emptyGoalsSub:'Цель без плана — это желание. Раздели её на шаги, и появится маршрут.',
- what:'Что хочешь получить',howLong:'За сколько дней',ownNumber:'или своё число',
- stepsLabel:'Шаги — по одному в строке',
- stepsHint:'Дни распределятся по шагам поровну. Порядок важен: идти будешь сверху вниз.',
+ what:'Большая цель',howLong:'За сколько дней',ownNumber:'или своё число',
+ stepsLabel:'План по шагам',
+ stepsHint:'Здесь напишите шаги, которые вы будете совершать каждый день, чтобы добиться цели.',
+ subHint:'Подшаг пишите с отступа или через 1.1 — он привяжется к шагу выше.',
+ goalHint:'Сформулируйте результат, а ниже распишите его по шагам.',
  titlePh:'Выполнить норматив по плаванию',
- stepsPh:'Набрать объём 3 км в неделю\nОтработать старт и повороты\nПроплыть контрольную сотню\nВыйти на соревнования',
+ stepsPh:'Набрать объём 3 км в неделю\n  Плавать 4 раза в неделю\n  Вести дневник тренировок\nОтработать старт и повороты\n  Снимать себя на видео\nВыйти на соревнования',
  deleteGoal:'Удалить цель',deleteAsk:'Удалить цель вместе с планом?',
  goalDeleted:'Цель удалена',goalCreated:'Цель создана',
  needTitle:'Впиши название цели',needStep:'Нужен хотя бы один шаг',
@@ -315,7 +335,7 @@ ru:{today:'Сегодня',goals:'Цели',stats:'Путь',rivals:'Дуэли'
  profile:'Профиль',storage:'Хранилище',storageCloud:'Telegram CloudStorage',storageLocal:'Только эта сессия',
  reset:'Сбросить всё',resetAsk:'Удалить все цели и обнулить серию?',resetOk:'Всё очищено',
  dayNum:'день {n} из {m}',passed:'пройдено',now:'сейчас',
- dayTitle:'День {n}',
+ dayTitle:'День {n}',subCount:'{n} подшаг(ов)',subsLabel:'Что сделать внутри шага',
  stDone:'Отмечен',stFreeze:'Спасён заморозкой',stMiss:'Пропущен',stNow:'Сегодня',stFuture:'Впереди',
  taskLabel:'Задача дня',noTask:'На этот день задачи не назначено',
  markDone:'Отметить выполненным',alreadyDone:'Уже отмечено',
@@ -340,7 +360,7 @@ ru:{today:'Сегодня',goals:'Цели',stats:'Путь',rivals:'Дуэли'
  genAgain:'Другой вариант'},
 en:{today:'Today',goals:'Goals',stats:'Path',rivals:'Duels',more:'More',
  mainGoal:'Main goal',planToday:"Today's plan",myGoals:'My goals',
- newGoal:'New goal',createGoal:'Create goal',cancel:'Cancel',done:'Done',
+ newGoal:'New goal',createGoal:'Start the goal',cancel:'Cancel',done:'Done',
  dayOf:'Day {a} of {b}',left:'{n} {w} left',overdue:'Deadline passed {n} {w} ago',
  behind:'{n} {w} behind plan',reached:'Goal reached',
  allSteps:'All steps completed',allStepsSub:'Add more steps or set a new goal.',
@@ -348,11 +368,13 @@ en:{today:'Today',goals:'Goals',stats:'Path',rivals:'Duels',more:'More',
  noGoals:'No goals yet',
  noGoalsSub:'A big goal split into days stops being scary. Add your first one and tomorrow you will have something to mark.',
  emptyGoals:'Nothing here',emptyGoalsSub:'A goal without a plan is a wish. Split it into steps and a route appears.',
- what:'What do you want',howLong:'In how many days',ownNumber:'or your own number',
- stepsLabel:'Steps — one per line',
- stepsHint:'Days are spread evenly across steps. Order matters: you go top to bottom.',
+ what:'Your big goal',howLong:'In how many days',ownNumber:'or your own number',
+ stepsLabel:'Plan by steps',
+ stepsHint:'Write the steps you will take every day to reach the goal.',
+ subHint:'Indent a line or use 1.1 to attach it to the step above.',
+ goalHint:'State the result, then break it into steps below.',
  titlePh:'Swim a qualifying time',
- stepsPh:'Build up to 3 km per week\nDrill starts and turns\nSwim a timed 100\nEnter a competition',
+ stepsPh:'Build up to 3 km per week\n  Swim four times a week\n  Keep a training log\nDrill starts and turns\n  Record yourself on video\nEnter a competition',
  deleteGoal:'Delete goal',deleteAsk:'Delete this goal and its plan?',
  goalDeleted:'Goal deleted',goalCreated:'Goal created',
  needTitle:'Enter a goal title',needStep:'At least one step is needed',
@@ -368,7 +390,7 @@ en:{today:'Today',goals:'Goals',stats:'Path',rivals:'Duels',more:'More',
  profile:'Profile',storage:'Storage',storageCloud:'Telegram CloudStorage',storageLocal:'This session only',
  reset:'Reset everything',resetAsk:'Delete all goals and reset the streak?',resetOk:'Everything cleared',
  dayNum:'day {n} of {m}',passed:'done',now:'now',
- dayTitle:'Day {n}',
+ dayTitle:'Day {n}',subCount:'{n} sub-steps',subsLabel:'Inside this step',
  stDone:'Marked',stFreeze:'Saved by freeze',stMiss:'Missed',stNow:'Today',stFuture:'Ahead',
  taskLabel:'Task of the day',noTask:'No task assigned to this day',
  markDone:'Mark as done',alreadyDone:'Already marked',
@@ -535,18 +557,39 @@ function spread(count,total){
   for(let i=count-1;rest>0;i--,rest--) out[i%count]+=1;
   return out;
 }
-function addGoal(title,targetDays,texts){
-  const lens=spread(texts.length,targetDays);
+function addGoal(title,targetDays,items){
+  const lens=spread(items.length,targetDays);
   const g={id:S.seq++,title:title,targetDays:targetDays,created:today(),marks:{},
-    steps:texts.map(function(x,i){ return {id:S.seq++,text:x,days:lens[i],progress:0,done:false}; })};
+    steps:items.map(function(x,i){
+      const isObj = x && typeof x==='object';
+      return {id:S.seq++, text:isObj?x.text:x, days:lens[i], progress:0, done:false,
+              subs:(isObj&&Array.isArray(x.subs))?x.subs:[]};
+    })};
   S.goals.push(g);
   if(!S.mainGoal) S.mainGoal=g.id;
   saveState(); return g;
 }
+/* Разбор ввода: строка с отступом, дефисом или номером 1.1 — это подшаг */
+function parseSteps(text){
+  const out=[];
+  String(text||'').split('\n').forEach(function(line){
+    if(!line.trim()) return;
+    const isSub = /^(\s{2,}|\t)/.test(line)
+               || /^\s*[-–—•*]\s/.test(line)
+               || /^\s*\d+\.\d+/.test(line);
+    const clean = line.replace(/^\s*(?:[-–—•*]|\d+(?:\.\d+)*[.)]?)\s*/,'').trim();
+    if(!clean) return;
+    if(isSub && out.length) out[out.length-1].subs.push({text:clean.slice(0,120),done:false});
+    else if(out.length<20) out.push({text:clean.slice(0,160),subs:[]});
+  });
+  return out;
+}
+
 function addGoalPlan(title,targetDays,plan){
   const g={id:S.seq++,title:title,targetDays:targetDays,created:today(),marks:{},
     steps:plan.map(function(x){
-      return {id:S.seq++,text:x.step,days:Math.max(1,x.days||1),progress:0,done:false};
+      return {id:S.seq++,text:x.step,days:Math.max(1,x.days||1),progress:0,done:false,
+              subs:(x.subs||[]).map(function(t){ return {text:String(t).slice(0,120),done:false}; })};
     })};
   S.goals.push(g);
   if(!S.mainGoal) S.mainGoal=g.id;
@@ -689,7 +732,8 @@ function viewToday(){
     h+='<div class="card'+(fin?' done':'')+'" style="animation-delay:'+(i*55)+'ms"><div class="card-body">'+
       '<div class="card-t">'+esc(s.text)+'</div>'+
       '<div class="card-s">'+(g.id===S.mainGoal?'★ ':'')+esc(g.title)+
-        (s.days>1?' · '+t('dayNum',{n:Math.min(s.progress+(fin?0:1),s.days),m:s.days}):'')+'</div>'+
+        (s.days>1?' · '+t('dayNum',{n:Math.min(s.progress+(fin?0:1),s.days),m:s.days}):'')+
+        (s.subs&&s.subs.length?' · '+t('subCount',{n:s.subs.length}):'')+'</div>'+
       (s.days>1?'<div class="mini"><i style="width:'+pct+'%"></i></div>':'')+
       '</div>'+
       (fin?'<button class="btn btn-go btn-sm" disabled>'+t('done')+'</button>'
@@ -744,6 +788,16 @@ function renderPath(g){
     h+='<div class="node'+(cls===''?' locked':'')+'" style="margin-left:'+indent+'px;animation-delay:'+(i*45)+'ms">'+
       '<div class="dot '+cls+'">'+inner+'</div>'+
       '<div class="node-txt"><div class="node-t">'+esc(s.text)+'</div><div class="node-s">'+sub+'</div></div></div>';
+    if(s.subs&&s.subs.length){
+      h+='<div class="subs" style="margin-left:'+(indent+0)+'px">';
+      s.subs.forEach(function(sb,k){
+        h+='<div class="sub'+(sb.done?' on':'')+'" data-act="sub" data-g="'+g.id+'" data-s="'+s.id+'" data-i="'+k+'">'+
+           '<i class="sub-box">'+
+           '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>'+
+           '</i><span>'+esc(sb.text)+'</span></div>';
+      });
+      h+='</div>';
+    }
   });
   return h+'</div>';
 }
@@ -754,6 +808,7 @@ function viewDraft(){
   return '<div class="sec"><div class="sec-t">'+t('newGoal')+'</div></div><div class="panel">'+
     '<div class="label">'+t('what')+'</div>'+
     '<input class="field" id="d-title" placeholder="'+t('titlePh')+'" value="'+esc(draft.title)+'">'+
+    '<div class="card-s" style="margin:8px 3px 0">'+t('goalHint')+'</div>'+
     '<div class="gap"></div><div class="label">'+t('howLong')+'</div><div class="chips">'+
     presets.map(function(n){ return '<div class="chip'+(draft.days===n?' on':'')+'" data-act="days" data-n="'+n+'">'+n+'</div>'; }).join('')+
     '</div><div style="height:8px"></div>'+
@@ -764,6 +819,7 @@ function viewDraft(){
       '<svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 1.9 5.6L19.5 9l-4.4 3.6 1.4 5.7L12 15.3 7.5 18.3l1.4-5.7L4.5 9l5.6-1.4z"/></svg>'+
       (draft.aiPlan?t('genAgain'):t('genPlan'))+'</button>':'')+
     '<div class="card-s" style="margin:9px 3px 0">'+t('stepsHint')+'</div>'+
+    '<div class="card-s" style="margin:6px 3px 0;color:var(--dim)">'+t('subHint')+'</div>'+
     '<div class="gap"></div><button class="btn btn-main" data-act="save-goal">'+t('createGoal')+'</button>'+
     '<div style="height:9px"></div><button class="btn btn-ghost" data-act="cancel">'+t('cancel')+'</button></div>';
 }
@@ -885,6 +941,17 @@ function openDay(goalId,dateStr){
   } else body+='<div class="sheet-task-s" style="margin:0">'+t('noTask')+'</div>';
   body+='</div>';
 
+  if(task&&task.step.subs&&task.step.subs.length){
+    body+='<div class="sheet-task-l" style="margin:0 3px 2px">'+t('subsLabel')+'</div><div class="sheet-subs">';
+    task.step.subs.forEach(function(sb,k){
+      body+='<div class="sheet-sub'+(sb.done?' on':'')+'" data-act="sheet-sub" data-g="'+g.id+'" data-s="'+task.step.id+'" data-i="'+k+'">'+
+            '<i class="sub-box">'+
+            '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>'+
+            '</i><span>'+esc(sb.text)+'</span></div>';
+    });
+    body+='</div><div style="height:14px"></div>';
+  }
+
   let action='';
   if(isToday&&!goalDoneToday(g)&&task&&!task.step.done){
     action='<button class="btn btn-main" data-act="sheet-done" data-g="'+g.id+'" data-s="'+task.step.id+'">'+t('markDone')+'</button><div style="height:9px"></div>';
@@ -912,6 +979,10 @@ function openDay(goalId,dateStr){
   sheet.addEventListener('click',function(e){
     const el=e.target.closest('[data-act]'); if(!el) return;
     if(el.dataset.act==='sheet-close'){ closeSheet(); return; }
+    if(el.dataset.act==='sheet-sub'){
+      toggleSub(Number(el.dataset.g),Number(el.dataset.s),Number(el.dataset.i));
+      el.classList.toggle('on'); haptic('tap'); return;
+    }
     if(el.dataset.act==='sheet-done'){
       const r=completeStep(Number(el.dataset.g),Number(el.dataset.s));
       if(!r) return;
@@ -926,6 +997,14 @@ function openDay(goalId,dateStr){
     }
   });
 }
+function toggleSub(goalId,stepId,idx){
+  const g=S.goals.find(function(x){ return x.id===goalId; }); if(!g) return;
+  const st=g.steps.find(function(x){ return x.id===stepId; }); if(!st||!st.subs) return;
+  const sb=st.subs[idx]; if(!sb) return;
+  sb.done=!sb.done;
+  saveState();
+}
+
 function closeSheet(){
   const back=document.getElementById('backdrop'),sheet=document.getElementById('sheet');
   if(back) back.classList.remove('show');
@@ -1079,6 +1158,11 @@ document.getElementById('app').addEventListener('click',function(e){
   const el=e.target.closest('[data-act]'); if(!el) return;
   const act=el.dataset.act;
 
+  if(act==='sub'){
+    toggleSub(Number(el.dataset.g),Number(el.dataset.s),Number(el.dataset.i));
+    haptic('tap'); render(); return;
+  }
+
   if(act==='day'){ haptic('tap'); openDay(Number(el.dataset.g),el.dataset.d); return; }
   if(act==='chain'){ chainGoal=Number(el.dataset.g); haptic('tap'); render(); return; }
 
@@ -1168,15 +1252,13 @@ document.getElementById('app').addEventListener('click',function(e){
   if(act==='save-goal'){
     syncDraft();
     const title=draft.title.trim();
-    const steps=draft.steps.split('\n').map(function(s){
-      return s.replace(/^\s*(?:[-–—•*]|\d+[.)])\s*/,'').trim();
-    }).filter(Boolean).slice(0,20);
+    const steps=parseSteps(draft.steps);
     const days=Math.max(1,Math.min(365,Number(draft.days)||30));
     if(!title){ toast(t('needTitle')); haptic('warn'); return; }
     if(!steps.length){ toast(t('needStep')); haptic('warn'); return; }
     // если шаги пришли от нейросети и не правились — сохраняем её распределение дней
     const ai=draft.aiPlan;
-    const same=ai&&ai.length===steps.length&&ai.every(function(x,i){ return x.step===steps[i]; });
+    const same=ai&&ai.length===steps.length&&ai.every(function(x,i){ return x.step===steps[i].text; });
     if(same) addGoalPlan(title,days,ai);
     else addGoal(title,days,steps);
     if(tg&&tg.sendData){ try{ tg.sendData(JSON.stringify({action:'add_goal',title:title,days:days,steps:steps})); }catch(err){} }
