@@ -68,7 +68,30 @@ button,input,textarea{font-family:inherit}
 .sec-c{font-size:13px;font-weight:900;color:var(--dim)}
 
 .stack{display:flex;flex-direction:column;gap:15px;margin-bottom:26px}
-.card-wrap{animation:drop .45s both}
+.card-wrap{animation:drop .45s both;background:var(--surface);border:2px solid var(--line);
+  border-radius:var(--r-lg);padding:15px;box-shadow:0 4px 0 var(--line-soft)}
+.goal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding-bottom:13px;border-bottom:2px solid var(--line-soft)}
+.goal-head.full .card-t{color:var(--muted)}
+.tick-done{width:34px;height:34px;border-radius:50%;flex:none;background:var(--blue);
+  display:flex;align-items:center;justify-content:center;box-shadow:0 3px 0 var(--blue-deep)}
+.tick-done svg{width:17px;height:17px;color:#fff}
+.tick-count{font-size:15px;font-weight:900;color:var(--violet);flex:none}
+.tasks{display:flex;flex-direction:column;gap:9px;margin-top:13px}
+.task{display:flex;align-items:flex-start;gap:10px;background:var(--ink);
+  border:2px solid var(--line);border-radius:var(--r-sm);padding:12px 13px;
+  font-size:14.5px;font-weight:700;cursor:pointer;transition:all .18s;line-height:1.35}
+.task.on{border-color:var(--blue-deep);background:rgba(76,141,255,.1)}
+.task.on span{color:var(--dim);text-decoration:line-through}
+.task:active{transform:scale(.985)}
+.task-box{width:21px;height:21px;border-radius:7px;flex:none;margin-top:1px;
+  border:2px solid var(--line);background:var(--surface-2);
+  display:flex;align-items:center;justify-content:center;transition:all .2s}
+.task.on .task-box{background:var(--blue);border-color:var(--blue-deep)}
+.task-box svg{width:13px;height:13px;opacity:0;transition:opacity .2s}
+.task.on .task-box svg{opacity:1}
+.task-num{font-size:12px;font-weight:900;color:var(--violet);flex:none;min-width:14px;margin-top:2px}
+.task.on .task-num{color:var(--dim)}
 .card{background:var(--surface);border:2px solid var(--line);border-radius:var(--r-md);
   padding:14px 15px;display:flex;align-items:center;justify-content:space-between;gap:12px;
   box-shadow:0 4px 0 var(--line-soft);animation:drop .45s both}
@@ -170,6 +193,16 @@ button,input,textarea{font-family:inherit}
 .field:focus{border-color:var(--violet)}
 .label{font-size:12px;font-weight:900;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted);margin:0 0 8px 3px}
 .gap{height:16px}
+.task-rows{display:flex;flex-direction:column;gap:9px}
+.task-row{display:flex;align-items:center;gap:9px}
+.task-row-n{font-size:14px;font-weight:900;color:var(--violet);flex:none;min-width:17px;text-align:center}
+.task-input{flex:1;min-width:0;padding:12px 14px;font-size:15px}
+.task-del{flex:none;width:38px;height:38px;border-radius:11px;border:2px solid var(--line);
+  background:transparent;color:var(--dim);cursor:pointer;display:flex;align-items:center;
+  justify-content:center;transition:all .18s}
+.task-del svg{width:15px;height:15px}
+.task-del:active{transform:scale(.9);color:var(--fire-3)}
+
 .preview{background:var(--ink);border:2px solid var(--line);border-radius:var(--r-sm);
   padding:13px 15px;margin-top:10px;font-size:14px;font-weight:700;line-height:1.6}
 .preview-l{font-size:11px;font-weight:900;letter-spacing:1.1px;text-transform:uppercase;
@@ -221,9 +254,10 @@ button,input,textarea{font-family:inherit}
 .nav{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(23,19,46,.94);
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:2px solid var(--line);
   display:flex;padding:9px 0 calc(9px + env(safe-area-inset-bottom))}
-.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--dim);
-  font-size:10.5px;font-weight:900;cursor:pointer;padding:3px 0;transition:color .2s}
-.tab.on{color:var(--violet)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--violet);
+  font-size:10.5px;font-weight:900;cursor:pointer;padding:3px 0;transition:opacity .2s;opacity:.55}
+.tab.on{opacity:1}
+.tab.on .ic-lg{filter:drop-shadow(0 0 8px var(--violet))}
 .tab.on .ic-lg{transform:translateY(-2px) scale(1.08)}
 .tab .ic-lg{transition:transform .25s cubic-bezier(.3,1.5,.5,1)}
 
@@ -378,6 +412,10 @@ ru:{today:'Сегодня',goals:'Цели',stats:'Путь',rivals:'Дуэли'
  markDone:'Отметить выполненным',alreadyDone:'Уже отмечено',
  cantPast:'Прошлый день изменить нельзя',cantFuture:'Этот день ещё не наступил',
  tapHint:'Нажми на кружок, чтобы посмотреть задачу дня.',
+ goalAllDone:'Все задачи дня закрыты',tasksLeftN:'Осталось задач: {n}',
+ noTasks:'Задач пока нет',needAll:'Огонёк засчитается, когда закроешь все задачи цели',
+ taskWord:'Задача',addTask:'Добавить задачу',removeTask:'Убрать',
+ tasksLabel:'План по шагам',taskPh:'Задача {n}',
  theme:'Цвет приложения',themeSub:'Меняет всё приложение целиком',
  thViolet:'Фиолетовый',thBlue:'Синий',thGreen:'Зелёный',thOrange:'Оранжевый',
  thYellow:'Жёлтый',thCyan:'Голубой',thPink:'Розовый',
@@ -449,6 +487,10 @@ en:{today:'Today',goals:'Goals',stats:'Path',rivals:'Duels',more:'More',
  markDone:'Mark as done',alreadyDone:'Already marked',
  cantPast:'A past day cannot be changed',cantFuture:'This day has not come yet',
  tapHint:'Tap a circle to see the task for that day.',
+ goalAllDone:'All tasks done today',tasksLeftN:'Tasks left: {n}',
+ noTasks:'No tasks yet',needAll:'The streak counts once every task of the goal is done',
+ taskWord:'Task',addTask:'Add a task',removeTask:'Remove',
+ tasksLabel:'Plan by steps',taskPh:'Task {n}',
  theme:'App colour',themeSub:'Changes the whole app',
  thViolet:'Violet',thBlue:'Blue',thGreen:'Green',thOrange:'Orange',
  thYellow:'Yellow',thCyan:'Cyan',thPink:'Pink',
@@ -557,7 +599,7 @@ async function pullFromServer(silent){
   try{
     const d=await api('/api/state');
     if(d&&d.goals){
-      S.goals=d.goals.map(function(g){ return Object.assign({marks:{}},g); });
+      S.goals=d.goals.map(function(g){ return migrateGoal(g); });
       S.streak=d.streak||0; S.best=d.best||0;
       if(typeof d.freezes==='number') S.freezes=d.freezes;
       S.lastDone=d.lastDone||S.lastDone;
@@ -625,7 +667,6 @@ function liveStreak(){
   return (S.lastDone===today()||S.lastDone===shift(-1))?S.streak:0;
 }
 const anyDoneToday=()=>!!S.days[today()];
-const goalDoneToday=g=>!!(g.marks&&g.marks[today()]);
 function refillFreezes(){ if(S.freezeWeek!==weekTag()){ S.freezeWeek=weekTag(); S.freezes=1; } }
 
 function applyFreeze(){
@@ -648,56 +689,89 @@ function spread(count,total){
   return out;
 }
 function addGoal(title,targetDays,items){
-  const lens=spread(items.length,targetDays);
-  const g={id:S.seq++,title:title,targetDays:targetDays,created:today(),marks:{},
-    steps:items.map(function(x,i){
-      const isObj = x && typeof x==='object';
-      return {id:S.seq++, text:isObj?x.text:x, days:lens[i], progress:0, done:false,
-              subs:(isObj&&Array.isArray(x.subs))?x.subs:[]};
+  const g={id:S.seq++,title:title,targetDays:targetDays,created:today(),log:{},
+    tasks:items.map(function(x){
+      return {id:S.seq++, text:((x&&typeof x==='object')?x.text:String(x)).slice(0,160)};
     })};
   S.goals.push(g);
   if(!S.mainGoal) S.mainGoal=g.id;
   saveState(); return g;
-}
-/* Разбор ввода: строка с отступом, дефисом или номером 1.1 — это подшаг */
-function parseSteps(text){
-  const out=[];
-  String(text||'').split('\n').forEach(function(line){
-    if(!line.trim()) return;
-    const isSub = /^(\s{2,}|\t)/.test(line)
-               || /^\s*[-–—•*]\s/.test(line)
-               || /^\s*\d+\.\d+/.test(line);
-    const clean = line.replace(/^\s*(?:[-–—•*]|\d+(?:\.\d+)*[.)]?)\s*/,'').trim();
-    if(!clean) return;
-    if(isSub && out.length) out[out.length-1].subs.push({text:clean.slice(0,120),done:false});
-    else if(out.length<20) out.push({text:clean.slice(0,160),subs:[]});
-  });
-  return out;
 }
 
-function addGoalPlan(title,targetDays,plan){
-  const g={id:S.seq++,title:title,targetDays:targetDays,created:today(),marks:{},
-    steps:plan.map(function(x){
-      return {id:S.seq++,text:x.step,days:Math.max(1,x.days||1),progress:0,done:false,
-              subs:(x.subs||[]).map(function(t){ return {text:String(t).slice(0,120),done:false}; })};
-    })};
-  S.goals.push(g);
-  if(!S.mainGoal) S.mainGoal=g.id;
-  saveState(); return g;
+/* Старые цели со steps превращаем в ежедневные задачи — данные не теряются */
+function migrateGoal(g){
+  if(!g) return g;
+  if(!g.log) g.log={};
+  if(!g.tasks){
+    g.tasks=[];
+    (g.steps||[]).forEach(function(st){
+      g.tasks.push({id:st.id||(S.seq++),text:st.text});
+      (st.subs||[]).forEach(function(sb){ g.tasks.push({id:S.seq++,text:sb.text}); });
+    });
+    if(g.marks) for(const d in g.marks) if(!g.log[d]) g.log[d]=g.tasks.map(function(t){ return t.id; });
+    delete g.steps; delete g.marks;
+  }
+  return g;
 }
-const nextStep=g=>g.steps.find(s=>!s.done)||null;
+
+/* ---------- ежедневные задачи ---------- */
+function dayLog(g,date){ return (g.log&&g.log[date])||[]; }
+function isTaskDone(g,date,tid){ return dayLog(g,date).indexOf(tid)>=0; }
+
+function allDone(g,date){
+  if(!g.tasks||!g.tasks.length) return false;
+  const done=dayLog(g,date);
+  return g.tasks.every(function(t){ return done.indexOf(t.id)>=0; });
+}
+function tasksLeft(g){
+  const done=dayLog(g,today());
+  return (g.tasks||[]).filter(function(t){ return done.indexOf(t.id)<0; }).length;
+}
+
+/* Огонёк растёт, только когда закрыты ВСЕ задачи цели за день */
+function toggleTask(goalId,taskId){
+  const g=S.goals.find(function(x){ return x.id===goalId; }); if(!g) return null;
+  const d=today();
+  if(!g.log) g.log={};
+  const arr=(g.log[d]||[]).slice();
+  const i=arr.indexOf(taskId);
+  if(i>=0) arr.splice(i,1); else arr.push(taskId);
+  g.log[d]=arr;
+
+  let completed=false, grew=false;
+  if(allDone(g,d)){
+    completed=true;
+    if(!S.days[d]){
+      S.streak=(S.lastDone===shift(-1))?S.streak+1:1;
+      S.best=Math.max(S.best,S.streak);
+      S.lastDone=d; S.days[d]='done'; grew=true;
+    }
+  }
+  saveState();
+  return {on:i<0, completed:completed, grew:grew, streak:S.streak, left:tasksLeft(g)};
+}
+function addGoalPlan(title,targetDays,plan){
+  const items=[];
+  plan.forEach(function(x){
+    items.push({text:x.step});
+    (x.subs||[]).forEach(function(tx){ items.push({text:String(tx)}); });
+  });
+  return addGoal(title,targetDays,items.slice(0,15));
+}
 
 function goalStat(g){
-  const total=g.steps.reduce(function(a,s){ return a+s.days; },0)||1;
-  const done=g.steps.reduce(function(a,s){ return a+(s.done?s.days:s.progress); },0);
-  const left=diffDays(today(),addDays(g.created,g.targetDays));
+  const total=Math.max(1,g.targetDays||30);
+  let done=0;
+  for(const d in (g.log||{})) if(allDone(g,d)) done++;
+  const left=diffDays(today(),addDays(g.created,total));
   const elapsed=diffDays(g.created,today());
-  const stepsLeft=g.steps.filter(function(s){ return !s.done; }).length;
-  return{total:total,done:done,left:left,stepsLeft:stepsLeft,
+  return{total:total,done:done,left:left,
+    stepsLeft:tasksLeft(g),
     behind:Math.max(0,elapsed-done),
     pct:Math.min(100,Math.round(done/total*100)),
-    finished:g.steps.length>0&&g.steps.every(function(s){ return s.done; })};
+    finished:done>=total};
 }
+const goalDoneToday=g=>allDone(g,today());
 function mainGoal(){
   let g=S.goals.find(function(x){ return x.id===S.mainGoal; });
   if(!g) g=S.goals.find(function(x){ return !goalStat(x).finished; })||S.goals[0]||null;
@@ -712,27 +786,6 @@ function sortedGoals(){
   });
 }
 
-/* Отметка конкретной цели. Огонёк растёт один раз в сутки, но каждая цель отмечается отдельно. */
-function completeStep(goalId,stepId){
-  const g=S.goals.find(function(x){ return x.id===goalId; }); if(!g) return null;
-  const s=g.steps.find(function(x){ return x.id===stepId; }); if(!s||s.done) return null;
-  if(goalDoneToday(g)) return null;
-
-  s.progress+=1;
-  const closed=s.progress>=s.days;
-  if(closed) s.done=true;
-  if(!g.marks) g.marks={};
-  g.marks[today()]=true;
-
-  let grew=false;
-  if(!anyDoneToday()){
-    S.streak=(S.lastDone===shift(-1))?S.streak+1:1;
-    S.best=Math.max(S.best,S.streak);
-    S.lastDone=today(); S.days[today()]='done'; grew=true;
-  }
-  saveState();
-  return{closed:closed,grew:grew,streak:S.streak,goalDone:goalStat(g).finished};
-}
 
 /* ================== УТИЛИТЫ ================== */
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,function(c){
@@ -859,11 +912,12 @@ function viewToday(){
      :t('left',{n:gs.left,w:dayWord(gs.left)}))+
     '</div></div></div></div>';
 
-  const tasks=sortedGoals().map(function(g){ return {g:g,s:nextStep(g)}; })
-                           .filter(function(x){ return x.s; });
-  h+='<div class="sec"><div class="sec-t">'+t('planToday')+'</div><div class="sec-c">'+tasks.length+'</div></div>';
+  const goals=sortedGoals().filter(function(g){ return g.tasks&&g.tasks.length; });
+  const openGoals=goals.filter(function(g){ return !goalDoneToday(g); });
 
-  if(!tasks.length){
+  h+='<div class="sec"><div class="sec-t">'+t('planToday')+'</div><div class="sec-c">'+goals.length+'</div></div>';
+
+  if(!goals.length){
     return h+'<div class="panel" style="text-align:center">'+
       '<div class="card-t" style="margin-bottom:6px">'+t('allSteps')+'</div>'+
       '<div class="card-s" style="margin-bottom:14px">'+t('allStepsSub')+'</div>'+
@@ -871,43 +925,33 @@ function viewToday(){
   }
 
   h+='<div class="stack">';
-  tasks.forEach(function(x,i){
-    const g=x.g,s=x.s,fin=goalDoneToday(g),pct=Math.round(s.progress/s.days*100);
-    const num=g.steps.indexOf(s)+1;
-
-    h+='<div class="card-wrap" style="animation-delay:'+(i*55)+'ms">';
-    h+='<div class="card'+(fin?' done':'')+'"><div class="card-body">'+
-      '<div class="node-num">'+t('stepWord')+' '+num+'</div>'+
-      '<div class="card-t">'+esc(s.text)+'</div>'+
-      '<div class="card-s">'+(g.id===S.mainGoal?'★ ':'')+esc(g.title)+
-        (s.days>1?' · '+t('dayNum',{n:Math.min(s.progress+(fin?0:1),s.days),m:s.days}):'')+'</div>'+
-      (s.days>1?'<div class="mini"><i style="width:'+pct+'%"></i></div>':'')+
-      '</div>'+
-      (fin?'<button class="btn btn-go btn-sm" disabled>'+t('done')+'</button>'
-          :'<button class="btn btn-go btn-sm" data-act="done" data-g="'+g.id+'" data-s="'+s.id+'">'+t('done')+'</button>')+
-      '</div>';
-
-    // подшаги отмечаются каждый сам по себе, независимо от кнопки «Готово»
-    if(s.subs&&s.subs.length){
-      h+='<div class="subs" style="margin:9px 0 0 14px">';
-      s.subs.forEach(function(sb,k){
-        h+='<div class="sub'+(sb.done?' on':'')+'" data-act="sub" data-g="'+g.id+'" data-s="'+s.id+'" data-i="'+k+'">'+
-           '<i class="sub-box">'+
-           '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>'+
-           '</i><b class="sub-num">'+num+'.'+(k+1)+'</b><span>'+esc(sb.text)+'</span></div>';
-      });
-      h+='</div>';
-    }
-    h+='</div>';
+  goals.forEach(function(g,i){
+    const full=goalDoneToday(g), left=tasksLeft(g);
+    h+='<div class="card-wrap" style="animation-delay:'+(i*55)+'ms">'+
+      '<div class="goal-head'+(full?' full':'')+'">'+
+      '<div style="min-width:0">'+
+      '<div class="card-t">'+(g.id===S.mainGoal?'\u2605 ':'')+esc(g.title)+'</div>'+
+      '<div class="card-s">'+(full?t('goalAllDone'):t('tasksLeftN',{n:left}))+'</div></div>'+
+      (full?'<div class="tick-done">'+ICON_CHECK+'</div>'
+           :'<div class="tick-count">'+(g.tasks.length-left)+'/'+g.tasks.length+'</div>')+
+      '</div><div class="tasks">';
+    g.tasks.forEach(function(tk,k){
+      const on=isTaskDone(g,today(),tk.id);
+      h+='<div class="task'+(on?' on':'')+'" data-act="task" data-g="'+g.id+'" data-t="'+tk.id+'">'+
+         '<i class="task-box">'+
+         '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>'+
+         '</i><b class="task-num">'+(k+1)+'</b><span>'+esc(tk.text)+'</span></div>';
+    });
+    h+='</div></div>';
   });
   h+='</div>';
 
-  const allDone=tasks.every(function(x){ return goalDoneToday(x.g); });
-  if(allDone){
+  if(!openGoals.length){
     h+='<div class="panel" style="text-align:center">'+
       '<div class="card-t" style="margin-bottom:5px">'+t('dayClosed')+'</div>'+
       '<div class="card-s">'+t('dayClosedSub')+'</div></div>';
   }
+
   return h;
 }
 
@@ -937,64 +981,53 @@ function viewGoals(){
 }
 
 function renderPath(g){
-  let h='<div class="path" style="margin-top:16px">',marked=false;
-  g.steps.forEach(function(s,i){
-    const indent=[0,14,26,14][i%4];
-    let cls,inner,sub;
-    if(s.done){ cls='done'; inner=ICON_CHECK; sub=s.days+' '+dayWord(s.days)+' · '+t('passed'); }
-    else if(!marked){ marked=true; cls='now'; inner=String(i+1);
-      sub=s.days>1?t('dayNum',{n:s.progress+1,m:s.days}):t('now'); }
-    else { cls=''; inner=String(i+1); sub=s.days+' '+dayWord(s.days); }
-    h+='<div class="node'+(cls===''?' locked':'')+'" style="margin-left:'+indent+'px;animation-delay:'+(i*45)+'ms">'+
-      '<div class="dot '+cls+'">'+inner+'</div>'+
-      '<div class="node-txt"><div class="node-num">'+t('stepWord')+' '+(i+1)+'</div>'+
-      '<div class="node-t">'+esc(s.text)+'</div><div class="node-s">'+sub+'</div></div></div>';
-    if(s.subs&&s.subs.length){
-      h+='<div class="subs" style="margin-left:'+(indent+0)+'px">';
-      s.subs.forEach(function(sb,k){
-        h+='<div class="sub'+(sb.done?' on':'')+'" data-act="sub" data-g="'+g.id+'" data-s="'+s.id+'" data-i="'+k+'">'+
-           '<i class="sub-box">'+
-           '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>'+
-           '</i><b class="sub-num">'+(i+1)+'.'+(k+1)+'</b><span>'+esc(sb.text)+'</span></div>';
-      });
-      h+='</div>';
-    }
+  if(!g.tasks||!g.tasks.length) return '<div class="card-s" style="margin-top:14px">'+t('noTasks')+'</div>';
+  let h='<div class="tasks" style="margin-top:16px">';
+  g.tasks.forEach(function(tk,k){
+    const on=isTaskDone(g,today(),tk.id);
+    h+='<div class="task'+(on?' on':'')+'" data-act="task" data-g="'+g.id+'" data-t="'+tk.id+'">'+
+       '<i class="task-box">'+
+       '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>'+
+       '</i><b class="task-num">'+(k+1)+'</b><span>'+esc(tk.text)+'</span></div>';
   });
   return h+'</div>';
 }
 
 /* ================== ЭКРАН: НОВАЯ ЦЕЛЬ ================== */
-function previewHtml(text){
-  const items=parseSteps(text);
-  if(!items.length) return '';
-  let h='<div class="preview"><div class="preview-l">'+t('preview')+'</div>';
-  items.forEach(function(it,i){
-    h+='<div class="pv-main"><b>'+(i+1)+'.</b>'+esc(it.text)+'</div>';
-    it.subs.forEach(function(sb,k){
-      h+='<div class="pv-sub"><b>'+(i+1)+'.'+(k+1)+'</b>'+esc(sb.text)+'</div>';
-    });
-  });
-  return h+'</div>';
-}
-
 function viewDraft(){
   const presets=[14,30,60,90];
+  if(!draft.tasks||!draft.tasks.length) draft.tasks=['','',''];
+
+  let rows='';
+  draft.tasks.forEach(function(v,i){
+    rows+='<div class="task-row">'+
+      '<b class="task-row-n">'+(i+1)+'</b>'+
+      '<input class="field task-input" data-i="'+i+'" placeholder="'+t('taskPh',{n:i+1})+'" value="'+esc(v)+'">'+
+      (draft.tasks.length>1
+        ? '<button class="task-del" data-act="task-del" data-i="'+i+'" title="'+t('removeTask')+'">'+
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>'
+        : '')+
+      '</div>';
+  });
+
   return '<div class="sec"><div class="sec-t">'+t('newGoal')+'</div></div><div class="panel">'+
     '<div class="label">'+t('what')+'</div>'+
     '<input class="field" id="d-title" placeholder="'+t('titlePh')+'" value="'+esc(draft.title)+'">'+
     '<div class="card-s" style="margin:8px 3px 0">'+t('goalHint')+'</div>'+
+
     '<div class="gap"></div><div class="label">'+t('howLong')+'</div><div class="chips">'+
     presets.map(function(n){ return '<div class="chip'+(draft.days===n?' on':'')+'" data-act="days" data-n="'+n+'">'+n+'</div>'; }).join('')+
     '</div><div style="height:8px"></div>'+
     '<input class="field" id="d-days" inputmode="numeric" placeholder="'+t('ownNumber')+'" value="'+(presets.indexOf(draft.days)>=0?'':(draft.days||''))+'">'+
-    '<div class="gap"></div><div class="label">'+t('stepsLabel')+'</div>'+
-    '<textarea class="field" id="d-steps" rows="6" placeholder="'+esc(t('stepsPh'))+'">'+esc(draft.steps)+'</textarea>'+
+
+    '<div class="gap"></div><div class="label">'+t('tasksLabel')+'</div>'+
+    '<div class="card-s" style="margin:0 3px 12px">'+t('stepsHint')+'</div>'+
+    '<div class="task-rows">'+rows+'</div>'+
+    '<button class="btn btn-ghost" style="margin-top:11px" data-act="task-add">+ '+t('addTask')+'</button>'+
     (API_URL?'<div style="height:10px"></div><button class="btn btn-go" style="width:100%" data-act="gen-plan">'+
       '<svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 1.9 5.6L19.5 9l-4.4 3.6 1.4 5.7L12 15.3 7.5 18.3l1.4-5.7L4.5 9l5.6-1.4z"/></svg>'+
       (draft.aiPlan?t('genAgain'):t('genPlan'))+'</button>':'')+
-    '<div class="card-s" style="margin:9px 3px 0">'+t('stepsHint')+'</div>'+
-    '<div class="card-s" style="margin:6px 3px 0;color:var(--dim)">'+t('subHint')+'</div>'+
-    '<div id="d-preview">'+previewHtml(draft.steps)+'</div>'+
+
     '<div class="gap"></div><button class="btn btn-main" data-act="save-goal">'+t('createGoal')+'</button>'+
     '<div style="height:9px"></div><button class="btn btn-ghost" data-act="cancel">'+t('cancel')+'</button></div>';
 }
@@ -1066,7 +1099,7 @@ function renderChain(g){
 
   for(let i=0;i<days.length-1;i++){
     const x1=xs(i),y1=TOP+i*STEP,x2=xs(i+1),y2=TOP+(i+1)*STEP;
-    const on=(g.marks&&g.marks[days[i]]&&g.marks[days[i+1]]);
+    const on=allDone(g,days[i])&&allDone(g,days[i+1]);
     for(let k=1;k<=2;k++){
       const f=k/3;
       h+='<i class="link'+(on?' on':'')+'" style="left:'+(x1+(x2-x1)*f).toFixed(2)+'%;top:'+(y1+(y2-y1)*f).toFixed(1)+'px;animation-delay:'+(i*30)+'ms"></i>';
@@ -1075,7 +1108,7 @@ function renderChain(g){
 
   days.forEach(function(d,i){
     const y=TOP+i*STEP,x=xs(i),n=i+1;
-    const mark=(g.marks&&g.marks[d])?'done':(S.days[d]==='freeze'?'freeze':null);
+    const mark=allDone(g,d)?'done':(S.days[d]==='freeze'?'freeze':null);
     const isToday=d===today();
     const cls=mark==='done'?'done':mark==='freeze'?'freeze':isToday?'now':(d>today()?'future':'miss');
     const inner=mark==='done'?ICON_CHECK:mark==='freeze'?ICON_SNOW:String(n);
@@ -1099,44 +1132,29 @@ function renderChain(g){
 /* ================== КАРТОЧКА ДНЯ ================== */
 function openDay(goalId,dateStr){
   const g=S.goals.find(function(x){ return x.id===goalId; }); if(!g) return;
-  const mark=(g.marks&&g.marks[dateStr])?'done':(S.days[dateStr]==='freeze'?'freeze':null);
+  const full=allDone(g,dateStr);
   const isToday=dateStr===today(), isFuture=dateStr>today();
   const n=diffDays(g.created,dateStr)+1;
-  const task=taskForDay(g,dateStr);
-
-  const cls=mark==='done'?'done':mark==='freeze'?'freeze':isToday?'now':isFuture?'':'miss';
-  const status=mark==='done'?t('stDone'):mark==='freeze'?t('stFreeze')
+  const frozen=S.days[dateStr]==='freeze';
+  const cls=full?'done':frozen?'freeze':isToday?'now':isFuture?'':'miss';
+  const status=full?t('stDone'):frozen?t('stFreeze')
               :isToday?t('stNow'):isFuture?t('stFuture'):t('stMiss');
 
-  let body='<div class="sheet-task"><div class="sheet-task-l">'+t('taskLabel')+'</div>';
-  if(task){
-    body+='<div class="sheet-task-t">'+esc(task.step.text)+'</div>'+
-          '<div class="sheet-task-s">'+esc(g.title)+
-          (task.ofStep>1?' · '+t('dayNum',{n:task.inStep,m:task.ofStep}):'')+'</div>';
-  } else body+='<div class="sheet-task-s" style="margin:0">'+t('noTask')+'</div>';
-  body+='</div>';
+  let body='<div class="sheet-task-l" style="margin:0 3px 8px">'+t('subsLabel')+'</div><div class="sheet-subs">';
+  (g.tasks||[]).forEach(function(tk,k){
+    const on=isTaskDone(g,dateStr,tk.id);
+    body+='<div class="sheet-sub'+(on?' on':'')+'"'+
+      (isToday?' data-act="sheet-task" data-g="'+g.id+'" data-t="'+tk.id+'"':' style="opacity:.55"')+'>'+
+      '<i class="sub-box">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>'+
+      '</i><b class="sub-num">'+(k+1)+'</b><span>'+esc(tk.text)+'</span></div>';
+  });
+  body+='</div><div style="height:14px"></div>';
 
-  if(task&&task.step.subs&&task.step.subs.length){
-    body+='<div class="sheet-task-l" style="margin:0 3px 2px">'+t('subsLabel')+'</div><div class="sheet-subs">';
-    task.step.subs.forEach(function(sb,k){
-      body+='<div class="sheet-sub'+(sb.done?' on':'')+'" data-act="sheet-sub" data-g="'+g.id+'" data-s="'+task.step.id+'" data-i="'+k+'">'+
-            '<i class="sub-box">'+
-            '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>'+
-            '</i><span>'+esc(sb.text)+'</span></div>';
-    });
-    body+='</div><div style="height:14px"></div>';
-  }
-
-  let action='';
-  if(isToday&&!goalDoneToday(g)&&task&&!task.step.done){
-    action='<button class="btn btn-main" data-act="sheet-done" data-g="'+g.id+'" data-s="'+task.step.id+'">'+t('markDone')+'</button><div style="height:9px"></div>';
-  } else if(isToday&&goalDoneToday(g)){
-    action='<button class="btn btn-main" disabled>'+t('alreadyDone')+'</button><div style="height:9px"></div>';
-  } else if(isFuture){
-    action='<div class="card-s" style="text-align:center;margin-bottom:12px">'+t('cantFuture')+'</div>';
-  } else if(!mark){
-    action='<div class="card-s" style="text-align:center;margin-bottom:12px">'+t('cantPast')+'</div>';
-  }
+  let note='';
+  if(isFuture) note='<div class="card-s" style="text-align:center;margin-bottom:12px">'+t('cantFuture')+'</div>';
+  else if(!isToday&&!full) note='<div class="card-s" style="text-align:center;margin-bottom:12px">'+t('cantPast')+'</div>';
+  else if(isToday&&!full) note='<div class="card-s" style="text-align:center;margin-bottom:12px">'+t('needAll')+'</div>';
 
   const back=document.createElement('div');
   back.className='backdrop'; back.id='backdrop';
@@ -1144,7 +1162,7 @@ function openDay(goalId,dateStr){
   sheet.className='sheet'; sheet.id='sheet';
   sheet.innerHTML='<div class="sheet-grip"></div><div class="sheet-num">'+
     '<div class="sheet-badge '+cls+'">'+n+'</div><div><div class="sheet-t">'+t('dayTitle',{n:n})+'</div>'+
-    '<div class="sheet-s">'+status+'</div></div></div>'+body+action+
+    '<div class="sheet-s">'+esc(g.title)+' \u00b7 '+status+'</div></div></div>'+body+note+
     '<button class="btn btn-ghost" data-act="sheet-close">'+t('close')+'</button>';
 
   document.body.appendChild(back); document.body.appendChild(sheet);
@@ -1154,30 +1172,18 @@ function openDay(goalId,dateStr){
   sheet.addEventListener('click',function(e){
     const el=e.target.closest('[data-act]'); if(!el) return;
     if(el.dataset.act==='sheet-close'){ closeSheet(); return; }
-    if(el.dataset.act==='sheet-sub'){
-      toggleSub(Number(el.dataset.g),Number(el.dataset.s),Number(el.dataset.i));
-      el.classList.toggle('on'); haptic('tap'); return;
-    }
-    if(el.dataset.act==='sheet-done'){
-      const r=completeStep(Number(el.dataset.g),Number(el.dataset.s));
-      if(!r) return;
-      const rect=el.getBoundingClientRect();
-      sparks(rect.left+rect.width/2,rect.top+rect.height/2);
-      haptic('ok');
-      if(r.goalDone) toast(t('reached'));
-      else if(r.closed) toast(t('stepDone'));
-      else if(r.grew) toast(t('inRow',{n:r.streak,w:dayWord(r.streak)}));
-      else toast(t('marked'));
-      closeSheet(); setTimeout(render,320);
+    if(el.dataset.act==='sheet-task'){
+      const r=toggleTask(Number(el.dataset.g),Number(el.dataset.t));
+      el.classList.toggle('on'); haptic('tap');
+      if(r&&r.completed){
+        const rect=el.getBoundingClientRect();
+        sparks(rect.left+rect.width/2,rect.top+rect.height/2);
+        haptic('ok');
+        toast(r.grew?t('inRow',{n:r.streak,w:dayWord(r.streak)}):t('goalAllDone'));
+        closeSheet(); setTimeout(render,320);
+      }
     }
   });
-}
-function toggleSub(goalId,stepId,idx){
-  const g=S.goals.find(function(x){ return x.id===goalId; }); if(!g) return;
-  const st=g.steps.find(function(x){ return x.id===stepId; }); if(!st||!st.subs) return;
-  const sb=st.subs[idx]; if(!sb) return;
-  sb.done=!sb.done;
-  saveState();
 }
 
 function closeSheet(){
@@ -1307,20 +1313,19 @@ function viewSettings(){
 
 /* ================== НАВИГАЦИЯ ================== */
 const NAV_ICONS={
-  today: {fill:'<path d="M12 2c.6 3.6-1.6 5.2-3 6.8C7.6 10.4 6.8 12 6.8 14.2A5.2 5.2 0 0 0 17.2 14.2c0-3-1.8-5-3-7-.5 1-1.1 1.7-2 2.2.8-2.7.3-5.6-.2-7.4z"/><path d="M12 21a2.6 2.6 0 0 1-2.6-2.6c0-1.5 1.3-2.4 2-3.6.5 1 1.1 1.5 1.8 2 .6-.5 1-1.2 1.3-1.9.6 1.1 1.1 2 1.1 3.5A2.6 2.6 0 0 1 12 21z" opacity=".55"/>', color:'var(--fire-2)'},
-  goals: {fill:'<circle cx="12" cy="12" r="9.2" opacity=".22"/><circle cx="12" cy="12" r="5.6" opacity=".45"/><circle cx="12" cy="12" r="2.2"/>'},
-  stats: {fill:'<circle cx="6" cy="17.5" r="3.2"/><circle cx="12" cy="11" r="3.2" opacity=".6"/><circle cx="18" cy="5" r="3.2" opacity=".35"/>'},
-  rivals:{fill:'<path d="M3.2 4.6 5 3l12.4 12.4-1.8 1.8zM19 20.8l-4.2-4.2 1.8-1.8 4.2 4.2zM20.8 4.6 19 3 6.6 15.4l1.8 1.8zM5 20.8l4.2-4.2-1.8-1.8L3.2 19z"/>'},
-  more:  {fill:'<circle cx="12" cy="12" r="3"/><path d="M19.1 13.6a7.6 7.6 0 0 0 0-3.2l2-1.5-2-3.4-2.3 1a7.6 7.6 0 0 0-2.8-1.6L13.6 2h-3.2l-.4 2.5a7.6 7.6 0 0 0-2.8 1.6l-2.3-1-2 3.4 2 1.5a7.6 7.6 0 0 0 0 3.2l-2 1.5 2 3.4 2.3-1a7.6 7.6 0 0 0 2.8 1.6l.4 2.5h3.2l.4-2.5a7.6 7.6 0 0 0 2.8-1.6l2.3 1 2-3.4z" opacity=".4"/>'}
+  today:'<path d="M13 2 4 14h6l-1 8 9-12h-6z"/>',
+  goals:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>',
+  stats:'<path d="M6 20a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM8.5 15.5 15 8.5"/>',
+  rivals:'<path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M6 18l3-3M3 21l3-3"/>',
+  more:'<circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/>'
 };
 
+/* Все иконки всегда горят цветом выбранной темы, активная — ярче и крупнее */
 function navHtml(){
   return ['today','goals','stats','rivals','more'].map(function(k){
-    const ic=NAV_ICONS[k];
     const active=screen===k;
-    const col=active?(ic.color||'var(--violet)'):'currentColor';
-    return '<div class="tab'+(active?' on':'')+'" data-tab="'+k+'" style="'+(active&&ic.color?'color:'+ic.color:'')+'">'+
-      '<svg class="ic-lg" viewBox="0 0 24 24" fill="'+col+'">'+ic.fill+'</svg>'+
+    return '<div class="tab'+(active?' on':'')+'" data-tab="'+k+'">'+
+      '<svg class="ic-lg" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="opacity:'+(active?1:.55)+'">'+NAV_ICONS[k]+'</svg>'+
       '<span>'+t(k)+'</span></div>';
   }).join('');
 }
@@ -1337,14 +1342,6 @@ function render(){
   const ring=app.querySelector('.ring-fg');
   if(ring) requestAnimationFrame(function(){ ring.style.strokeDashoffset=ring.dataset.off; });
 
-  const ta=document.getElementById('d-steps');
-  if(ta){
-    ta.addEventListener('input',function(){
-      draft.steps=ta.value;
-      const pv=document.getElementById('d-preview');
-      if(pv) pv.innerHTML=previewHtml(ta.value);
-    });
-  }
 }
 
 /* ================== СОБЫТИЯ ================== */
@@ -1367,6 +1364,33 @@ document.getElementById('app').addEventListener('click',function(e){
   }
 
   if(act==='tour'){ tourStep=0; showTour(); return; }
+
+  if(act==='task-add'){
+    syncDraft();
+    if(draft.tasks.length<15) draft.tasks.push('');
+    haptic('tap'); render(); return;
+  }
+
+  if(act==='task-del'){
+    syncDraft();
+    draft.tasks.splice(Number(el.dataset.i),1);
+    if(!draft.tasks.length) draft.tasks=[''];
+    haptic('tap'); render(); return;
+  }
+
+  if(act==='task'){
+    const r=toggleTask(Number(el.dataset.g),Number(el.dataset.t));
+    haptic('tap');
+    if(r&&r.completed){
+      const rect=el.getBoundingClientRect();
+      sparks(rect.left+rect.width/2,rect.top+rect.height/2);
+      haptic('ok');
+      const fire=document.getElementById('m-fire');
+      if(fire&&r.grew){ fire.classList.add('pulse'); setTimeout(function(){ fire.classList.remove('pulse'); },500); }
+      toast(r.grew?t('inRow',{n:r.streak,w:dayWord(r.streak)}):t('goalAllDone'));
+    }
+    render(); return;
+  }
 
   if(act==='sub'){
     toggleSub(Number(el.dataset.g),Number(el.dataset.s),Number(el.dataset.i));
@@ -1441,7 +1465,7 @@ document.getElementById('app').addEventListener('click',function(e){
     return;
   }
 
-  if(act==='go-new'){ draft={title:'',days:30,steps:'',aiPlan:null}; screen='goals'; haptic('tap'); render(); return; }
+  if(act==='go-new'){ draft={title:'',days:30,tasks:['','',''],aiPlan:null}; screen='goals'; haptic('tap'); render(); return; }
   if(act==='cancel'){ draft=null; haptic('tap'); render(); return; }
   if(act==='days'){ syncDraft(); draft.days=Number(el.dataset.n); haptic('tap'); render(); return; }
 
@@ -1462,15 +1486,13 @@ document.getElementById('app').addEventListener('click',function(e){
   if(act==='save-goal'){
     syncDraft();
     const title=draft.title.trim();
-    const steps=parseSteps(draft.steps);
+    const steps=(draft.tasks||[]).map(function(x){ return String(x||'').trim(); })
+                                 .filter(Boolean).map(function(x){ return {text:x.slice(0,160)}; });
     const days=Math.max(1,Math.min(365,Number(draft.days)||30));
     if(!title){ toast(t('needTitle')); haptic('warn'); return; }
     if(!steps.length){ toast(t('needStep')); haptic('warn'); return; }
     // если шаги пришли от нейросети и не правились — сохраняем её распределение дней
-    const ai=draft.aiPlan;
-    const same=ai&&ai.length===steps.length&&ai.every(function(x,i){ return x.step===steps[i].text; });
-    if(same) addGoalPlan(title,days,ai);
-    else addGoal(title,days,steps);
+    addGoal(title,days,steps);
     if(tg&&tg.sendData){ try{ tg.sendData(JSON.stringify({action:'add_goal',title:title,days:days,steps:steps})); }catch(err){} }
     draft=null; haptic('ok'); toast(t('goalCreated')); screen='today'; render(); return;
   }
@@ -1490,28 +1512,19 @@ document.getElementById('app').addEventListener('click',function(e){
     return;
   }
 
-  if(act==='done'){
-    const r=completeStep(Number(el.dataset.g),Number(el.dataset.s));
-    if(!r) return;
-    const rect=el.getBoundingClientRect();
-    sparks(rect.left+rect.width/2,rect.top+rect.height/2);
-    haptic('ok');
-    const fire=document.getElementById('m-fire');
-    if(fire&&r.grew){ fire.classList.add('pulse'); setTimeout(function(){ fire.classList.remove('pulse'); },500); }
-    if(r.goalDone) toast(t('reached'));
-    else if(r.closed) toast(t('stepDone'));
-    else if(r.grew) toast(t('inRow',{n:r.streak,w:dayWord(r.streak)}));
-    else toast(t('marked'));
-    setTimeout(render,260);
-  }
 });
 
 function syncDraft(){
   if(!draft) return;
-  const a=document.getElementById('d-title'),b=document.getElementById('d-days'),c=document.getElementById('d-steps');
+  const a=document.getElementById('d-title'), b=document.getElementById('d-days');
   if(a) draft.title=a.value;
-  if(c) draft.steps=c.value;
   if(b&&b.value.trim()){ const n=parseInt(b.value,10); if(n>=1&&n<=365) draft.days=n; }
+  const inputs=document.querySelectorAll('.task-input');
+  if(inputs.length){
+    const arr=[];
+    inputs.forEach(function(el){ arr[Number(el.dataset.i)]=el.value; });
+    draft.tasks=arr.map(function(x){ return x||''; });
+  }
 }
 
 /* ================== СТАРТ ================== */
@@ -1522,7 +1535,7 @@ function syncDraft(){
   if(!S.start) S.start=today();
   if(!S.invites) S.invites=[];
   if(!S.duels) S.duels=[];
-  S.goals.forEach(function(g){ if(!g.marks) g.marks={}; });
+  S.goals=(S.goals||[]).map(migrateGoal);
   const u=tgUser();
   if(u.username) S.nick=u.username;
   if(u.photo_url) S.photo=u.photo_url;
