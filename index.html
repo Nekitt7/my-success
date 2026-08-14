@@ -462,9 +462,14 @@ async function pullFromServer(silent){
   finally{ syncBusy=false; }
   return false;
 }
+function deviceTz(){
+  try{ return Intl.DateTimeFormat().resolvedOptions().timeZone||''; }catch(e){ return ''; }
+}
+
 function pushToServer(){
   if(!API_URL||!tg) return;
-  api('/api/save',{state:S}).catch(function(){});
+  // пояс устройства уходит вместе с данными — по нему бот шлёт напоминания
+  api('/api/save',{state:S,tz:deviceTz()}).catch(function(){});
 }
 
 /* ================== ДАТЫ ================== */
