@@ -193,6 +193,21 @@ button,input,textarea{font-family:inherit}
 .field:focus{border-color:var(--violet)}
 .label{font-size:12px;font-weight:900;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted);margin:0 0 8px 3px}
 .gap{height:16px}
+.stepper{display:flex;align-items:center;gap:14px;justify-content:center;
+  background:var(--ink);border:2px solid var(--line);border-radius:var(--r-md);padding:12px}
+.step-btn{width:42px;height:42px;border-radius:13px;flex:none;cursor:pointer;
+  border:none;background:var(--violet);color:#fff;box-shadow:0 3px 0 var(--violet-deep);
+  display:flex;align-items:center;justify-content:center;transition:transform .1s}
+.step-btn:active{transform:translateY(3px);box-shadow:none}
+.step-btn svg{width:18px;height:18px}
+.step-val{flex:1;text-align:center;display:flex;flex-direction:column;gap:2px}
+.step-val b{font-size:30px;font-weight:900;line-height:1}
+.step-val span{font-size:11.5px;font-weight:800;color:var(--muted)}
+.times-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;justify-content:center}
+.time-chip{background:var(--surface-2);border:2px solid var(--line);border-radius:20px;
+  padding:6px 12px;font-size:13px;font-weight:900;color:var(--blue)}
+.time-chip.off{color:var(--dim)}
+
 .task-rows{display:flex;flex-direction:column;gap:9px}
 .task-row{display:flex;align-items:center;gap:9px}
 .task-row-n{font-size:14px;font-weight:900;color:var(--violet);flex:none;min-width:17px;text-align:center}
@@ -416,6 +431,12 @@ ru:{today:'Сегодня',goals:'Цели',stats:'Путь',rivals:'Дуэли'
  noTasks:'Задач пока нет',needAll:'Огонёк засчитается, когда закроешь все задачи цели',
  taskWord:'Задача',addTask:'Добавить задачу',removeTask:'Убрать',
  tasksLabel:'План по шагам',taskPh:'Задача {n}',
+ notif:'Напоминания',notifSub:'Приходят, пока день не отмечен',
+ notifCount:'Сколько раз в день',notifOff:'Выключены',
+ notifAuto:'Время подберётся само',notifCustom:'Своё время',
+ notifTimesPh:'09:00, 15:00, 21:00',notifAutoBtn:'Вернуть авто',
+ notifSaved:'Напоминания сохранены',notifBad:'Не разобрал время',
+ notifWindow:'День с 09:00 до 21:00 делится поровну',
  theme:'Цвет приложения',themeSub:'Меняет всё приложение целиком',
  thViolet:'Фиолетовый',thBlue:'Синий',thGreen:'Зелёный',thOrange:'Оранжевый',
  thYellow:'Жёлтый',thCyan:'Голубой',thPink:'Розовый',
@@ -491,6 +512,12 @@ en:{today:'Today',goals:'Goals',stats:'Path',rivals:'Duels',more:'More',
  noTasks:'No tasks yet',needAll:'The streak counts once every task of the goal is done',
  taskWord:'Task',addTask:'Add a task',removeTask:'Remove',
  tasksLabel:'Plan by steps',taskPh:'Task {n}',
+ notif:'Reminders',notifSub:'They arrive until the day is marked',
+ notifCount:'Times per day',notifOff:'Off',
+ notifAuto:'Times are picked automatically',notifCustom:'Custom times',
+ notifTimesPh:'09:00, 15:00, 21:00',notifAutoBtn:'Back to auto',
+ notifSaved:'Reminders saved',notifBad:'Could not read the times',
+ notifWindow:'The day from 09:00 to 21:00 is split evenly',
  theme:'App colour',themeSub:'Changes the whole app',
  thViolet:'Violet',thBlue:'Blue',thGreen:'Green',thOrange:'Orange',
  thYellow:'Yellow',thCyan:'Cyan',thPink:'Pink',
@@ -530,6 +557,41 @@ function t(k,v){
   let s=(T[lang]||T.ru)[k]||T.ru[k]||k;
   if(v) for(const key in v) s=s.replace('{'+key+'}',v[key]);
   return s;
+}
+
+/* ================== НАПОМИНАНИЯ ================== */
+const DAY_START=9, DAY_HOURS=12, MAX_REMINDERS=12;
+
+/* Время не задано — делим 12-часовое окно поровну и ставим в середину каждой части */
+function autoTimes(n){
+  if(n<=0) return [];
+  const step=DAY_HOURS/n, out=[];
+  for(let i=0;i<n;i++){
+    const pos=DAY_START+step*(i+0.5);
+    let h=Math.floor(pos), m=Math.round((pos-h)*60/5)*5;
+    if(m===60){ h+=1; m=0; }
+    out.push(String(h%24).padStart(2,'0')+':'+String(m).padStart(2,'0'));
+  }
+  return out;
+}
+
+function parseTimes(text){
+  const out=[];
+  String(text||'').split(/[,;\s]+/).forEach(function(p){
+    if(!p) return;
+    const m=p.match(/^(\d{1,2})(?:[:.](\d{2}))?$/);
+    if(!m) return;
+    const h=Number(m[1]), mi=Number(m[2]||0);
+    if(h>=0&&h<=23&&mi>=0&&mi<=59)
+      out.push(String(h).padStart(2,'0')+':'+String(mi).padStart(2,'0'));
+  });
+  return out.filter(function(v,i,a){ return a.indexOf(v)===i; }).sort();
+}
+
+function myTimes(){
+  const custom=parseTimes(S.remindTimes||'');
+  if(custom.length) return custom;
+  return autoTimes(Math.max(0,Math.min(MAX_REMINDERS,Number(S.remindCount==null?2:S.remindCount))));
 }
 
 /* ================== ЦВЕТОВЫЕ ТЕМЫ ================== */
@@ -605,6 +667,8 @@ async function pullFromServer(silent){
       S.lastDone=d.lastDone||S.lastDone;
       S.days=Object.assign({},S.days,d.days||{});
       S.seq=Math.max(S.seq||1,(d.seq||0)+1);
+      if(typeof d.remindCount==='number') S.remindCount=d.remindCount;
+      if(typeof d.remindTimes==='string') S.remindTimes=d.remindTimes;
       memory=JSON.parse(JSON.stringify(S));
       if(tg&&tg.CloudStorage&&tg.CloudStorage.setItem){
         try{ tg.CloudStorage.setItem(KEY,JSON.stringify(S),function(){}); }catch(e){}
@@ -623,7 +687,9 @@ function deviceTz(){
 function pushToServer(){
   if(!API_URL||!tg) return;
   // пояс устройства уходит вместе с данными — по нему бот шлёт напоминания
-  api('/api/save',{state:S,tz:deviceTz()}).catch(function(){});
+  api('/api/save',{state:S,tz:deviceTz(),
+    remindCount:Number(S.remindCount==null?2:S.remindCount),
+    remindTimes:S.remindTimes||''}).catch(function(){});
 }
 
 /* ================== ДАТЫ ================== */
@@ -658,7 +724,7 @@ function blank(){
     name:u.first_name||'Friend', nick:u.username||'', photo:u.photo_url||'',
     lang:tgLang(),streak:0,best:0,freezes:1,freezeWeek:weekTag(),
     lastDone:null,days:{},goals:[],seq:1,start:today(),mainGoal:null,
-    invites:[],duels:[],theme:'violet',tourDone:false
+    invites:[],duels:[],theme:'violet',tourDone:false,remindCount:2,remindTimes:''
   };
 }
 function weekTag(){ const d=new Date(); const w=(d.getDay()+6)%7; d.setDate(d.getDate()-w); return key(d); }
@@ -1274,6 +1340,32 @@ function viewSettings(){
     '<div class="card-s" style="margin:11px 3px 0">'+t('avatarHint')+'</div></div>'+
 
     '<div class="panel" style="margin-bottom:14px">'+
+    '<div class="label">'+t('notif')+'</div>'+
+    '<div class="card-s" style="margin:0 3px 13px">'+t('notifSub')+'</div>'+
+    '<div class="stepper">'+
+      '<button class="step-btn" data-act="rc" data-v="-1">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 12h14"/></svg></button>'+
+      '<div class="step-val"><b>'+(Number(S.remindCount==null?2:S.remindCount))+'</b>'+
+      '<span>'+t('notifCount')+'</span></div>'+
+      '<button class="step-btn" data-act="rc" data-v="1">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>'+
+    '</div>'+
+    '<div class="times-row">'+
+      (myTimes().length
+        ? myTimes().map(function(x){ return '<span class="time-chip">'+x+'</span>'; }).join('')
+        : '<span class="time-chip off">'+t('notifOff')+'</span>')+
+    '</div>'+
+    '<div class="card-s" style="margin:11px 3px 10px;color:var(--dim)">'+
+      (parseTimes(S.remindTimes||'').length?t('notifCustom'):t('notifWindow'))+'</div>'+
+    '<div class="label" style="margin-top:14px">'+t('notifCustom')+'</div>'+
+    '<input class="field" id="r-times" placeholder="'+t('notifTimesPh')+'" value="'+esc(S.remindTimes||'')+'">'+
+    '<div style="height:10px"></div>'+
+    '<div style="display:flex;gap:9px">'+
+      '<button class="btn btn-go" style="flex:1" data-act="rt-save">'+t('nameSave')+'</button>'+
+      '<button class="btn btn-ghost" style="flex:1" data-act="rt-auto">'+t('notifAutoBtn')+'</button>'+
+    '</div></div>'+
+
+    '<div class="panel" style="margin-bottom:14px">'+
     '<div class="label" style="margin-bottom:10px">'+t('theme')+'</div>'+
     '<div class="chips" style="gap:10px">'+
     Object.keys(THEMES).map(function(k){
@@ -1364,6 +1456,29 @@ document.getElementById('app').addEventListener('click',function(e){
   }
 
   if(act==='tour'){ tourStep=0; showTour(); return; }
+
+  if(act==='rc'){
+    const d=Number(el.dataset.v);
+    let n=Number(S.remindCount==null?2:S.remindCount)+d;
+    n=Math.max(0,Math.min(MAX_REMINDERS,n));
+    S.remindCount=n; S.remindTimes='';
+    saveState(); haptic('tap'); render(); return;
+  }
+
+  if(act==='rt-save'){
+    const inp=document.getElementById('r-times');
+    const raw=inp?inp.value.trim():'';
+    if(!raw){ S.remindTimes=''; saveState(); haptic('tap'); toast(t('notifSaved')); render(); return; }
+    const parsed=parseTimes(raw);
+    if(!parsed.length){ toast(t('notifBad')); haptic('warn'); return; }
+    S.remindTimes=parsed.join(', ');
+    S.remindCount=parsed.length;
+    saveState(); haptic('ok'); toast(t('notifSaved')); render(); return;
+  }
+
+  if(act==='rt-auto'){
+    S.remindTimes=''; saveState(); haptic('tap'); toast(t('notifSaved')); render(); return;
+  }
 
   if(act==='task-add'){
     syncDraft();
@@ -1540,6 +1655,8 @@ function syncDraft(){
   if(u.username) S.nick=u.username;
   if(u.photo_url) S.photo=u.photo_url;
   if(!S.mainGoal&&S.goals.length) S.mainGoal=S.goals[0].id;
+  if(S.remindCount==null) S.remindCount=2;
+  if(S.remindTimes==null) S.remindTimes='';
   if(!S.theme) S.theme='violet';
   applyTheme(S.theme);
   document.documentElement.lang=S.lang;
