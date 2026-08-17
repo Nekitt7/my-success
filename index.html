@@ -386,7 +386,7 @@ function haptic(k){
 
 /* ================== ЯЗЫКИ ================== */
 const T={
-ru:{today:'Сегодня',goals:'Цели',stats:'Путь',rivals:'Дуэли',more:'Ещё',
+ru:{today:'Сегодня',goals:'Цели',stats:'Путь',more:'Ещё',
  mainGoal:'Главная цель',planToday:'План на сегодня',myGoals:'Мои цели',
  newGoal:'Новая цель',createGoal:'Запустить цель',cancel:'Отмена',done:'Готово',
  dayOf:'День {a} из {b}',left:'Осталось {n} {w}',overdue:'Срок вышел {n} {w} назад',
@@ -415,6 +415,8 @@ ru:{today:'Сегодня',goals:'Цели',stats:'Путь',rivals:'Дуэли'
  syncSubOn:'Цели и серия берутся из бота',syncSubOff:'Данные хранятся только в приложении',
  syncNow:'Синхронизировать',syncOk:'Данные обновлены',syncFail:'Сервер не отвечает',
  syncNotSet:'Адрес сервера не указан в коде',
+ syncOffline:'Приложение работает автономно',
+ syncSubOffline:'Всё хранится на устройстве и в Telegram',
  profile:'Профиль',storage:'Хранилище',storageCloud:'Telegram CloudStorage',storageLocal:'Только эта сессия',
  reset:'Сбросить всё',resetAsk:'Удалить все цели и обнулить серию?',resetOk:'Всё очищено',
  dayNum:'день {n} из {m}',passed:'пройдено',now:'сейчас',
@@ -434,6 +436,7 @@ ru:{today:'Сегодня',goals:'Цели',stats:'Путь',rivals:'Дуэли'
  notifTimesPh:'09:00, 15:00, 21:00',notifAutoBtn:'Вернуть авто',
  notifSaved:'Напоминания сохранены',notifBad:'Не разобрал время',
  notifWindow:'День с 09:00 до 21:00 делится поровну',
+ goalsDone:'целей закрыто',
  theme:'Цвет приложения',themeSub:'Меняет всё приложение целиком',
  thViolet:'Фиолетовый',thBlue:'Синий',thGreen:'Зелёный',thOrange:'Оранжевый',
  thYellow:'Жёлтый',thCyan:'Голубой',thPink:'Розовый',
@@ -443,8 +446,8 @@ ru:{today:'Сегодня',goals:'Цели',stats:'Путь',rivals:'Дуэли'
  tour1s:'Большая цель разбивается на шаги, а шаги — на дни. Каждый день ты делаешь один шаг и отмечаешь его.',
  tour2t:'Огонёк — главное',
  tour2s:'🔥 слева вверху — сколько дней подряд ты не пропускал. ❄️ в центре — заморозка, одна на неделю: спасёт серию, если пропустишь один день. 🏆 справа — твой рекорд.',
- tour3t:'Пять разделов внизу',
- tour3s:'«Сегодня» — что сделать прямо сейчас. «Цели» — все твои цели и планы. «Путь» — цепочка прожитых дней. «Дуэли» — соревнование с другом. «Ещё» — настройки и цвет.',
+ tour3t:'Четыре раздела внизу',
+ tour3s:'«Сегодня» — что сделать прямо сейчас. «Цели» — все твои цели и планы. «Путь» — цепочка прожитых дней. «Ещё» — профиль, напоминания и цвет.',
  tour4t:'Кнопка «Готово»',
  tour4s:'Нажимаешь её, когда шаг сделан. У каждой цели своя кнопка — их можно нажимать по отдельности. Огонёк за день растёт один раз, сколько бы целей ты ни закрыл.',
  tour5t:'Шаги и подшаги',
@@ -457,17 +460,10 @@ ru:{today:'Сегодня',goals:'Цели',stats:'Путь',rivals:'Дуэли'
  finishLabel:'Финиш',goalPick:'Выбери цель',
  name:'Имя',nameSave:'Сохранить',nameSaved:'Имя сохранено',nick:'Ник в Telegram',
  noNick:'не указан',avatarHint:'Фото и ник берутся из твоего профиля Telegram',
- rivalsTitle:'Дуэли',rivalFind:'Найти соперника',rivalPh:'@ник в Telegram',
- rivalSearch:'Найти',rivalInvite:'Пригласить',rivalNeedServer:'Нужен сервер',
- rivalNeedServerSub:'Соревнования работают только с общей базой: приложение должно видеть чужие профили. Подними сервер и впиши его адрес в код — раздел заработает.',
- rivalNotFound:'Такой человек не найден',rivalInvited:'Приглашение отправлено',
- rivalIncoming:'Входящие приглашения',rivalActive:'Активные дуэли',
- accept:'Принять',decline:'Отклонить',goalsDone:'целей закрыто',
- vs:'против',rivalEmpty:'Соперников пока нет',
  genPlan:'Предложить план',genWait:'Собираю план…',genOk:'План готов — проверь и правь',
  genFail:'Нейросеть не ответила',genNeedTitle:'Сначала впиши цель',
- genAgain:'Другой вариант'},
-en:{today:'Today',goals:'Goals',stats:'Path',rivals:'Duels',more:'More',
+ genAgain:'Другой вариант',genLocal:'План собран из готовых наборов'},
+en:{today:'Today',goals:'Goals',stats:'Path',more:'More',
  mainGoal:'Main goal',planToday:"Today's plan",myGoals:'My goals',
  newGoal:'New goal',createGoal:'Start the goal',cancel:'Cancel',done:'Done',
  dayOf:'Day {a} of {b}',left:'{n} {w} left',overdue:'Deadline passed {n} {w} ago',
@@ -496,6 +492,8 @@ en:{today:'Today',goals:'Goals',stats:'Path',rivals:'Duels',more:'More',
  syncSubOn:'Goals and streak come from the bot',syncSubOff:'Data lives only in this app',
  syncNow:'Sync now',syncOk:'Data updated',syncFail:'Server not responding',
  syncNotSet:'Server address is not set in the code',
+ syncOffline:'The app works on its own',
+ syncSubOffline:'Everything is stored on your device and in Telegram',
  profile:'Profile',storage:'Storage',storageCloud:'Telegram CloudStorage',storageLocal:'This session only',
  reset:'Reset everything',resetAsk:'Delete all goals and reset the streak?',resetOk:'Everything cleared',
  dayNum:'day {n} of {m}',passed:'done',now:'now',
@@ -515,6 +513,7 @@ en:{today:'Today',goals:'Goals',stats:'Path',rivals:'Duels',more:'More',
  notifTimesPh:'09:00, 15:00, 21:00',notifAutoBtn:'Back to auto',
  notifSaved:'Reminders saved',notifBad:'Could not read the times',
  notifWindow:'The day from 09:00 to 21:00 is split evenly',
+ goalsDone:'goals closed',
  theme:'App colour',themeSub:'Changes the whole app',
  thViolet:'Violet',thBlue:'Blue',thGreen:'Green',thOrange:'Orange',
  thYellow:'Yellow',thCyan:'Cyan',thPink:'Pink',
@@ -524,8 +523,8 @@ en:{today:'Today',goals:'Goals',stats:'Path',rivals:'Duels',more:'More',
  tour1s:'A big goal splits into steps, and steps split into days. Each day you take one step and mark it.',
  tour2t:'The streak matters most',
  tour2s:'🔥 top left is how many days in a row you did not skip. ❄️ is a freeze, one per week: it saves your streak if you miss a day. 🏆 is your record.',
- tour3t:'Five sections below',
- tour3s:'Today is what to do now. Goals holds your plans. Path is the chain of days you lived. Duels is a race with a friend. More has settings and colours.',
+ tour3t:'Four sections below',
+ tour3s:'Today is what to do now. Goals holds your plans. Path is the chain of days you lived. More has your profile, reminders and colours.',
  tour4t:'The Done button',
  tour4s:'Press it when a step is finished. Every goal has its own button and they work separately. The streak grows once a day no matter how many goals you close.',
  tour5t:'Steps and sub-steps',
@@ -538,22 +537,78 @@ en:{today:'Today',goals:'Goals',stats:'Path',rivals:'Duels',more:'More',
  finishLabel:'Finish',goalPick:'Pick a goal',
  name:'Name',nameSave:'Save',nameSaved:'Name saved',nick:'Telegram nick',
  noNick:'not set',avatarHint:'Photo and nick come from your Telegram profile',
- rivalsTitle:'Duels',rivalFind:'Find a rival',rivalPh:'@nick on Telegram',
- rivalSearch:'Search',rivalInvite:'Invite',rivalNeedServer:'Server required',
- rivalNeedServerSub:'Duels need a shared database so the app can see other profiles. Put up a server and set its address in the code to enable this section.',
- rivalNotFound:'No such person found',rivalInvited:'Invitation sent',
- rivalIncoming:'Incoming invitations',rivalActive:'Active duels',
- accept:'Accept',decline:'Decline',goalsDone:'goals closed',
- vs:'vs',rivalEmpty:'No rivals yet',
  genPlan:'Suggest a plan',genWait:'Building the plan…',genOk:'Plan is ready — review and edit',
  genFail:'The model did not answer',genNeedTitle:'Enter the goal first',
- genAgain:'Another version'}
+ genAgain:'Another version',genLocal:'Plan built from built-in sets'}
 };
 function t(k,v){
   const lang=(S&&S.lang)?S.lang:'ru';
   let s=(T[lang]||T.ru)[k]||T.ru[k]||k;
   if(v) for(const key in v) s=s.replace('{'+key+'}',v[key]);
   return s;
+}
+
+/* ================== ПЛАНЫ БЕЗ СЕРВЕРА ==================
+   Готовые наборы задач под частые цели. Работают всегда, даже офлайн.
+   Если сервер доступен, план приходит от нейросети и получается точнее.
+   ====================================================== */
+const PLAN_LIB=[
+ {k:['англ','english','язык','испан','немец','француз','китай'],
+  ru:['Выучить 20 новых слов','Повторить вчерашние слова','Послушать подкаст 15 минут','Посмотреть серию с субтитрами','Написать 5 предложений'],
+  en:['Learn 20 new words','Review yesterday words','Listen to a podcast 15 min','Watch an episode with subtitles','Write 5 sentences']},
+ {k:['бег','марафон','run','пробеж','кросс'],
+  ru:['Пробежать дневную норму','Сделать разминку 10 минут','Растяжка после бега','Записать дистанцию и пульс','Лечь спать до 23:00'],
+  en:['Run the daily distance','Warm up for 10 minutes','Stretch after the run','Log distance and heart rate','Sleep before 11 pm']},
+ {k:['плаван','swim','бассейн'],
+  ru:['Проплыть дневной объём','Отработать технику 15 минут','Сделать суставную разминку','Записать время в дневник','Растяжка 10 минут'],
+  en:['Swim the daily volume','Drill technique for 15 min','Joint warm-up','Log the time','Stretch 10 minutes']},
+ {k:['вес','похуд','жир','форм','fit','стройн'],
+  ru:['Уложиться в норму калорий','Пройти 8000 шагов','Выпить 2 литра воды','Тренировка 30 минут','Записать вес и еду'],
+  en:['Stay within calories','Walk 8000 steps','Drink 2 litres of water','Train for 30 minutes','Log weight and meals']},
+ {k:['мышц','зал','сил','качат','gym','muscle','турник','отжим'],
+  ru:['Выполнить тренировку по плану','Съесть норму белка','Размяться перед подходами','Записать веса и подходы','Спать не меньше 8 часов'],
+  en:['Complete the workout','Hit the protein target','Warm up before sets','Log weights and sets','Sleep at least 8 hours']},
+ {k:['книг','чита','read','литератур'],
+  ru:['Прочитать 20 страниц','Выписать одну мысль','Читать без телефона рядом','Отметить прогресс','Обсудить прочитанное'],
+  en:['Read 20 pages','Write down one idea','Read with the phone away','Mark the progress','Discuss what you read']},
+ {k:['код','программ','python','разработ','code','it','сайт','javascript'],
+  ru:['Решить одну задачу','Написать код 45 минут','Разобрать чужое решение','Закоммитить изменения','Прочитать статью по теме'],
+  en:['Solve one problem','Code for 45 minutes','Study someone else solution','Commit the changes','Read an article on the topic']},
+ {k:['курит','курен','сигар','smok','брос'],
+  ru:['Продержаться день без сигарет','Пройти 20 минут пешком','Выпить стакан воды при тяге','Записать, когда тянуло','Убрать сигареты из дома'],
+  en:['Get through the day smoke free','Walk for 20 minutes','Drink water when craving','Note when the urge came','Keep cigarettes out of the house']},
+ {k:['деньг','накоп','финанс','money','копит','долг','бюджет'],
+  ru:['Записать все траты за день','Отложить дневную сумму','Отказаться от одной лишней покупки','Проверить баланс','Сверить план и факт'],
+  en:['Log every expense','Put aside the daily amount','Skip one impulse purchase','Check the balance','Compare plan and reality']},
+ {k:['учеб','экзам','егэ','сесси','study','универ','школ','курс'],
+  ru:['Разобрать одну тему','Прорешать 10 заданий','Повторить вчерашний материал','Составить конспект','Проверить ошибки'],
+  en:['Cover one topic','Solve 10 exercises','Review yesterday material','Make a summary','Check the mistakes']},
+ {k:['сон','высып','режим','sleep','рано'],
+  ru:['Лечь до 23:00','Убрать телефон за час до сна','Проснуться по будильнику','Не пить кофе после 16:00','Записать, как спалось'],
+  en:['Be in bed by 11 pm','Phone away an hour before sleep','Wake up with the alarm','No coffee after 4 pm','Note how you slept']},
+ {k:['медита','спокой','стресс','дыхан','meditat'],
+  ru:['Медитировать 10 минут','Сделать дыхательное упражнение','Прогулка без наушников','Записать одну благодарность','Не листать ленту перед сном'],
+  en:['Meditate for 10 minutes','Do a breathing exercise','Walk without headphones','Write one thing you are grateful for','No feed before bed']},
+ {k:['бизнес','проект','запуст','стартап','блог','канал','business'],
+  ru:['Сделать один шаг по проекту','Поговорить с клиентом','Опубликовать материал','Разобрать метрики за день','Записать идеи на завтра'],
+  en:['Take one step on the project','Talk to a customer','Publish something','Review the daily numbers','Note ideas for tomorrow']}
+];
+
+const PLAN_DEFAULT={
+ ru:['Сделать главный шаг к цели','Уделить цели 30 минут','Записать, что получилось','Убрать одну помеху','Наметить шаг на завтра'],
+ en:['Take the main step','Give the goal 30 minutes','Write down what worked','Remove one obstacle','Plan tomorrow step']};
+
+/* Подбирает набор задач по словам в названии цели */
+function localPlan(title){
+  const t=String(title||'').toLowerCase();
+  const lang=(S&&S.lang==='en')?'en':'ru';
+  for(let i=0;i<PLAN_LIB.length;i++){
+    const item=PLAN_LIB[i];
+    for(let j=0;j<item.k.length;j++){
+      if(t.indexOf(item.k[j])>=0) return item[lang].slice();
+    }
+  }
+  return PLAN_DEFAULT[lang].slice();
 }
 
 /* ================== НАПОМИНАНИЯ ================== */
@@ -652,7 +707,7 @@ async function api(path,payload){
 }
 
 async function pullFromServer(silent){
-  if(!API_URL){ if(!silent) toast(t('syncNotSet')); return false; }
+  if(!API_URL){ if(!silent) toast(t('syncOffline')); return false; }
   if(syncBusy) return false;
   syncBusy=true;
   try{
@@ -706,7 +761,7 @@ function plural(n,one,few,many){
 const dayWord=n=>(S&&S.lang==='en')?(n===1?'day':'days'):plural(n,'день','дня','дней');
 
 /* ================== СОСТОЯНИЕ ================== */
-let S=null, screen='today', draft=null, openGoal=null, chainGoal=null, rivalFound=null;
+let S=null, screen='today', draft=null, openGoal=null, chainGoal=null;
 
 function tgUser(){
   try{ return (tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user)||{}; }catch(e){ return {}; }
@@ -721,7 +776,7 @@ function blank(){
     name:u.first_name||'Friend', nick:u.username||'', photo:u.photo_url||'',
     lang:tgLang(),streak:0,best:0,freezes:1,freezeWeek:weekTag(),
     lastDone:null,days:{},goals:[],seq:1,start:today(),mainGoal:null,
-    invites:[],duels:[],theme:'violet',tourDone:false,remindCount:2,remindTimes:''
+    theme:'violet',tourDone:false,remindCount:2,remindTimes:''
   };
 }
 function weekTag(){ const d=new Date(); const w=(d.getDay()+6)%7; d.setDate(d.getDate()-w); return key(d); }
@@ -1087,9 +1142,9 @@ function viewDraft(){
     '<div class="card-s" style="margin:0 3px 12px">'+t('stepsHint')+'</div>'+
     '<div class="task-rows">'+rows+'</div>'+
     '<button class="btn btn-ghost" style="margin-top:11px" data-act="task-add">+ '+t('addTask')+'</button>'+
-    (API_URL?'<div style="height:10px"></div><button class="btn btn-go" style="width:100%" data-act="gen-plan">'+
+    '<div style="height:10px"></div><button class="btn btn-go" style="width:100%" data-act="gen-plan">'+
       '<svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 1.9 5.6L19.5 9l-4.4 3.6 1.4 5.7L12 15.3 7.5 18.3l1.4-5.7L4.5 9l5.6-1.4z"/></svg>'+
-      (draft.aiPlan?t('genAgain'):t('genPlan'))+'</button>':'')+
+      (draft.aiPlan?t('genAgain'):t('genPlan'))+'</button>'+
 
     '<div class="gap"></div><button class="btn btn-main" data-act="save-goal">'+t('createGoal')+'</button>'+
     '<div style="height:9px"></div><button class="btn btn-ghost" data-act="cancel">'+t('cancel')+'</button></div>';
@@ -1256,67 +1311,11 @@ function closeSheet(){
   setTimeout(function(){ if(back) back.remove(); if(sheet) sheet.remove(); },340);
 }
 
-/* ================== ЭКРАН: ДУЭЛИ ================== */
-function viewRivals(){
-  let h='<div class="sec"><div class="sec-t">'+t('rivalsTitle')+'</div></div>';
-
-  if(!API_URL){
-    return h+'<div class="panel" style="text-align:center;padding:26px 20px">'+
-      '<svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4;margin-bottom:14px"><path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2M6 18l3-3M3 21l3-3"/></svg>'+
-      '<div class="empty-t">'+t('rivalNeedServer')+'</div>'+
-      '<div class="empty-s" style="margin-bottom:0">'+t('rivalNeedServerSub')+'</div></div>';
-  }
-
-  h+='<div class="panel" style="margin-bottom:14px">'+
-     '<div class="label">'+t('rivalFind')+'</div>'+
-     '<input class="field" id="r-nick" placeholder="'+t('rivalPh')+'">'+
-     '<div style="height:10px"></div>'+
-     '<button class="btn btn-main" data-act="rival-search">'+t('rivalSearch')+'</button>';
-  if(rivalFound){
-    h+='<div class="gap"></div><div class="profile-head">'+avatarHtml(rivalFound,54)+
-       '<div style="min-width:0"><div class="card-t">'+esc(rivalFound.name)+'</div>'+
-       '<div class="card-s">@'+esc(rivalFound.nick)+' · '+(rivalFound.goalsDone||0)+' '+t('goalsDone')+'</div></div></div>'+
-       '<div style="height:12px"></div>'+
-       '<button class="btn btn-go" style="width:100%" data-act="rival-invite" data-n="'+esc(rivalFound.nick)+'">'+t('rivalInvite')+'</button>';
-  }
-  h+='</div>';
-
-  if((S.invites||[]).length){
-    h+='<div class="sec"><div class="sec-t">'+t('rivalIncoming')+'</div></div>';
-    S.invites.forEach(function(iv){
-      h+='<div class="panel" style="margin-bottom:11px"><div class="profile-head">'+avatarHtml(iv,48)+
-         '<div style="min-width:0"><div class="card-t">'+esc(iv.name)+'</div>'+
-         '<div class="card-s">@'+esc(iv.nick)+' · '+(iv.goalsDone||0)+' '+t('goalsDone')+'</div></div></div>'+
-         '<div style="height:12px"></div><div style="display:flex;gap:9px">'+
-         '<button class="btn btn-go" style="flex:1" data-act="inv-yes" data-n="'+esc(iv.nick)+'">'+t('accept')+'</button>'+
-         '<button class="btn btn-ghost" style="flex:1" data-act="inv-no" data-n="'+esc(iv.nick)+'">'+t('decline')+'</button>'+
-         '</div></div>';
-    });
-  }
-
-  h+='<div class="sec"><div class="sec-t">'+t('rivalActive')+'</div></div>';
-  if(!(S.duels||[]).length){
-    h+='<div class="panel"><div class="card-s" style="text-align:center">'+t('rivalEmpty')+'</div></div>';
-  } else {
-    S.duels.forEach(function(d){
-      h+='<div class="panel" style="margin-bottom:11px">'+
-         '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">'+
-         '<div style="min-width:0"><div class="card-t">'+esc(S.name)+'</div>'+
-         '<div class="card-s">'+(d.mine||0)+'%</div></div>'+
-         '<div style="font-size:12px;font-weight:400;color:var(--dim)">'+t('vs')+'</div>'+
-         '<div style="min-width:0;text-align:right"><div class="card-t">'+esc(d.name)+'</div>'+
-         '<div class="card-s">'+(d.theirs||0)+'%</div></div></div>'+
-         '<div class="mini" style="width:100%;margin-top:11px"><i style="width:'+(d.mine||0)+'%"></i></div></div>';
-    });
-  }
-  return h;
-}
-
 function avatarHtml(u,size){
-  const s=size||66;
-  if(u&&u.photo) return '<img class="ava" src="'+esc(u.photo)+'" style="width:'+s+'px;height:'+s+'px" alt="">';
+  const sz=size||66;
+  if(u&&u.photo) return '<img class="ava" src="'+esc(u.photo)+'" style="width:'+sz+'px;height:'+sz+'px" alt="">';
   const letter=((u&&u.name)||'?').trim().charAt(0).toUpperCase();
-  return '<div class="ava" style="width:'+s+'px;height:'+s+'px;font-size:'+Math.round(s/2.7)+'px">'+esc(letter)+'</div>';
+  return '<div class="ava" style="width:'+sz+'px;height:'+sz+'px;font-size:'+Math.round(sz/2.7)+'px">'+esc(letter)+'</div>';
 }
 
 /* ================== ЭКРАН: ЕЩЁ ================== */
@@ -1381,7 +1380,7 @@ function viewSettings(){
 
     '<div class="panel" style="margin-bottom:14px">'+
     '<div class="row"><div style="min-width:0"><div class="row-t">'+t('sync')+'</div>'+
-    '<div class="row-s">'+(on?t('syncSubOn'):t('syncSubOff'))+'</div></div>'+
+    '<div class="row-s">'+(on?t('syncSubOn'):t('syncSubOffline'))+'</div></div>'+
     '<span class="badge '+(on?'ok':'off')+'">'+(on?t('syncOn'):t('syncOff'))+'</span></div>'+
     '<div class="row"><div style="min-width:0"><div class="row-t">'+t('storage')+'</div>'+
     '<div class="row-s">'+(cloud?t('storageCloud'):t('storageLocal'))+'</div></div></div>'+
@@ -1405,13 +1404,12 @@ const NAV_ICONS={
   today:'<path d="M13 2 4 14h6l-1 8 9-12h-6z"/>',
   goals:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>',
   stats:'<path d="M6 20a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM8.5 15.5 15 8.5"/>',
-  rivals:'<path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M6 18l3-3M3 21l3-3"/>',
   more:'<circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/>'
 };
 
 /* Все иконки всегда горят цветом выбранной темы, активная — ярче и крупнее */
 function navHtml(){
-  return ['today','goals','stats','rivals','more'].map(function(k){
+  return ['today','goals','stats','more'].map(function(k){
     const active=screen===k;
     return '<div class="tab'+(active?' on':'')+'" data-tab="'+k+'">'+
       '<svg class="ic-lg" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+NAV_ICONS[k]+'</svg>'+
@@ -1425,7 +1423,6 @@ function render(){
   app.innerHTML = screen==='today'?viewToday()
                 : screen==='goals'?viewGoals()
                 : screen==='stats'?viewStats()
-                : screen==='rivals'?viewRivals()
                 : viewSettings();
   document.getElementById('nav').innerHTML=navHtml();
   const ring=app.querySelector('.ring-fg');
@@ -1529,51 +1526,39 @@ document.getElementById('app').addEventListener('click',function(e){
     return;
   }
 
-  if(act==='rival-search'){
-    const inp=document.getElementById('r-nick');
-    const nick=(inp?inp.value:'').trim().replace(/^@/,'');
-    if(!nick) return;
-    haptic('tap');
-    api('/api/find',{nick:nick}).then(function(d){
-      if(d&&d.nick){ rivalFound=d; render(); }
-      else { rivalFound=null; toast(t('rivalNotFound')); }
-    }).catch(function(){ toast(t('syncFail')); });
-    return;
-  }
-
-  if(act==='rival-invite'){
-    haptic('ok');
-    api('/api/invite',{nick:el.dataset.n}).then(function(){
-      toast(t('rivalInvited')); rivalFound=null; render();
-    }).catch(function(){ toast(t('syncFail')); });
-    return;
-  }
-
-  if(act==='inv-yes'||act==='inv-no'){
-    haptic('tap');
-    api('/api/invite-reply',{nick:el.dataset.n,accept:act==='inv-yes'}).then(function(){
-      pullFromServer(true).then(function(){ render(); });
-    }).catch(function(){ toast(t('syncFail')); });
-    return;
-  }
-
   if(act==='gen-plan'){
     syncDraft();
     if(!draft.title.trim()){ toast(t('genNeedTitle')); haptic('warn'); return; }
     haptic('tap');
+
+    const applyLocal=function(){
+      const list=localPlan(draft.title);
+      // при повторном нажатии слегка меняем порядок, чтобы вариант отличался
+      if(draft.aiPlan) list.push(list.shift());
+      draft.tasks=list.slice(0,15);
+      draft.aiPlan=list.map(function(x){ return {step:x}; });
+      haptic('ok'); toast(t('genLocal')); render();
+    };
+
+    if(!API_URL){ applyLocal(); return; }
+
     el.disabled=true; el.textContent=t('genWait');
     const prev=(draft.aiPlan||[]).map(function(x){ return x.step; });
     api('/api/plan',{goal:draft.title.trim(),days:draft.days||30,
                      about:'',avoid:prev.length?prev:null})
       .then(function(d){
         if(d&&d.plan&&d.plan.length){
+          const list=[];
+          d.plan.forEach(function(x){
+            list.push(x.step);
+            (x.subs||[]).forEach(function(tx){ list.push(String(tx)); });
+          });
           draft.aiPlan=d.plan;
-          draft.steps=d.plan.map(function(x){ return x.step; }).join('\n');
-          haptic('ok'); toast(t('genOk'));
-        } else { toast(t('genFail')); }
-        render();
+          draft.tasks=list.slice(0,15);
+          haptic('ok'); toast(t('genOk')); render();
+        } else applyLocal();
       })
-      .catch(function(){ toast(t('genFail')); render(); });
+      .catch(function(){ applyLocal(); });
     return;
   }
 
@@ -1645,8 +1630,6 @@ function syncDraft(){
   S = (saved&&saved.goals) ? Object.assign(blank(),saved) : blank();
   if(!S.lang) S.lang=tgLang();
   if(!S.start) S.start=today();
-  if(!S.invites) S.invites=[];
-  if(!S.duels) S.duels=[];
   S.goals=(S.goals||[]).map(migrateGoal);
   const u=tgUser();
   if(u.username) S.nick=u.username;
@@ -1664,7 +1647,10 @@ function syncDraft(){
 
   if(!S.tourDone) setTimeout(function(){ tourStep=0; showTour(); },450);
 
-  if(API_URL) pullFromServer(true).then(function(ok){ if(ok) render(); });
+  // приложение уже показано и работает; сервер, если есть, догонит данные позже
+  if(API_URL) setTimeout(function(){
+    pullFromServer(true).then(function(ok){ if(ok) render(); });
+  },300);
 
   if(rescued) setTimeout(function(){ toast(t('frozeSaved',{n:rescued})); },700);
   else if(!anyDoneToday()&&liveStreak()>0)
