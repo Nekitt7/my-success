@@ -3,22 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Путь — дневник целей</title>
+<title>Sparko — дневник целей</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#0D0A20; --surface:#1C1740; --surface-2:#282158;
-  --line:#3A3275; --line-soft:#2C2660;
-  --blue:#4C8DFF; --blue-deep:#2A63C8;
-  --violet:#8B6BFF; --violet-deep:#5B38D6;
-  --amber:#FFB23F; --amber-deep:#C77A12;
-  --fire-1:#FFD24A; --fire-2:#FF8A3D; --fire-3:#FF5A5A;
-  --ice:#7CC4FF; --mint:#7CE0D0;
-  --text:#FFFFFF; --muted:#B4ADE0; --dim:#8079B8;
-  --r-lg:22px; --r-md:16px; --r-sm:12px;
+  --ink:#F2F6F8; --surface:#FFFFFF; --surface-2:#EAF4F9;
+  --line:#D3E3EC; --line-soft:#E6EFF4;
+  --field:#7FD4EE;
+  --blue:#B01E33; --blue-deep:#7C1523;
+  --violet:#B01E33; --violet-deep:#7C1523;
+  --amber:#E8901F; --amber-deep:#B96E10;
+  --fire-1:#FFC53D; --fire-2:#F26522; --fire-3:#D62828;
+  --ice:#3FA9D9; --mint:#2E9E6B;
+  --text:#17222B; --muted:#5C7484; --dim:#8FA6B4;
+  --r-lg:18px; --r-md:14px; --r-sm:11px;
   --safe-top:0px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -160,9 +161,28 @@ button,input,textarea{font-family:inherit}
 .day.future{opacity:.45}
 .day.now{background:var(--violet);border-color:var(--violet-deep);color:#fff;
   box-shadow:0 4px 0 var(--violet-deep);animation:rise .5s both,breathe 2.4s .6s ease-in-out infinite}
+/* точки между кружками бегут от пройденного дня к следующему */
 .link{position:absolute;transform:translate(-50%,-50%);width:7px;height:7px;border-radius:50%;
   background:var(--line);z-index:1;animation:fade .6s both}
-.link.on{background:var(--blue-deep)}
+.link.on{background:var(--violet);animation:pulseDot 1.8s ease-in-out infinite}
+.link.next{background:var(--amber);animation:runDot 1.4s ease-in-out infinite}
+.day.done{animation:rise .5s both, popIn .5s both}
+.day.now::after{content:'';position:absolute;inset:-6px;border-radius:50%;
+  border:2px solid var(--violet);opacity:.5;animation:ripple 2.2s ease-out infinite}
+.day.just{animation:stamp .6s cubic-bezier(.3,1.7,.4,1)}
+
+@keyframes pulseDot{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.85}
+  50%{transform:translate(-50%,-50%) scale(1.5);opacity:1}}
+@keyframes runDot{0%{transform:translate(-50%,-50%) scale(.6);opacity:.3}
+  50%{transform:translate(-50%,-50%) scale(1.6);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(.6);opacity:.3}}
+@keyframes ripple{0%{transform:scale(1);opacity:.55}70%{transform:scale(1.5);opacity:0}
+  100%{transform:scale(1.5);opacity:0}}
+@keyframes popIn{0%{transform:translateX(-50%) scale(.4)}
+  60%{transform:translateX(-50%) scale(1.12)}100%{transform:translateX(-50%) scale(1)}}
+@keyframes stamp{0%{transform:translateX(-50%) scale(1)}
+  40%{transform:translateX(-50%) scale(1.35) rotate(-8deg)}
+  100%{transform:translateX(-50%) scale(1)}}
 .bolt{position:absolute;transform:translateX(-50%);z-index:5;pointer-events:none;
   animation:hop 1.6s cubic-bezier(.4,0,.5,1) infinite}
 .bolt svg{filter:drop-shadow(0 3px 6px rgba(255,178,63,.55));display:block}
@@ -175,9 +195,9 @@ button,input,textarea{font-family:inherit}
 /* ---------- панели и формы ---------- */
 .panel{background:var(--surface);border:2px solid var(--line);border-radius:var(--r-lg);
   padding:16px;box-shadow:0 4px 0 var(--line-soft);animation:drop .45s both}
-.field{width:100%;background:var(--ink);border:2px solid var(--line);border-radius:var(--r-sm);
-  padding:13px 15px;color:#fff;font-size:16px;font-weight:700;outline:none;
-  transition:border-color .2s;resize:none}
+.field{width:100%;background:var(--surface);border:2px solid var(--line);border-radius:var(--r-sm);
+  padding:13px 15px;color:var(--text);font-size:16px;font-weight:700;outline:none;
+  transition:border-color .2s;resize:none;-webkit-text-fill-color:var(--text)}
 .field::placeholder{color:var(--dim);font-weight:700}
 .field:focus{border-color:var(--violet)}
 .label{font-size:12px;font-weight:900;letter-spacing:1.1px;text-transform:uppercase;
@@ -252,13 +272,19 @@ button,input,textarea{font-family:inherit}
 .sw{width:12px;height:12px;border-radius:4px;display:block}
 
 /* ---------- нижнее меню ---------- */
-.nav{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(28,23,64,.94);
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(255,255,255,.96);
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:2px solid var(--line);
-  display:flex;padding:9px 0 calc(9px + env(safe-area-inset-bottom))}
-.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--violet);
-  font-size:10.5px;font-weight:900;cursor:pointer;padding:3px 0;transition:opacity .2s;opacity:.55}
-.tab.on{opacity:1}
-.tab.on .ic-lg{filter:drop-shadow(0 0 8px var(--violet))}
+  display:flex;padding:10px 0 calc(10px + env(safe-area-inset-bottom))}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;
+  font-size:10.5px;font-weight:900;cursor:pointer;padding:2px 0;color:var(--muted);
+  transition:color .2s}
+.tab-frame{width:52px;height:38px;border:3px solid var(--line);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;background:var(--surface);
+  transition:all .2s}
+.tab .ic-lg{width:22px;height:22px}
+.tab.on{color:var(--text)}
+.tab.on .tab-frame{border-color:var(--tc);box-shadow:0 3px 0 rgba(0,0,0,.08)}
+.tab:active .tab-frame{transform:translateY(2px)}
 
 .toast{position:fixed;left:50%;top:calc(18px + var(--safe-top));transform:translate(-50%,-160%);
   background:var(--violet);color:#fff;padding:12px 20px;border-radius:14px;font-weight:900;
@@ -325,6 +351,157 @@ button,input,textarea{font-family:inherit}
 .tour-dot{width:8px;height:8px;border-radius:50%;background:var(--line);transition:all .3s}
 .tour-dot.on{background:var(--violet);width:22px;border-radius:5px}
 
+.gcar{display:flex;gap:9px;overflow-x:auto;scrollbar-width:none;padding:0 14px 4px;margin:0 -14px 16px}
+.gcar::-webkit-scrollbar{display:none}
+.gcard{flex:none;max-width:170px;background:var(--surface);border:2px solid var(--line);
+  border-radius:14px;padding:10px 14px;font-size:14px;font-weight:800;color:var(--muted);
+  cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:7px;
+  white-space:nowrap;overflow:hidden}
+.gcard span{overflow:hidden;text-overflow:ellipsis}
+.gcard.on{background:var(--plum);border-color:var(--fire-2);color:var(--cream);
+  box-shadow:0 3px 0 var(--plum-deep)}
+.gcard.add{border-style:dashed;color:var(--dim)}
+.gflame{width:17px;height:17px;flex:none;display:block;animation:flameFlicker 1.4s ease-in-out infinite}
+.gflame svg{width:100%;height:100%;display:block}
+
+.field-zone{position:relative;background:linear-gradient(180deg,var(--sky-1),var(--sky-2));
+  border-radius:var(--r-lg);padding:16px;overflow:hidden;box-shadow:0 5px 0 rgba(0,0,0,.28);
+  animation:drop .45s both}
+.fz-head{position:relative;z-index:2;margin-bottom:8px}
+.fz-title{font-size:17px;font-weight:900;color:#16323F}
+.fz-sub{font-size:12.5px;font-weight:800;color:#2C5468;margin-top:2px}
+.fz-body{position:relative;display:flex;align-items:flex-start;gap:6px;min-height:300px}
+.fz-eagle{width:120px;height:112px;flex:none;position:absolute;right:-8px;top:56px;z-index:1;
+  opacity:.96;cursor:pointer}
+.fz-eagle svg{width:100%;height:100%}
+
+.trail{position:relative;z-index:2;display:flex;flex-direction:column;gap:12px;padding:6px 0}
+.tnode{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:900;cursor:pointer;position:relative;
+  border:3px solid #16323F;background:#FFF3E0;color:#16323F;
+  box-shadow:0 4px 0 #16323F;animation:rise2 .45s both;transition:transform .12s}
+.tnode:active{transform:translateY(3px)}
+.tnode svg{width:20px;height:20px}
+.tnode.done{background:var(--fire-2);border-color:var(--plum-deep);color:#fff;
+  box-shadow:0 4px 0 var(--plum-deep)}
+.tnode.now{background:var(--plum);border-color:var(--fire-2);color:var(--cream);
+  box-shadow:0 4px 0 var(--plum-deep),0 0 0 0 rgba(255,155,90,.6);
+  animation:rise2 .45s both,ring 2.2s .5s ease-out infinite}
+.tnode.miss{background:#B9CBD4;border-color:#7E96A2;color:#5A727E;box-shadow:0 4px 0 #7E96A2}
+.tnode.future{opacity:.65}
+.tfinish{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:#FFD98A;border:3px solid #16323F;box-shadow:0 4px 0 #16323F;color:#16323F}
+.tfinish svg{width:22px;height:22px}
+
+@keyframes rise2{from{opacity:0;transform:translateY(12px) scale(.85)}to{opacity:1;transform:none}}
+@keyframes ring{0%{box-shadow:0 4px 0 var(--plum-deep),0 0 0 0 rgba(255,155,90,.6)}
+  100%{box-shadow:0 4px 0 var(--plum-deep),0 0 0 16px rgba(255,155,90,0)}}
+
+/* три значка в рамках, как на эскизе */
+.badges{display:flex;gap:10px;margin-bottom:14px;animation:drop .4s both}
+.badge-box{flex:1;background:var(--surface);border:3px solid var(--line);border-radius:var(--r-md);
+  padding:10px 8px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
+  transition:transform .12s}
+.badge-box:active{transform:scale(.95)}
+.badge-box.rec{border-color:#2E9E6B}
+.badge-box.fire{border-color:var(--fire-3)}
+.badge-box.goals{border-color:var(--amber)}
+.badge-ico{width:30px;height:30px;flex:none;display:flex;align-items:center;justify-content:center}
+.badge-ico svg{width:100%;height:100%}
+.badge-n{font-size:19px;font-weight:900;color:var(--text);line-height:1;font-variant-numeric:tabular-nums}
+
+/* заголовок карусели — «книга» в огне */
+/* карусель целей: активная в центре и подсвечена */
+.gcar{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
+  padding:6px 0 14px;margin:0 -18px;padding-left:calc(50% - 74px);padding-right:calc(50% - 74px)}
+.gcar::-webkit-scrollbar{display:none}
+.gpill{flex:0 0 148px;scroll-snap-align:center;background:var(--surface);
+  border:3px solid var(--line);border-radius:16px;padding:12px 12px;cursor:pointer;
+  transition:all .28s cubic-bezier(.2,.9,.3,1);transform:scale(.88);opacity:.55;text-align:center}
+.gpill.on{transform:scale(1);opacity:1;border-color:var(--violet);
+  box-shadow:0 0 0 4px rgba(176,30,51,.14),0 6px 16px rgba(176,30,51,.18)}
+.gpill-t{font-size:14px;font-weight:900;line-height:1.25;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.gpill-s{font-size:11.5px;font-weight:700;color:var(--muted);margin-top:4px}
+.gpill.add{border-style:dashed;color:var(--violet)}
+.gpill.done{border-color:var(--mint)}
+
+.book{display:flex;align-items:center;justify-content:center;gap:8px;margin:2px 0 12px}
+.book-t{background:var(--surface);border:3px solid var(--fire-3);border-radius:12px;
+  padding:7px 18px;font-size:15px;font-weight:900;letter-spacing:.5px}
+.tagl,.tagr{font-size:10px;font-weight:900;padding:4px 8px;border-radius:6px;color:#fff}
+.tagl{background:#2B4FA8}
+.tagr{background:#2E9E6B}
+
+/* голубое поле с тропинкой */
+.field-box{background:var(--field);border-radius:var(--r-lg);padding:16px 14px 20px;
+  position:relative;overflow:hidden;margin-bottom:22px;animation:drop .45s both}
+.chain-title{font-size:15px;font-weight:900;color:#0E3A4C;text-align:center;
+  margin:2px 0 4px;letter-spacing:.3px}
+.field-eagle{position:absolute;right:-6px;top:38%;width:132px;height:132px;opacity:.95;
+  pointer-events:none}
+.field-icon{position:absolute;width:44px;height:44px}
+.field-icon.bicep{left:14px;top:44%}
+.field-icon.trophy{left:22px;bottom:14px}
+
+.mascot-zone{position:relative;display:flex;align-items:flex-end;gap:8px;margin:0 0 10px;min-height:108px}
+.mascot{filter:drop-shadow(0 6px 10px rgba(0,0,0,.18))}
+.mascot{width:108px;height:104px;flex:none;position:relative;cursor:pointer;
+  animation:idle 3.4s ease-in-out infinite;transform-origin:50% 90%}
+.mascot.cheer{animation:cheer .8s cubic-bezier(.3,1.5,.5,1)}
+.mascot svg{width:100%;height:100%;overflow:visible}
+.m-wing-l{transform-origin:66% 56%;animation:flexL 2.8s ease-in-out infinite}
+.m-wing-r{transform-origin:34% 56%;animation:flexR 2.8s ease-in-out infinite}
+.mascot.cheer .m-wing-l{animation:pumpL .8s ease}
+.mascot.cheer .m-wing-r{animation:pumpR .8s ease}
+.m-eye{animation:blink 5s infinite}
+.bubble{position:relative;flex:1;min-width:0;background:var(--surface);border:2px solid var(--line);
+  border-radius:16px;padding:13px 15px;font-size:14.5px;font-weight:800;line-height:1.4;
+  box-shadow:0 4px 0 var(--line-soft);animation:bubbleIn .45s cubic-bezier(.2,1.4,.4,1) both;margin-bottom:12px}
+.bubble::after{content:'';position:absolute;left:-9px;bottom:16px;width:0;height:0;
+  border-top:8px solid transparent;border-bottom:8px solid transparent;border-right:10px solid var(--line)}
+
+.carousel{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;padding:2px 14px 4px;margin:0 -14px}
+.carousel::-webkit-scrollbar{display:none}
+.cslide{flex:0 0 86%;scroll-snap-align:center;background:var(--surface);border:2px solid var(--line);
+  border-radius:var(--r-lg);padding:15px;box-shadow:0 4px 0 var(--line-soft);animation:drop .4s both}
+.cslide.full{border-color:var(--blue-deep)}
+.dots{display:flex;gap:6px;justify-content:center;margin:12px 0 20px}
+.dot-i{width:7px;height:7px;border-radius:50%;background:var(--line);transition:all .3s}
+.dot-i.on{background:var(--violet);width:20px;border-radius:4px}
+
+.celebrate{position:fixed;inset:0;z-index:400;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;background:var(--ink);opacity:0;transition:opacity .25s;pointer-events:none}
+.celebrate.show{opacity:1;pointer-events:auto}
+.cel-flame{width:150px;height:150px;animation:flameIn .7s cubic-bezier(.2,1.6,.4,1) both}
+.cel-flame svg{width:100%;height:100%}
+.cel-num{font-size:92px;font-weight:900;color:var(--fire-2);line-height:1;margin-top:14px;
+  animation:numIn .5s .25s cubic-bezier(.2,1.7,.4,1) both;text-shadow:0 0 34px rgba(255,138,61,.45)}
+.cel-mascot{width:150px;height:140px;margin-top:6px}
+.cel-say{font-size:15px;font-weight:800;color:var(--violet);margin-top:8px;text-align:center;
+  padding:0 28px;animation:drop .45s .45s both}
+.cel-t{font-size:26px;font-weight:900;margin-top:18px;text-align:center;animation:drop .45s .4s both}
+.cel-s{font-size:15px;font-weight:700;color:var(--muted);margin-top:9px;text-align:center;
+  padding:0 32px;animation:drop .45s .5s both}
+.cel-btn{margin-top:28px;width:78%;animation:drop .45s .6s both}
+.conf{position:fixed;width:11px;height:11px;z-index:401;pointer-events:none}
+
+@keyframes idle{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(-1.5deg)}}
+@keyframes cheer{0%{transform:scale(1) rotate(0)}35%{transform:scale(1.18) rotate(4deg)}
+  60%{transform:scale(1.05) rotate(-3deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes flexL{0%,100%{transform:rotate(0) scale(1)}50%{transform:rotate(-6deg) scale(1.05)}}
+@keyframes flexR{0%,100%{transform:rotate(0) scale(1)}50%{transform:rotate(6deg) scale(1.05)}}
+@keyframes pumpL{0%,100%{transform:rotate(0)}40%{transform:rotate(-30deg) scale(1.12)}}
+@keyframes pumpR{0%,100%{transform:rotate(0)}40%{transform:rotate(30deg) scale(1.12)}}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.15)}}
+.m-eye{transform-origin:82px 32px}
+@keyframes bubbleIn{from{opacity:0;transform:translateX(-10px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes flameIn{0%{opacity:0;transform:scale(.3) translateY(40px)}100%{opacity:1;transform:none}}
+@keyframes numIn{0%{opacity:0;transform:scale(.4)}100%{opacity:1;transform:none}}
+@keyframes flameFlicker{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.06) rotate(1.5deg)}}
+@keyframes confFall{to{transform:translate(var(--cx),110vh) rotate(var(--cr));opacity:0}}
+
 @keyframes drop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes rise{from{opacity:0;transform:translateX(-50%) translateY(16px) scale(.8)}
   to{opacity:1;transform:translateX(-50%)}}
@@ -357,13 +534,14 @@ button,input,textarea{font-family:inherit}
    API_URL — адрес сервера. Без него работают личные цели,
    но соревнования и поиск людей недоступны: им нужна общая база.
    ================================================ */
+const APP_VERSION = 'v8 · орёл + празднование';
 const API_URL = 'https://completed-similarly-scale-change.trycloudflare.com';
 const GROUP_URL = 'https://t.me/+5hxQMsAbPnZjMTky';
 
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 if (tg){
   tg.ready(); tg.expand();
-  try{ tg.setHeaderColor('#0D0A20'); tg.setBackgroundColor('#0D0A20'); }catch(e){}
+  try{ tg.setHeaderColor('#F2F6F8'); tg.setBackgroundColor('#F2F6F8'); }catch(e){}
   applySafeArea();
   try{ tg.onEvent('safeAreaChanged',applySafeArea); tg.onEvent('contentSafeAreaChanged',applySafeArea); }catch(e){}
 }
@@ -386,7 +564,7 @@ function haptic(k){
 
 /* ================== ЯЗЫКИ ================== */
 const T={
-ru:{today:'Сегодня',goals:'Цели',stats:'Путь',more:'Ещё',
+ru:{today:'Сегодня',goals:'Цели',stats:'Путь',person:'Профиль',rivals:'Дуэли',more:'Ещё',
  mainGoal:'Главная цель',planToday:'План на сегодня',myGoals:'Мои цели',
  newGoal:'Новая цель',createGoal:'Запустить цель',cancel:'Отмена',done:'Готово',
  dayOf:'День {a} из {b}',left:'Осталось {n} {w}',overdue:'Срок вышел {n} {w} назад',
@@ -436,7 +614,14 @@ ru:{today:'Сегодня',goals:'Цели',stats:'Путь',more:'Ещё',
  notifTimesPh:'09:00, 15:00, 21:00',notifAutoBtn:'Вернуть авто',
  notifSaved:'Напоминания сохранены',notifBad:'Не разобрал время',
  notifWindow:'День с 09:00 до 21:00 делится поровну',
- goalsDone:'целей закрыто',
+ goalsDone:'целей закрыто',rivals:'Турнир',
+ rivalSoon:'Скоро здесь будут соревнования',
+ rivalSoonSub:'Сможешь звать друзей и смотреть, кто быстрее дойдёт до цели. Нужен общий сервер — он уже в работе.',
+ addGoal:'Цель',rivalSoon:'Соревнования скоро',
+ rivalSoonSub:'Здесь появится вызов друга: кто первым дойдёт до цели. Нужен общий сервер — он уже в работе.',
+ addGoal2:'Цель',hintGoals:'Сколько у тебя активных целей',
+ celGo:'Продолжить',celFirst:'Огонёк зажжён!',celGoal:'Цель закрыта!',
+ celAll:'Все цели на сегодня закрыты!',celSub:'Завтра продолжим — не дай огоньку погаснуть.',
  theme:'Цвет приложения',themeSub:'Меняет всё приложение целиком',
  thViolet:'Фиолетовый',thBlue:'Синий',thGreen:'Зелёный',thOrange:'Оранжевый',
  thYellow:'Жёлтый',thCyan:'Голубой',thPink:'Розовый',
@@ -463,7 +648,7 @@ ru:{today:'Сегодня',goals:'Цели',stats:'Путь',more:'Ещё',
  genPlan:'Предложить план',genWait:'Собираю план…',genOk:'План готов — проверь и правь',
  genFail:'Нейросеть не ответила',genNeedTitle:'Сначала впиши цель',
  genAgain:'Другой вариант',genLocal:'План собран из готовых наборов'},
-en:{today:'Today',goals:'Goals',stats:'Path',more:'More',
+en:{today:'Today',goals:'Goals',stats:'Path',person:'Profile',rivals:'Duels',more:'More',
  mainGoal:'Main goal',planToday:"Today's plan",myGoals:'My goals',
  newGoal:'New goal',createGoal:'Start the goal',cancel:'Cancel',done:'Done',
  dayOf:'Day {a} of {b}',left:'{n} {w} left',overdue:'Deadline passed {n} {w} ago',
@@ -513,7 +698,14 @@ en:{today:'Today',goals:'Goals',stats:'Path',more:'More',
  notifTimesPh:'09:00, 15:00, 21:00',notifAutoBtn:'Back to auto',
  notifSaved:'Reminders saved',notifBad:'Could not read the times',
  notifWindow:'The day from 09:00 to 21:00 is split evenly',
- goalsDone:'goals closed',
+ goalsDone:'goals closed',rivals:'Duels',
+ rivalSoon:'Competitions are coming',
+ rivalSoonSub:'You will invite friends and see who reaches the goal first. It needs a shared server, already in progress.',
+ addGoal:'Goal',rivalSoon:'Duels are coming',
+ rivalSoonSub:'Here you will challenge a friend: who reaches the goal first. It needs a shared server.',
+ addGoal2:'Goal',hintGoals:'How many active goals you have',
+ celGo:'Continue',celFirst:'The flame is lit!',celGoal:'Goal closed!',
+ celAll:'All goals done today!',celSub:'See you tomorrow — keep the flame alive.',
  theme:'App colour',themeSub:'Changes the whole app',
  thViolet:'Violet',thBlue:'Blue',thGreen:'Green',thOrange:'Orange',
  thYellow:'Yellow',thCyan:'Cyan',thPink:'Pink',
@@ -546,6 +738,138 @@ function t(k,v){
   let s=(T[lang]||T.ru)[k]||T.ru[k]||k;
   if(v) for(const key in v) s=s.replace('{'+key+'}',v[key]);
   return s;
+}
+
+/* ================== ОРЁЛ, ПОХВАЛА, ПРАЗДНОВАНИЕ ================== */
+function eagleSvg(mood){
+  const flex=(mood==='flex'), point=(mood==='point');
+  // Тёмное оперение, белая грудь-борода, оранжевый клюв, крылья согнуты как бицепсы.
+  return '<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">'+
+    // левое крыло-бицепс
+    '<g class="m-wing-l"'+(flex?' style="transform:rotate(-14deg) scale(1.12);transform-origin:66% 56%"':'')+
+      (point?' style="transform:rotate(-38deg);transform-origin:66% 56%"':'')+'>'+
+      '<path d="M92 74c4-12 14-19 24-17 9 2 14 11 12 21-2 9-9 15-18 15-8 0-14-4-16-11z" fill="#2E1526"/>'+
+      '<path d="M116 62c7-6 16-6 21 1 5 6 3 15-4 19-5 3-11 2-15-2z" fill="#3E1C33"/>'+
+      '<path d="M99 78c6-6 14-7 20-2" fill="none" stroke="#170A13" stroke-width="3" stroke-linecap="round"/>'+
+      '<path d="M120 88c5 4 11 4 16 0M122 96c4 3 9 3 13 0" stroke="#3E1C33" stroke-width="4" stroke-linecap="round" fill="none"/>'+
+    '</g>'+
+    // правое крыло-бицепс
+    '<g class="m-wing-r"'+(flex?' style="transform:rotate(14deg) scale(1.12);transform-origin:34% 56%"':'')+'>'+
+      '<path d="M48 74c-4-12-14-19-24-17-9 2-14 11-12 21 2 9 9 15 18 15 8 0 14-4 16-11z" fill="#2E1526"/>'+
+      '<path d="M24 62c-7-6-16-6-21 1-5 6-3 15 4 19 5 3 11 2 15-2z" fill="#3E1C33"/>'+
+      '<path d="M41 78c-6-6-14-7-20-2" fill="none" stroke="#170A13" stroke-width="3" stroke-linecap="round"/>'+
+      '<path d="M20 88c-5 4-11 4-16 0M18 96c-4 3-9 3-13 0" stroke="#3E1C33" stroke-width="4" stroke-linecap="round" fill="none"/>'+
+    '</g>'+
+    // хвост
+    '<path d="M70 112c-9 5-17 12-19 19 6 3 13-1 17-7 4 6 11 10 17 7-2-7-10-14-19-19z" fill="#2E1526"/>'+
+    '<path d="M52 128l-14 5M88 128l14 5" stroke="#2E1526" stroke-width="4" stroke-linecap="round"/>'+
+    // корпус
+    '<path d="M70 46c-16 0-27 13-27 32 0 20 12 34 27 34s27-14 27-34c0-19-11-32-27-32z" fill="#2E1526"/>'+
+    // грудные мышцы
+    '<path d="M56 84c0-5 5-8 10-8M84 84c0-5-5-8-10-8" stroke="#170A13" stroke-width="3" stroke-linecap="round" fill="none"/>'+
+    '<path d="M62 94c3 3 5 3 8 0 3 3 5 3 8 0M62 102c3 3 5 3 8 0 3 3 5 3 8 0" stroke="#170A13" stroke-width="2.5" stroke-linecap="round" fill="none"/>'+
+    // белая борода-грудь
+    '<path d="M70 40c-10 0-17 6-18 15-1 10 3 22 9 30 3 4 6 6 9 6s6-2 9-6c6-8 10-20 9-30-1-9-8-15-18-15z" fill="#FBFBFD"/>'+
+    '<path d="M62 58c1 12 3 22 8 30M78 58c-1 12-3 22-8 30" stroke="#E4E4EE" stroke-width="2" fill="none"/>'+
+    // голова
+    '<path d="M70 14c-14 0-24 10-24 24 0 10 6 17 14 20 3-6 6-9 10-9s7 3 10 9c8-3 14-10 14-20 0-14-10-24-24-24z" fill="#FBFBFD"/>'+
+    // глаз с бровью
+    '<ellipse class="m-eye" cx="82" cy="32" rx="7" ry="6" fill="#FFC53D"/>'+
+    '<circle cx="83" cy="32" r="2.6" fill="#170A13"/>'+
+    '<path d="M74 22c6-3 13-2 18 2l6-4" stroke="#170A13" stroke-width="4" stroke-linecap="round" fill="none"/>'+
+    '<path d="M92 20l8-3M94 26l9-1" stroke="#170A13" stroke-width="3.5" stroke-linecap="round"/>'+
+    // клюв
+    '<path d="M64 30c-14-3-26 1-28 6-2 4 4 8 14 9 8 1 14-1 17-5z" fill="#F79B5E"/>'+
+    '<path d="M36 36c4 4 12 6 20 6" stroke="#E07A3E" stroke-width="2.5" fill="none" stroke-linecap="round"/>'+
+    // лапы
+    '<path d="M62 112v8M78 112v8" stroke="#F79B5E" stroke-width="6" stroke-linecap="round"/>'+
+    '<path d="M56 122h12M72 122h12" stroke="#F79B5E" stroke-width="5" stroke-linecap="round"/>'+
+    '</svg>';
+}
+
+const PRAISE={
+ ru:{hello:['Ну что, полетели?','Я разогрелся. А ты?','Сегодня отличный день, чтобы стать сильнее.',
+   'Крылья чешутся. Давай к делу!','Доброго! Начнём с малого.','Я тут с шести утра. Жду.',
+   'Один шаг лучше нуля шагов. Проверено.','Смотри, какое небо. Пошли!'],
+  progress:['Так держать!','Идёшь ровно, красиво.','Мне нравится, как ты работаешь.',
+   'Вижу прогресс. Я такое чувствую за версту.','Не сбавляй.','Отлично! Дальше только легче.',
+   'Ты сейчас круче вчерашнего себя.','Вот это темп!','Продолжай, я запоминаю.'],
+  almost:['Осталась одна! Дожимай!','Финиш прямо перед клювом!','Ещё чуть-чуть — и день твой!',
+   'Одна задача. Одна! Ты справишься.','Я уже готовлю поздравление.'],
+  allDone:['Все цели закрыты. Ты сегодня зверь.','Идеальный день! Горжусь.',
+   'Вот это класс! День сделан полностью.','Чисто. Красиво. Мощно.','Можешь отдыхать — заслужил.'],
+  empty:['Заведи первую цель — покажу дорогу.','Пока пусто. Исправим?',
+   'Мне скучно без твоих целей.','Дай мне цель, и я дам тебе маршрут.'],
+  poke:['Эй, щекотно!','Я тут, я слежу.','Крылья затекли...','Не отвлекай, я тренируюсь.',
+   'Хочешь потрогать бицепс? Ладно.','Клюв не трогай.','Я орёл, а не игрушка. Хотя...',
+   'Ещё раз — и я тебя обниму.','Работаем, работаем!','Я сильнее, чем выгляжу.']},
+ en:{hello:['Shall we fly?','I am warmed up. And you?','Great day to get stronger.',
+   'My wings are itching. Let us go!','Morning! Start small.','I have been up since six. Waiting.',
+   'One step beats zero steps.','Look at that sky. Come on!'],
+  progress:['Keep going!','Steady and clean.','I like the way you work.','I can see progress from afar.',
+   'Do not slow down.','Excellent! It gets easier now.','You beat yesterday you.','What a pace!'],
+  almost:['One left! Push!','The finish is right in front of my beak!','Almost yours!',
+   'One task. One! You got it.','I am already preparing the applause.'],
+  allDone:['Everything closed. You were a beast today.','A perfect day! I am proud.',
+   'That was great. Day completed.','Clean. Sharp. Strong.','Rest now, you earned it.'],
+  empty:['Add your first goal and I will show the way.','Empty here. Shall we fix that?',
+   'I am bored without your goals.','Give me a goal, I give you a route.'],
+  poke:['Hey, that tickles!','I am watching.','My wings are stiff...','Do not distract me, I train.',
+   'Want to touch the bicep? Fine.','Not the beak.','I am an eagle, not a toy. Well...',
+   'One more time and I hug you.','Work, work!','I am stronger than I look.']}
+};
+
+function say(kind){
+  const lang=(S&&S.lang==='en')?'en':'ru';
+  const list=(PRAISE[lang]||PRAISE.ru)[kind]||PRAISE.ru.progress;
+  return list[Math.floor(Math.random()*list.length)];
+}
+
+function flameSvg(){
+  return '<svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg" style="animation:flameFlicker 1.4s ease-in-out infinite">'+
+    '<ellipse cx="50" cy="112" rx="30" ry="7" fill="rgba(255,138,61,.18)"/>'+
+    '<path d="M50 6c-4 14-14 20-22 30-7 9-11 18-11 28 0 19 15 32 33 32s33-13 33-32c0-13-7-23-15-32-4 6-8 9-13 11 6-14 2-28-5-37z" fill="var(--fire-2)"/>'+
+    '<path d="M50 44c-3 8-9 12-13 18-4 5-6 11-6 17 0 11 9 19 19 19s19-8 19-19c0-8-4-14-9-19-2 4-5 6-8 7 4-8 1-17-2-23z" fill="var(--fire-1)"/>'+
+    '</svg>';
+}
+
+function confetti(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const colors=['#FFD24A','#FF8A3D','#FF5A5A','#7C5CFC','#4C8DFF','#7CE0D0'];
+  for(let i=0;i<46;i++){
+    const c=document.createElement('i');
+    c.className='conf';
+    c.style.left=(Math.random()*100)+'vw';
+    c.style.top=(-10-Math.random()*20)+'vh';
+    c.style.background=colors[i%colors.length];
+    c.style.borderRadius=Math.random()>0.5?'50%':'2px';
+    c.style.setProperty('--cx',(Math.random()*120-60)+'px');
+    c.style.setProperty('--cr',(Math.random()*720-360)+'deg');
+    c.style.animation='confFall '+(1.6+Math.random()*1.4).toFixed(2)+'s cubic-bezier(.25,.6,.5,1) '+(Math.random()*0.5).toFixed(2)+'s forwards';
+    document.body.appendChild(c);
+    setTimeout(function(){ c.remove(); },3600);
+  }
+}
+
+function celebrate(streak,title,sub){
+  const el=document.createElement('div');
+  el.className='celebrate'; el.id='celebrate';
+  el.innerHTML='<div class="cel-flame">'+flameSvg()+'</div>'+
+    (streak?'<div class="cel-num">'+streak+'</div>':'')+
+    '<div class="cel-mascot mascot cheer">'+eagleSvg('flex')+'</div>'+
+    '<div class="cel-t">'+esc(title)+'</div>'+
+    '<div class="cel-say">'+esc(say('allDone'))+'</div>'+
+    (sub?'<div class="cel-s">'+esc(sub)+'</div>':'')+
+    '<button class="btn btn-main cel-btn" data-cel="close">'+t('celGo')+'</button>';
+  document.body.appendChild(el);
+  requestAnimationFrame(function(){ el.classList.add('show'); });
+  confetti(); haptic('ok');
+  const close=function(){
+    el.classList.remove('show');
+    setTimeout(function(){ el.remove(); render(); },280);
+  };
+  el.addEventListener('click',function(e){ if(e.target.closest('[data-cel]')) close(); });
+  setTimeout(function(){ if(document.getElementById('celebrate')) close(); },7000);
 }
 
 /* ================== ПЛАНЫ БЕЗ СЕРВЕРА ==================
@@ -648,23 +972,23 @@ function myTimes(){
 
 /* ================== ЦВЕТОВЫЕ ТЕМЫ ================== */
 const THEMES={
-  violet:{a:'#8B6BFF',ad:'#5B38D6',b:'#4C8DFF',bd:'#2A63C8'},
-  blue:  {a:'#4C8DFF',ad:'#2A63C8',b:'#38C6E8',bd:'#1590B0'},
-  green: {a:'#35C97D',ad:'#1E8A50',b:'#7BE3B0',bd:'#3FA968'},
-  orange:{a:'#FF8A3D',ad:'#C75B12',b:'#FFB23F',bd:'#C77A12'},
-  yellow:{a:'#FFC93C',ad:'#C79300',b:'#FFA53D',bd:'#C76F12'},
-  cyan:  {a:'#38C6E8',ad:'#1590B0',b:'#5AA9FF',bd:'#2A6FC8'},
-  pink:  {a:'#F86FB0',ad:'#C13D7E',b:'#A97BFF',bd:'#6D42CC'}
+  crimson:{a:'#B01E33',ad:'#7C1523',b:'#E8901F',bd:'#B96E10'},
+  blue:   {a:'#1E6FB0',ad:'#134D7C',b:'#3FA9D9',bd:'#1F7CA8'},
+  green:  {a:'#2E9E6B',ad:'#1D6E49',b:'#7ACB9B',bd:'#3F9C6E'},
+  orange: {a:'#E8701F',ad:'#B44E10',b:'#FFB23F',bd:'#C77A12'},
+  violet: {a:'#7C4DBF',ad:'#55308C',b:'#B08CE0',bd:'#7A5AB0'},
+  teal:   {a:'#1F9AA8',ad:'#136E79',b:'#5CC9D4',bd:'#2E97A3'},
+  pink:   {a:'#C93F7E',ad:'#94275A',b:'#F08CB4',bd:'#C05A85'}
 };
 
 function applyTheme(name){
-  const t=THEMES[name]||THEMES.violet;
+  const t=THEMES[name]||THEMES.crimson;
   const r=document.documentElement.style;
   r.setProperty('--violet',t.a);
   r.setProperty('--violet-deep',t.ad);
   r.setProperty('--blue',t.b||t.a);
   r.setProperty('--blue-deep',t.bd||t.ad);
-  try{ if(tg&&tg.setHeaderColor) tg.setHeaderColor('#0D0A20'); }catch(e){}
+  try{ if(tg&&tg.setHeaderColor) tg.setHeaderColor('#F2F6F8'); }catch(e){}
 }
 
 /* ================== ХРАНИЛИЩЕ ================== */
@@ -776,7 +1100,7 @@ function blank(){
     name:u.first_name||'Friend', nick:u.username||'', photo:u.photo_url||'',
     lang:tgLang(),streak:0,best:0,freezes:1,freezeWeek:weekTag(),
     lastDone:null,days:{},goals:[],seq:1,start:today(),mainGoal:null,
-    theme:'violet',tourDone:false,remindCount:2,remindTimes:''
+    theme:'crimson',tourDone:false,remindCount:2,remindTimes:''
   };
 }
 function weekTag(){ const d=new Date(); const w=(d.getDay()+6)%7; d.setDate(d.getDate()-w); return key(d); }
@@ -936,14 +1260,34 @@ const ICON_SNOW='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="current
 
 function topbar(big){
   const st=liveStreak();
-  return '<div class="topbar'+(big?' big':'')+'">'+
-    '<div class="metric m-fire" id="m-fire" data-act="hint" data-h="hintFire">'+
-    '<svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c.5 3.2-1.4 4.6-2.7 6C7.8 9.6 7 11 7 13a5 5 0 0 0 10 0c0-2.7-1.6-4.4-2.6-6.2-.4 .9-1 1.5-1.7 1.9.7-2.4.2-5-.7-6.7z"/></svg>'+
-    '<span>'+st+'</span></div>'+
-    '<div class="metric m-ice" data-act="hint" data-h="hintIce">'+ICON_SNOW+'<span>'+S.freezes+'</span></div>'+
-    '<div class="metric m-best" data-act="hint" data-h="hintBest">'+
-    '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v6a5 5 0 0 1-10 0z"/><path d="M7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3M9 20h6M12 15v5"/></svg>'+
-    '<span>'+S.best+'</span></div></div>';
+  const goalsCount=S.goals.filter(function(g){ return !goalStat(g).finished; }).length;
+  if(!big){
+    return '<div class="topbar">'+
+      '<div class="metric m-fire" id="m-fire" data-act="hint" data-h="hintFire">'+
+      '<svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c.5 3.2-1.4 4.6-2.7 6C7.8 9.6 7 11 7 13a5 5 0 0 0 10 0c0-2.7-1.6-4.4-2.6-6.2-.4 .9-1 1.5-1.7 1.9.7-2.4.2-5-.7-6.7z"/></svg>'+
+      '<span>'+st+'</span></div>'+
+      '<div class="metric m-ice" data-act="hint" data-h="hintIce">'+ICON_SNOW+'<span>'+S.freezes+'</span></div>'+
+      '<div class="metric m-best" data-act="hint" data-h="hintBest">'+
+      '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v6a5 5 0 0 1-10 0z"/><path d="M7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3M9 20h6M12 15v5"/></svg>'+
+      '<span>'+S.best+'</span></div></div>';
+  }
+  // главный экран: иконка слева, число справа
+  return '<div class="badges">'+
+    '<div class="badge-box rec" data-act="hint" data-h="hintBest"><div class="badge-ico">'+
+      '<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="15" r="11" stroke="#2E9E6B" stroke-width="3"/>'+
+      '<path d="M13 24l-4 12 11-5 11 5-4-12" stroke="#2E9E6B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
+      '</div><b class="badge-n">'+S.best+'</b></div>'+
+
+    '<div class="badge-box fire" id="m-fire" data-act="hint" data-h="hintFire"><div class="badge-ico">'+
+      '<svg viewBox="0 0 40 40"><path d="M20 3c-2 6-6 8-9 12-3 4-4 8-4 12 0 8 6 13 13 13s13-5 13-13c0-5-3-9-6-13-2 3-3 4-5 5 2-6 0-12-2-16z" fill="var(--fire-3)"/>'+
+      '<path d="M20 17c-1 3-4 5-5 7-2 2-2 5-2 7 0 5 4 8 7 8s7-3 7-8c0-3-2-5-4-7-1 2-2 3-3 3 1-3 0-8 0-10z" fill="var(--fire-1)"/></svg>'+
+      '</div><b class="badge-n">'+st+'</b></div>'+
+
+    '<div class="badge-box goals" data-act="hint" data-h="hintGoals"><div class="badge-ico">'+
+      '<svg viewBox="0 0 40 40" fill="none"><path d="M12 7h16v9a8 8 0 0 1-16 0z" stroke="var(--amber)" stroke-width="3" stroke-linejoin="round"/>'+
+      '<path d="M12 10H7v3a5 5 0 0 0 5 5M28 10h5v3a5 5 0 0 1-5 5M15 33h10M20 25v8" stroke="var(--amber)" stroke-width="3" stroke-linecap="round"/></svg>'+
+      '</div><b class="badge-n">'+goalsCount+'</b></div>'+
+  '</div>';
 }
 function emptyBlock(title,sub,btn,act){
   return '<div class="empty">'+
@@ -1009,68 +1353,77 @@ function endTour(){
 /* ================== ЭКРАН: СЕГОДНЯ ================== */
 function viewToday(){
   let h=topbar(true);
-  const active=mainGoal();
-  if(!active) return h+emptyBlock(t('noGoals'),t('noGoalsSub'),t('createGoal'),'go-new');
-
-  const gs=goalStat(active), R=26, C=2*Math.PI*R, off=C*(1-gs.pct/100);
-  h+='<div class="hero">'+
-    '<div class="hero-eyebrow">'+
-    '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.5 7 .9-5 4.8 1.2 6.9L12 17.8 5.8 21.1 7 14.2 2 9.4l7-.9z"/></svg>'+
-    t('mainGoal')+'</div>'+
-    '<div class="hero-title">'+esc(active.title)+'</div>'+
-    '<div class="hero-row"><div class="ring-wrap">'+
-    '<svg class="ring" viewBox="0 0 64 64"><circle class="ring-bg" cx="32" cy="32" r="'+R+'"/>'+
-    '<circle class="ring-fg" cx="32" cy="32" r="'+R+'" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+C.toFixed(1)+'" data-off="'+off.toFixed(1)+'"/>'+
-    '</svg><div class="ring-num">'+gs.pct+'%</div></div>'+
-    '<div class="hero-meta"><div class="hero-day">'+t('dayOf',{a:gs.done,b:gs.total})+'</div>'+
-    '<div class="hero-note'+(gs.behind>=3?' hero-warn':'')+'">'+
-    (gs.finished?t('reached')
-     :gs.left<0?t('overdue',{n:-gs.left,w:dayWord(-gs.left)})
-     :gs.behind>=3?t('behind',{n:gs.behind,w:dayWord(gs.behind)})
-     :t('left',{n:gs.left,w:dayWord(gs.left)}))+
-    '</div></div></div></div>';
-
   const goals=sortedGoals().filter(function(g){ return g.tasks&&g.tasks.length; });
-  const openGoals=goals.filter(function(g){ return !goalDoneToday(g); });
 
-  h+='<div class="sec"><div class="sec-t">'+t('planToday')+'</div><div class="sec-c">'+goals.length+'</div></div>';
+  if(!goals.length) return h+emptyBlock(t('noGoals'),t('noGoalsSub'),t('createGoal'),'go-new');
 
-  if(!goals.length){
-    return h+'<div class="panel" style="text-align:center">'+
-      '<div class="card-t" style="margin-bottom:6px">'+t('allSteps')+'</div>'+
-      '<div class="card-s" style="margin-bottom:14px">'+t('allStepsSub')+'</div>'+
-      '<button class="btn btn-main" data-act="go-new">'+t('newGoal')+'</button></div>';
-  }
+  const cur=currentChainGoal();
 
-  h+='<div class="stack">';
-  goals.forEach(function(g,i){
+  // карусель целей: листается, активная подсвечена
+  h+='<div class="gcar" id="gcar">';
+  goals.forEach(function(g){
     const full=goalDoneToday(g), left=tasksLeft(g);
-    h+='<div class="card-wrap" style="animation-delay:'+(i*55)+'ms">'+
-      '<div class="goal-head'+(full?' full':'')+'">'+
-      '<div style="min-width:0">'+
-      '<div class="card-t">'+(g.id===S.mainGoal?'\u2605 ':'')+esc(g.title)+'</div>'+
-      '<div class="card-s">'+(full?t('goalAllDone'):t('tasksLeftN',{n:left}))+'</div></div>'+
-      (full?'<div class="tick-done">'+ICON_CHECK+'</div>'
-           :'<div class="tick-count">'+(g.tasks.length-left)+'/'+g.tasks.length+'</div>')+
-      '</div><div class="tasks">';
-    g.tasks.forEach(function(tk,k){
-      const on=isTaskDone(g,today(),tk.id);
-      h+='<div class="task'+(on?' on':'')+'" data-act="task" data-g="'+g.id+'" data-t="'+tk.id+'">'+
-         '<i class="task-box">'+
-         '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>'+
-         '</i><b class="task-num">'+(k+1)+'</b><span>'+esc(tk.text)+'</span></div>';
-    });
-    h+='</div></div>';
+    h+='<div class="gpill'+(g.id===(cur&&cur.id)?' on':'')+(full?' done':'')+'" '+
+       'data-act="pick" data-g="'+g.id+'">'+
+       '<div class="gpill-t">'+(g.id===S.mainGoal?'\u2605 ':'')+esc(g.title)+'</div>'+
+       '<div class="gpill-s">'+(full?t('goalAllDone'):t('tasksLeftN',{n:left}))+'</div></div>';
   });
+  h+='<div class="gpill add" data-act="go-new">'+
+     '<div class="gpill-t">+</div><div class="gpill-s">'+t('addGoal')+'</div></div>';
   h+='</div>';
 
-  if(!openGoals.length){
-    h+='<div class="panel" style="text-align:center">'+
-      '<div class="card-t" style="margin-bottom:5px">'+t('dayClosed')+'</div>'+
-      '<div class="card-s">'+t('dayClosedSub')+'</div></div>';
+  // голубое поле: орёл, реплика, тропинка выбранной цели
+  h+='<div class="field-box">'+
+     '<div class="mascot-zone">'+
+     '<div class="mascot" data-act="poke" id="mascot">'+eagleSvg(eagleMood(goals))+'</div>'+
+     '<div class="bubble" id="bubble">'+esc(say(mascotMood(goals)))+'</div></div>';
+  if(cur&&cur.tasks&&cur.tasks.length){
+    h+='<div class="chain-title">'+esc(cur.title)+'</div>'+renderChain(cur);
   }
-
+  h+='</div>';
   return h;
+}
+
+function eagleMood(goals){
+  if(!goals.length) return 'idle';
+  if(goals.every(goalDoneToday)) return 'flex';
+  if(goals.some(function(g){ return tasksLeft(g)===1; })) return 'point';
+  return 'idle';
+}
+
+function mascotMood(goals){
+  if(!goals.length) return 'empty';
+  if(goals.every(goalDoneToday)) return 'allDone';
+  if(goals.some(function(g){ return tasksLeft(g)===1; })) return 'almost';
+  if(anyDoneToday()) return 'progress';
+  return 'hello';
+}
+
+/* Тропинка: кружки-дни цели. Нажатие открывает задачи этого дня. */
+function renderTrail(g){
+  const total=Math.max(1,g.targetDays||30);
+  const todayIdx=Math.max(0,Math.min(total-1,diffDays(g.created,today())));
+  const from=Math.max(0,todayIdx-2), to=Math.min(total,from+7);
+  const offs=[10,34,52,58,44,20,-4];
+
+  let h='<div class="trail">';
+  for(let i=from;i<to;i++){
+    const d=addDays(g.created,i);
+    const done=allDone(g,d), isToday=d===today(), future=d>today();
+    const cls=done?'done':isToday?'now':future?'future':'miss';
+    h+='<div class="tnode '+cls+'" data-act="day" data-g="'+g.id+'" data-d="'+d+'" '+
+       'style="margin-left:'+offs[(i-from)%7]+'px;animation-delay:'+((i-from)*70)+'ms">'+
+       (done?ICON_CHECK:String(i+1))+'</div>';
+  }
+  if(to>=total){
+    h+='<div class="tfinish" style="margin-left:20px">'+
+       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v6a5 5 0 0 1-10 0z"/><path d="M7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3M9 20h6M12 15v5"/></svg></div>';
+  }
+  return h+'</div>';
+}
+
+function miniFlame(){
+  return '<svg viewBox="0 0 24 24" fill="var(--fire-2)"><path d="M12 2c.5 3.2-1.4 4.6-2.7 6C7.8 9.6 7 11 7 13a5 5 0 0 0 10 0c0-2.7-1.6-4.4-2.6-6.2-.4 .9-1 1.5-1.7 1.9.7-2.4.2-5-.7-6.7z"/></svg>';
 }
 
 /* ================== ЭКРАН: ЦЕЛИ ================== */
@@ -1218,9 +1571,10 @@ function renderChain(g){
   for(let i=0;i<days.length-1;i++){
     const x1=xs(i),y1=TOP+i*STEP,x2=xs(i+1),y2=TOP+(i+1)*STEP;
     const on=allDone(g,days[i])&&allDone(g,days[i+1]);
+    const nxt=!on&&((days[i]===today()&&allDone(g,days[i]))||days[i+1]===today());
     for(let k=1;k<=2;k++){
       const f=k/3;
-      h+='<i class="link'+(on?' on':'')+'" style="left:'+(x1+(x2-x1)*f).toFixed(2)+'%;top:'+(y1+(y2-y1)*f).toFixed(1)+'px;animation-delay:'+(i*30)+'ms"></i>';
+      h+='<i class="link'+(on?' on':(nxt?' next':''))+'" style="left:'+(x1+(x2-x1)*f).toFixed(2)+'%;top:'+(y1+(y2-y1)*f).toFixed(1)+'px;animation-delay:'+(i*30)+'ms"></i>';
     }
   }
 
@@ -1278,7 +1632,15 @@ function openDay(goalId,dateStr){
   back.className='backdrop'; back.id='backdrop';
   const sheet=document.createElement('div');
   sheet.className='sheet'; sheet.id='sheet';
-  sheet.innerHTML='<div class="sheet-grip"></div><div class="sheet-num">'+
+  const left=(g.tasks||[]).filter(function(tk){ return !isTaskDone(g,dateStr,tk.id); }).length;
+  const sheetMood = full?'allDone':(left===1?'almost':(left<(g.tasks||[]).length?'progress':'hello'));
+
+  sheet.innerHTML='<div class="sheet-grip"></div>'+
+    (isToday?'<div class="mascot-zone" style="min-height:88px;margin-bottom:14px">'+
+      '<div class="mascot" data-act="sheet-poke" style="width:78px;height:76px">'+
+      eagleSvg(full?'flex':(left===1?'point':'idle'))+'</div>'+
+      '<div class="bubble" id="sheet-bubble">'+esc(say(sheetMood))+'</div></div>':'')+
+    '<div class="sheet-num">'+
     '<div class="sheet-badge '+cls+'">'+n+'</div><div><div class="sheet-t">'+t('dayTitle',{n:n})+'</div>'+
     '<div class="sheet-s">'+esc(g.title)+' \u00b7 '+status+'</div></div></div>'+body+note+
     '<button class="btn btn-ghost" data-act="sheet-close">'+t('close')+'</button>';
@@ -1290,15 +1652,34 @@ function openDay(goalId,dateStr){
   sheet.addEventListener('click',function(e){
     const el=e.target.closest('[data-act]'); if(!el) return;
     if(el.dataset.act==='sheet-close'){ closeSheet(); return; }
+    if(el.dataset.act==='sheet-poke'){
+      el.classList.add('cheer');
+      setTimeout(function(){ el.classList.remove('cheer'); },800);
+      const sb=document.getElementById('sheet-bubble');
+      if(sb){ sb.textContent=say('poke'); sb.style.animation='none'; void sb.offsetHeight; sb.style.animation=''; }
+      haptic('tap'); return;
+    }
     if(el.dataset.act==='sheet-task'){
       const r=toggleTask(Number(el.dataset.g),Number(el.dataset.t));
       el.classList.toggle('on'); haptic('tap');
       if(r&&r.completed){
         const rect=el.getBoundingClientRect();
         sparks(rect.left+rect.width/2,rect.top+rect.height/2);
-        haptic('ok');
-        toast(r.grew?t('inRow',{n:r.streak,w:dayWord(r.streak)}):t('goalAllDone'));
-        closeSheet(); setTimeout(render,320);
+        closeSheet();
+        // полноэкранное поздравление с орлом — как при закрытии дня
+        setTimeout(function(){
+          const allNow=S.goals.filter(function(x){ return x.tasks&&x.tasks.length; }).every(goalDoneToday);
+          celebrate(r.grew?S.streak:0,
+                    allNow?t('celAll'):(r.grew?t('celFirst'):t('celGoal')),
+                    r.grew?t('celSub'):say('allDone'));
+        },340);
+      } else {
+        // не вся цель закрыта — орёл всё равно реагирует
+        const m=document.querySelector('.mascot');
+        if(m){ m.classList.add('cheer'); setTimeout(function(){ m.classList.remove('cheer'); },800); }
+        const b=document.getElementById('sheet-bubble')||document.getElementById('bubble');
+        if(b&&r){ b.textContent=(r.left===1)?say('almost'):(r.on?say('progress'):say('hello'));
+          b.style.animation='none'; void b.offsetHeight; b.style.animation=''; }
       }
     }
   });
@@ -1311,11 +1692,65 @@ function closeSheet(){
   setTimeout(function(){ if(back) back.remove(); if(sheet) sheet.remove(); },340);
 }
 
+function viewRivals(){
+  return '<div class="sec"><div class="sec-t">'+t('rivals')+'</div></div>'+
+    '<div class="panel" style="text-align:center;padding:30px 20px">'+
+    '<div class="mascot" style="width:96px;height:96px;margin:0 auto 16px">'+eagleSvg('flex')+'</div>'+
+    '<div class="empty-t">'+t('rivalSoon')+'</div>'+
+    '<div class="empty-s" style="margin-bottom:0">'+t('rivalSoonSub')+'</div></div>';
+}
+
 function avatarHtml(u,size){
   const sz=size||66;
   if(u&&u.photo) return '<img class="ava" src="'+esc(u.photo)+'" style="width:'+sz+'px;height:'+sz+'px" alt="">';
   const letter=((u&&u.name)||'?').trim().charAt(0).toUpperCase();
   return '<div class="ava" style="width:'+sz+'px;height:'+sz+'px;font-size:'+Math.round(sz/2.7)+'px">'+esc(letter)+'</div>';
+}
+
+/* ================== ЭКРАН: ПЕРСОНАЛИЗАЦИЯ ================== */
+function viewPerson(){
+  const finished=S.goals.filter(function(g){ return goalStat(g).finished; }).length;
+  const total=Object.keys(S.days).filter(function(k){ return S.days[k]==='done'; }).length;
+
+  return '<div class="sec"><div class="sec-t">'+t('profile')+'</div></div>'+
+    '<div class="panel" style="margin-bottom:14px">'+
+    '<div class="profile-head">'+avatarHtml(S,66)+
+    '<div style="min-width:0"><div class="card-t" style="font-size:19px">'+esc(S.name)+'</div>'+
+    '<div class="card-s">'+(S.nick?'@'+esc(S.nick):t('noNick'))+' · '+finished+' '+t('goalsDone')+'</div></div></div>'+
+    '<div class="gap"></div><div class="label">'+t('name')+'</div>'+
+    '<input class="field" id="p-name" value="'+esc(S.name)+'">'+
+    '<div style="height:10px"></div>'+
+    '<button class="btn btn-main" data-act="save-name">'+t('nameSave')+'</button></div>'+
+
+    '<div class="tiles">'+
+    '<div class="tile"><div class="tile-n" style="color:var(--fire-2)">'+liveStreak()+'</div><div class="tile-l">'+t('streakDays')+'</div></div>'+
+    '<div class="tile"><div class="tile-n" style="color:var(--violet)">'+(S.best||0)+'</div><div class="tile-l">'+t('bestStreak')+'</div></div>'+
+    '<div class="tile"><div class="tile-n">'+total+'</div><div class="tile-l">'+t('totalMarked')+'</div></div>'+
+    '<div class="tile"><div class="tile-n" style="color:var(--mint)">'+finished+'</div><div class="tile-l">'+t('goalsClosed')+'</div></div>'+
+    '</div>'+
+
+    '<div class="panel" style="margin-bottom:14px">'+
+    '<div class="label" style="margin-bottom:10px">'+t('theme')+'</div>'+
+    '<div class="chips" style="gap:10px">'+
+    Object.keys(THEMES).map(function(k){
+      const c=THEMES[k];
+      return '<div data-act="theme" data-v="'+k+'" style="flex:none;width:46px;height:46px;'+
+        'border-radius:14px;cursor:pointer;background:linear-gradient(140deg,'+c.a+','+c.b+');'+
+        'box-shadow:0 3px 0 '+c.ad+';border:3px solid '+(S.theme===k?'var(--cream)':'transparent')+'"></div>';
+    }).join('')+
+    '</div><div class="card-s" style="margin:11px 3px 0">'+t('themeSub')+'</div></div>'+
+
+    '<div class="card-s" style="text-align:center;margin:0 0 14px;color:var(--dim)">'+APP_VERSION+'</div>'+
+    '<div class="panel"><button class="btn btn-ghost" data-act="tour">'+t('tour1t')+'</button></div>';
+}
+
+/* ================== ЭКРАН: СОРЕВНОВАНИЯ ================== */
+function viewRivals(){
+  return '<div class="sec"><div class="sec-t">'+t('rivals')+'</div></div>'+
+    '<div class="panel" style="text-align:center;padding:30px 20px">'+
+    '<div class="mascot" style="margin:0 auto 6px;width:110px;height:104px">'+eagleSvg('flex')+'</div>'+
+    '<div class="empty-t">'+t('rivalSoon')+'</div>'+
+    '<div class="empty-s" style="margin-bottom:0">'+t('rivalSoonSub')+'</div></div>';
 }
 
 /* ================== ЭКРАН: ЕЩЁ ================== */
@@ -1401,19 +1836,21 @@ function viewSettings(){
 
 /* ================== НАВИГАЦИЯ ================== */
 const NAV_ICONS={
-  today:'<path d="M13 2 4 14h6l-1 8 9-12h-6z"/>',
-  goals:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>',
-  stats:'<path d="M6 20a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM8.5 15.5 15 8.5"/>',
-  more:'<circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/>'
+  star:'<path d="m12 3 2.6 5.6 6 .8-4.4 4.2 1.1 6L12 16.8 6.7 19.6l1.1-6L3.4 9.4l6-.8z"/>',
+  cup:'<path d="M7 4h10v6a5 5 0 0 1-10 0z"/><path d="M7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3M9 20h6M12 15v5"/>',
+  swords:'<path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M6 18l3-3M3 21l3-3"/>'
 };
 
 /* Все иконки всегда горят цветом выбранной темы, активная — ярче и крупнее */
 function navHtml(){
-  return ['today','goals','stats','more'].map(function(k){
+  const items=[['more','star','#E8B21F'],['goals','cup','#E8901F'],['rivals','swords','#B01E33']];
+  return items.map(function(it){
+    const k=it[0], ico=it[1], col=it[2];
     const active=screen===k;
-    return '<div class="tab'+(active?' on':'')+'" data-tab="'+k+'">'+
-      '<svg class="ic-lg" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+NAV_ICONS[k]+'</svg>'+
-      '<span>'+t(k)+'</span></div>';
+    return '<div class="tab'+(active?' on':'')+'" data-tab="'+k+'" style="--tc:'+col+'">'+
+      '<div class="tab-frame">'+
+      '<svg class="ic-lg" viewBox="0 0 24 24" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+NAV_ICONS[ico]+'</svg>'+
+      '</div><span>'+t(k)+'</span></div>';
   }).join('');
 }
 
@@ -1422,9 +1859,67 @@ function render(){
   const app=document.getElementById('app');
   app.innerHTML = screen==='today'?viewToday()
                 : screen==='goals'?viewGoals()
-                : screen==='stats'?viewStats()
+                : screen==='person'?viewPerson()
+                : screen==='rivals'?viewRivals()
                 : viewSettings();
   document.getElementById('nav').innerHTML=navHtml();
+  // орёл живёт своей жизнью: меняет реплики и позы
+  const msc=document.getElementById('mascot');
+  const bub=document.getElementById('bubble');
+  if(msc&&bub){
+    clearInterval(window.__eagle);
+    const goalsNow=S.goals.filter(function(g){ return g.tasks&&g.tasks.length; });
+    window.__eagle=setInterval(function(){
+      if(!document.getElementById('mascot')){ clearInterval(window.__eagle); return; }
+      bub.textContent=say(mascotMood(goalsNow));
+      bub.style.animation='none'; void bub.offsetHeight; bub.style.animation='';
+      msc.classList.add('cheer');
+      setTimeout(function(){ msc.classList.remove('cheer'); },800);
+    },7000);
+  }
+
+  const gcar=document.getElementById('gcar');
+  if(gcar){
+    const active=gcar.querySelector('.gpill.on');
+    if(active) gcar.scrollLeft=active.offsetLeft-(gcar.clientWidth/2)+(active.offsetWidth/2);
+    let tmr=null;
+    gcar.addEventListener('scroll',function(){
+      clearTimeout(tmr);
+      tmr=setTimeout(function(){
+        const mid=gcar.scrollLeft+gcar.clientWidth/2;
+        let best=null,bd=1e9;
+        Array.prototype.forEach.call(gcar.children,function(el){
+          const c=el.offsetLeft+el.offsetWidth/2, d=Math.abs(c-mid);
+          if(d<bd){ bd=d; best=el; }
+        });
+        Array.prototype.forEach.call(gcar.children,function(el){ el.classList.toggle('on',el===best); });
+        if(best&&best.dataset.g&&Number(best.dataset.g)!==chainGoal){
+          chainGoal=Number(best.dataset.g);
+          const pg=currentChainGoal();
+          const ttl=document.querySelector('.chain-title');
+          if(ttl&&pg) ttl.textContent=pg.title;
+          const box=document.querySelector('.field-box');
+          if(box&&pg){
+            const old=box.querySelector('.chain');
+            if(old) old.outerHTML=renderChain(pg);
+          }
+        }
+      },90);
+    },{passive:true});
+  }
+
+  const car=document.getElementById('carousel');
+  const dots=document.getElementById('dots');
+  if(car){
+    car.addEventListener('scroll',function(){
+      const w=car.scrollWidth/car.children.length;
+      const i=Math.max(0,Math.min(car.children.length-1,Math.round(car.scrollLeft/w)));
+      if(dots) Array.prototype.forEach.call(dots.children,function(d,k){ d.classList.toggle('on',k===i); });
+      const sl=car.children[i];
+      if(sl&&sl.dataset.gid) chainGoal=Number(sl.dataset.gid);
+    },{passive:true});
+  }
+
   const ring=app.querySelector('.ring-fg');
   if(ring) requestAnimationFrame(function(){ ring.style.strokeDashoffset=ring.dataset.off; });
 
@@ -1433,7 +1928,7 @@ function render(){
 /* ================== СОБЫТИЯ ================== */
 document.getElementById('nav').addEventListener('click',function(e){
   const tab=e.target.closest('.tab'); if(!tab) return;
-  if(screen===tab.dataset.tab) return;
+  if(screen===tab.dataset.tab){ screen='today'; haptic('tap'); render(); return; }
   screen=tab.dataset.tab;
   if(screen!=='goals') draft=null;
   haptic('tap'); render();
@@ -1491,14 +1986,35 @@ document.getElementById('app').addEventListener('click',function(e){
     const r=toggleTask(Number(el.dataset.g),Number(el.dataset.t));
     haptic('tap');
     if(r&&r.completed){
-      const rect=el.getBoundingClientRect();
-      sparks(rect.left+rect.width/2,rect.top+rect.height/2);
-      haptic('ok');
-      const fire=document.getElementById('m-fire');
-      if(fire&&r.grew){ fire.classList.add('pulse'); setTimeout(function(){ fire.classList.remove('pulse'); },500); }
-      toast(r.grew?t('inRow',{n:r.streak,w:dayWord(r.streak)}):t('goalAllDone'));
+      const allNow=S.goals.filter(function(g){ return g.tasks&&g.tasks.length; }).every(goalDoneToday);
+      celebrate(r.grew?S.streak:0,
+                allNow?t('celAll'):(r.grew?t('celFirst'):t('celGoal')),
+                r.grew?t('celSub'):'');
+      return;
     }
+    const m=document.querySelector('.mascot');
+    if(m){ m.classList.add('cheer'); setTimeout(function(){ m.classList.remove('cheer'); },800); }
     render(); return;
+  }
+
+  if(act==='pick'){ chainGoal=Number(el.dataset.g); haptic('tap'); render(); return; }
+
+  if(act==='pick'){
+    chainGoal=Number(el.dataset.g);
+    haptic('tap'); render();
+    setTimeout(function(){
+      const on=document.querySelector('.gpill.on');
+      if(on&&on.scrollIntoView) on.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+    },40);
+    return;
+  }
+
+  if(act==='poke'){
+    el.classList.add('cheer');
+    setTimeout(function(){ el.classList.remove('cheer'); },800);
+    const b=document.getElementById('bubble');
+    if(b){ b.textContent=say('poke'); b.style.animation='none'; void b.offsetHeight; b.style.animation=''; }
+    haptic('tap'); return;
   }
 
   if(act==='sub'){
@@ -1637,7 +2153,7 @@ function syncDraft(){
   if(!S.mainGoal&&S.goals.length) S.mainGoal=S.goals[0].id;
   if(S.remindCount==null) S.remindCount=2;
   if(S.remindTimes==null) S.remindTimes='';
-  if(!S.theme) S.theme='violet';
+  if(!S.theme||!THEMES[S.theme]) S.theme='crimson';
   applyTheme(S.theme);
   document.documentElement.lang=S.lang;
   memory=JSON.parse(JSON.stringify(S));
