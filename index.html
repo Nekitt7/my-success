@@ -310,6 +310,26 @@ button,input,textarea{font-family:inherit}
   font-size:14px;z-index:200;box-shadow:0 6px 20px rgba(0,0,0,.45);
   transition:transform .4s cubic-bezier(.2,1.4,.4,1);max-width:88%;text-align:center}
 .toast.show{transform:translate(-50%,0)}
+.flash{position:fixed;inset:0;z-index:250;display:flex;align-items:center;justify-content:center;
+  pointer-events:none;opacity:0;transition:opacity .18s}
+.flash.show{opacity:1}
+.flash-ring{position:absolute;width:150px;height:150px;border-radius:50%;border:6px solid;
+  animation:ringOut .8s cubic-bezier(.2,.8,.3,1) forwards}
+.flash-txt{position:relative;font-size:34px;font-weight:900;letter-spacing:2px;
+  animation:flashPop .8s cubic-bezier(.3,1.6,.4,1) forwards;
+  text-shadow:0 4px 18px rgba(0,0,0,.25)}
+@keyframes slideL{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
+@keyframes slideR{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
+@keyframes ringOut{0%{transform:scale(.4);opacity:.9}100%{transform:scale(1.8);opacity:0}}
+@keyframes flashPop{0%{transform:scale(.5);opacity:0}30%{transform:scale(1.12);opacity:1}
+  75%{transform:scale(1);opacity:1}100%{transform:scale(1.05);opacity:0}}
+
+.badge-box.fire.burst{animation:fireBurstAnim .9s cubic-bezier(.3,1.5,.4,1)}
+@keyframes fireBurstAnim{0%{transform:scale(1)}30%{transform:scale(1.22)}
+  55%{transform:scale(.98)}100%{transform:scale(1)}}
+.badge-box.fire .badge-ico svg{animation:flameFlicker 1.2s ease-in-out infinite;transform-origin:50% 80%}
+.badge-box.fire .badge-n{color:var(--fire-3)}
+
 .spark{position:fixed;width:9px;height:9px;border-radius:2px;z-index:150;pointer-events:none}
 
 /* ---------- шторка ---------- */
@@ -475,6 +495,13 @@ button,input,textarea{font-family:inherit}
 /* голубое поле с тропинкой */
 .field-box{background:var(--field);border-radius:var(--r-lg);padding:16px 14px 20px;
   position:relative;overflow:hidden;margin-bottom:22px;animation:drop .45s both}
+.lives{display:flex;align-items:center;gap:6px;margin:0 0 12px;padding:8px 12px;
+  background:rgba(0,0,0,.16);border-radius:12px;width:fit-content}
+.lives-l{font-size:11px;font-weight:900;letter-spacing:1.4px;color:rgba(255,255,255,.85);margin-right:4px}
+.life{width:22px;height:22px;animation:heartBeat 2.4s ease-in-out infinite}
+.life.off{opacity:.45}
+@keyframes heartBeat{0%,100%{transform:scale(1)}12%{transform:scale(1.22)}24%{transform:scale(1)}
+  36%{transform:scale(1.14)}48%{transform:scale(1)}}
 .chain-title{font-size:20px;font-weight:900;letter-spacing:.3px;text-align:center;
   margin:2px 0 4px;letter-spacing:.3px}
 .field-icon{position:absolute;width:44px;height:44px}
@@ -886,6 +913,43 @@ function confetti(){
   }
 }
 
+/* Короткая вспышка после каждой отметки — мгновенная награда */
+function flash(text,color){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){ toast(text); return; }
+  const el=document.createElement('div');
+  el.className='flash';
+  el.innerHTML='<div class="flash-ring" style="border-color:'+(color||'var(--fire-2)')+'"></div>'+
+    '<div class="flash-txt" style="color:'+(color||'var(--fire-2)')+'">'+esc(text)+'</div>';
+  document.body.appendChild(el);
+  requestAnimationFrame(function(){ el.classList.add('show'); });
+  setTimeout(function(){ el.classList.remove('show'); setTimeout(function(){ el.remove(); },260); },820);
+}
+
+/* Огонёк на пьедестале вспыхивает и растёт */
+function fireBurst(){
+  const box=document.getElementById('m-fire');
+  if(!box) return;
+  box.classList.add('burst');
+  setTimeout(function(){ box.classList.remove('burst'); },900);
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const r=box.getBoundingClientRect();
+  const colors=['#FFD24A','#FF7A2F','#E01F1F'];
+  for(let i=0;i<14;i++){
+    const sp=document.createElement('i');
+    sp.className='spark';
+    sp.style.left=(r.left+r.width/2)+'px';
+    sp.style.top=(r.top+r.height/2)+'px';
+    sp.style.background=colors[i%3];
+    sp.style.borderRadius='50%';
+    sp.style.setProperty('--dx',(Math.random()*140-70).toFixed(0)+'px');
+    sp.style.setProperty('--dy',(-Math.random()*110-30).toFixed(0)+'px');
+    sp.style.setProperty('--rot','0deg');
+    sp.style.animation='fly '+(0.6+Math.random()*0.4).toFixed(2)+'s cubic-bezier(.2,.7,.4,1) forwards';
+    document.body.appendChild(sp);
+    setTimeout(function(){ sp.remove(); },1100);
+  }
+}
+
 function celebrate(streak,title,sub){
   const el=document.createElement('div');
   el.className='celebrate'; el.id='celebrate';
@@ -900,6 +964,7 @@ function celebrate(streak,title,sub){
   document.body.appendChild(el);
   requestAnimationFrame(function(){ el.classList.add('show'); });
   confetti(); haptic('ok');
+  if(streak) setTimeout(fireBurst,120);
   const close=function(){
     el.classList.remove('show');
     setTimeout(function(){ el.remove(); render(); },280);
@@ -1441,14 +1506,31 @@ function viewToday(){
   h+='</div>';
 
   // голубое поле: орёл, реплика, тропинка выбранной цели
-  h+='<div class="field-box">'+
+  const fc=goalColor(cur);
+  h+='<div class="field-box" style="--gc:'+fc.c+';--gcd:'+fc.d+
+     ';background:linear-gradient(170deg,color-mix(in srgb,'+fc.c+' 26%,var(--field)),'+
+     'color-mix(in srgb,'+fc.d+' 20%,var(--field)))">'+
      '<div class="mascot-zone">'+
-     '<div class="motto" data-act="poke" id="bubble">'+esc(say(mascotMood(goals)))+'</div></div>';
+     '<div class="motto" data-act="poke" id="bubble">'+esc(say(mascotMood(goals)))+'</div></div>'+
+     livesBar();
   if(cur&&cur.tasks&&cur.tasks.length){
     h+='<div class="chain-title" style="color:'+goalColor(cur).c+'">'+esc(cur.title)+'</div>'+renderChain(cur);
   }
   h+='</div>';
   return h;
+}
+
+/* Жизни = заморозки: сгоревшие показываем пустыми */
+function livesBar(){
+  const max=1, have=S.freezes||0;
+  let h='<div class="lives" data-act="hint" data-h="hintIce"><span class="lives-l">'+t('lives')+'</span>';
+  for(let i=0;i<Math.max(max,have);i++){
+    const on=i<have;
+    h+='<svg class="life'+(on?'':' off')+'" viewBox="0 0 24 24">'+
+       '<path d="M12 21s-8-5.2-8-11a4.6 4.6 0 0 1 8-3 4.6 4.6 0 0 1 8 3c0 5.8-8 11-8 11z" '+
+       'fill="'+(on?'#E01F1F':'none')+'" stroke="'+(on?'#8E1010':'rgba(255,255,255,.55)')+'" stroke-width="2"/></svg>';
+  }
+  return h+'</div>';
 }
 
 function mascotMood(goals){
@@ -1625,7 +1707,9 @@ function renderChain(g){
   for(let i=0;i<totalDays;i++) days.push(addDays(g.created,i));
 
   const STEP=74,TOP=46,AMP=27;
-  const xs=i=>50+AMP*Math.sin(i*0.72);
+  // фиксированный узор: путь всегда ложится одинаково и не плавает
+  const PATTERN=[50,63,73,63,50,37,27,37];
+  const xs=i=>PATTERN[i%PATTERN.length];
   const height=TOP+days.length*STEP+30;
   let h='<div class="chain" style="height:'+height+'px;--gc:'+gc.c+';--gcd:'+gc.d+'">';
 
@@ -1734,7 +1818,7 @@ function openDay(goalId,dateStr){
                     r.grew?t('celSub'):say('allDone'));
         },340);
       } else {
-        // не вся цель закрыта — орёл всё равно реагирует
+        if(r&&r.on) flash(r.left===1?t('flashLast'):t('flashOk'),'var(--fire-2)');
         const m=document.querySelector('.mascot');
         if(m){ m.classList.add('cheer'); setTimeout(function(){ m.classList.remove('cheer'); },800); }
         const b=document.getElementById('sheet-bubble')||document.getElementById('bubble');
@@ -2002,6 +2086,46 @@ function render(){
 
 }
 
+/* ================== СВАЙП МЕЖДУ РАЗДЕЛАМИ ================== */
+const SCREENS=['today','goals','rivals','more'];
+
+(function swipeNav(){
+  let x0=null,y0=null,t0=0,lock=false;
+  const app=document.getElementById('app');
+  if(!app) return;
+
+  app.addEventListener('touchstart',function(e){
+    if(e.touches.length!==1) return;
+    // не перехватываем жест внутри горизонтальных лент
+    lock=!!e.target.closest('.gcar,.carousel,.switcher,.sheet,.chips,.task-rows');
+    x0=e.touches[0].clientX; y0=e.touches[0].clientY; t0=Date.now();
+  },{passive:true});
+
+  app.addEventListener('touchend',function(e){
+    if(x0===null||lock){ x0=null; return; }
+    const t=e.changedTouches[0];
+    const dx=t.clientX-x0, dy=t.clientY-y0, dt=Date.now()-t0;
+    x0=null;
+    if(dt>600) return;
+    if(Math.abs(dx)<64||Math.abs(dx)<Math.abs(dy)*1.8) return;
+
+    const i=SCREENS.indexOf(screen);
+    if(i<0) return;
+    const next=dx<0?i+1:i-1;
+    if(next<0||next>=SCREENS.length) return;
+
+    screen=SCREENS[next];
+    if(screen!=='goals') draft=null;
+    haptic('tap');
+    const app2=document.getElementById('app');
+    if(app2){
+      app2.style.animation='none'; void app2.offsetHeight;
+      app2.style.animation='slide'+(dx<0?'L':'R')+' .28s cubic-bezier(.2,.9,.3,1)';
+    }
+    render();
+  },{passive:true});
+})();
+
 /* ================== СОБЫТИЯ ================== */
 document.getElementById('nav').addEventListener('click',function(e){
   const tab=e.target.closest('.tab'); if(!tab) return;
@@ -2074,8 +2198,7 @@ document.getElementById('app').addEventListener('click',function(e){
                 r.grew?t('celSub'):'');
       return;
     }
-    const m=document.querySelector('.mascot');
-    if(m){ m.classList.add('cheer'); setTimeout(function(){ m.classList.remove('cheer'); },800); }
+    if(r&&r.on) flash(r.left===1?t('flashLast'):t('flashOk'),'var(--fire-2)');
     render(); return;
   }
 
