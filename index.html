@@ -1270,13 +1270,31 @@ function saveState(){
 /* ================== СЕРВЕР ================== */
 let syncBusy=false;
 
+let lastApiError='';
+
 async function api(path,payload){
-  if(!API_URL) throw new Error('no server');
-  const r=await fetch(API_URL.replace(/\/$/,'')+path,{
-    method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(Object.assign({initData:tg?tg.initData:''},payload||{}))
-  });
-  if(!r.ok) throw new Error(r.status);
+  if(!API_URL){ lastApiError='нет адреса сервера'; throw new Error('no server'); }
+  const init=tg?tg.initData:'';
+  if(!init){ lastApiError='нет подписи Telegram — открой через бота'; throw new Error('no initData'); }
+
+  let r;
+  try{
+    r=await fetch(API_URL.replace(/\/$/,'')+path,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(Object.assign({initData:init},payload||{}))
+    });
+  }catch(e){
+    lastApiError='сервер недоступен: '+(e&&e.message?e.message:'сеть');
+    throw e;
+  }
+
+  if(!r.ok){
+    let body='';
+    try{ body=(await r.text()).slice(0,120); }catch(e){}
+    lastApiError='ответ '+r.status+(body?' · '+body:'');
+    throw new Error(r.status);
+  }
+  lastApiError='';
   return r.json();
 }
 
@@ -2143,12 +2161,12 @@ function viewPerson(){
 function loadTop(){
   if(!API_URL) return;
   api('/api/top').then(function(d){ topData=d; render(); })
-    .catch(function(){ toast(t('syncFail')); });
+    .catch(function(){ topData={top:[],me:null,total:0,err:lastApiError}; render(); });
 }
 function loadAdmin(){
   if(!API_URL) return;
   api('/api/admin',{action:'stats'}).then(function(d){ adminData=d; render(); })
-    .catch(function(){ toast(t('syncFail')); });
+    .catch(function(){ adminData={err:lastApiError}; render(); });
 }
 
 /* ================== ЭКРАН: РЕЙТИНГ ================== */
@@ -2191,6 +2209,9 @@ function viewRivals(){
 
   if(!topData){
     h+='<div class="panel"><div class="card-s" style="text-align:center">'+t('loading')+'</div></div>';
+  } else if(topData.err){
+    h+='<div class="panel"><div class="card-t" style="margin-bottom:6px">'+t('errTitle')+'</div>'+
+       '<div class="card-s">'+esc(topData.err)+'</div></div>';
   } else if(!topData.top.length){
     h+='<div class="panel"><div class="card-s" style="text-align:center">'+t('noPlayers')+'</div></div>';
   } else {
@@ -2223,6 +2244,12 @@ function viewAdmin(){
 
   if(!adminData){
     return h+'<div class="panel"><div class="card-s" style="text-align:center">'+t('loading')+'</div></div>';
+  }
+  if(adminData.err){
+    return h+'<div class="panel"><div class="card-t" style="margin-bottom:6px">'+t('errTitle')+'</div>'+
+      '<div class="card-s">'+esc(adminData.err)+'</div>'+
+      '<div class="card-s" style="margin-top:8px;color:var(--dim)">'+t('errHintAdmin')+'</div>'+
+      '<div class="gap"></div><button class="btn btn-main" data-act="a-refresh">'+t('refresh')+'</button></div>';
   }
   const st=adminData.stats||{};
 
@@ -2626,7 +2653,7 @@ document.getElementById('app').addEventListener('click',function(e){
       if(!nick) return;
       api('/api/find',{nick:nick}).then(function(d){
         foundPlayer=(d&&d.nick)?d:false; render();
-      }).catch(function(){ toast(t('syncFail')); });
+      }).catch(function(){ toast(lastApiError||t('syncFail')); });
       return;
     }
     const inp=document.getElementById('a-nick');
@@ -2634,7 +2661,7 @@ document.getElementById('app').addEventListener('click',function(e){
     if(!nick){ toast(t('aNeedNick')); return; }
     api('/api/admin',{action:(act==='a-block')?'block':'unblock',nick:nick})
       .then(function(){ toast(act==='a-block'?t('aDoneBlock'):t('aDoneUnblock')); loadAdmin(); })
-      .catch(function(){ toast(t('syncFail')); });
+      .catch(function(){ toast(lastApiError||t('syncFail')); });
     return;
   }
 
