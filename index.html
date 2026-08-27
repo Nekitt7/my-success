@@ -1286,6 +1286,11 @@ async function pullFromServer(silent){
   syncBusy=true;
   try{
     const d=await api('/api/state');
+    if(d){
+      // приходит всегда, даже когда целей ещё нет
+      S.isAdmin=!!d.admin;
+      S.blocked=!!d.blocked;
+    }
     if(d&&d.goals){
       S.goals=(d.goals||[]).map(function(g){ return migrateGoal(g); });
       S.streak=d.streak||0; S.best=d.best||0;
@@ -1295,8 +1300,6 @@ async function pullFromServer(silent){
       S.seq=Math.max(S.seq||1,(d.seq||0)+1);
       if(typeof d.remindCount==='number') S.remindCount=d.remindCount;
       if(typeof d.remindTimes==='string') S.remindTimes=d.remindTimes;
-      S.isAdmin=!!d.admin;
-      S.blocked=!!d.blocked;
       memory=JSON.parse(JSON.stringify(S));
       if(tg&&tg.CloudStorage&&tg.CloudStorage.setItem){
         try{ tg.CloudStorage.setItem(KEY,JSON.stringify(S),function(){}); }catch(e){}
@@ -1304,9 +1307,17 @@ async function pullFromServer(silent){
       if(!silent) toast(t('syncOk'));
       return true;
     }
+    if(d){ saveLocal(); return true; }
   }catch(e){ if(!silent) toast(t('syncFail')); }
   finally{ syncBusy=false; }
   return false;
+}
+
+function saveLocal(){
+  memory=JSON.parse(JSON.stringify(S));
+  if(tg&&tg.CloudStorage&&tg.CloudStorage.setItem){
+    try{ tg.CloudStorage.setItem(KEY,JSON.stringify(S),function(){}); }catch(e){}
+  }
 }
 function deviceTz(){
   try{ return Intl.DateTimeFormat().resolvedOptions().timeZone||''; }catch(e){ return ''; }
@@ -2769,7 +2780,11 @@ function syncDraft(){
 
   // приложение уже показано и работает; сервер, если есть, догонит данные позже
   if(API_URL) setTimeout(function(){
-    pullFromServer(true).then(function(ok){ if(ok) render(); });
+    pullFromServer(true).then(function(ok){
+      if(ok) render();
+      // подтягиваем рейтинг заранее, чтобы раздел открывался уже заполненным
+      if(S.isAdmin) loadAdmin(); else loadTop();
+    });
   },300);
 
   if(rescued) setTimeout(function(){ toast(t('frozeSaved',{n:rescued})); },700);
