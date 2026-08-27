@@ -132,6 +132,7 @@ button,input,textarea{font-family:inherit}
   box-shadow:none;width:100%;padding:13px}
 .btn-ghost:active{transform:translateY(2px)}
 .btn:disabled{opacity:.45;cursor:default;transform:none;box-shadow:none}
+.btn-sm{padding:10px 14px;font-size:13px}
 
 /* ---------- дорожка и подшаги ---------- */
 .sub-num{font-size:11px;font-weight:900;color:var(--dim);flex:none;min-width:24px;margin-top:2px}
@@ -153,6 +154,12 @@ button,input,textarea{font-family:inherit}
 
 /* ---------- цепочка дней ---------- */
 .chain{position:relative;width:100%;margin:4px 0 8px}
+.decor{position:absolute;display:block;pointer-events:none;z-index:0;
+  animation:decorIn .6s both, decorFloat 6s ease-in-out infinite}
+.decor svg{width:100%;height:auto;display:block;filter:drop-shadow(0 3px 6px rgba(0,0,0,.14))}
+.decor.win{animation:decorIn .6s both, decorFloat 3s ease-in-out infinite}
+@keyframes decorIn{from{opacity:0;transform:translateY(14px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes decorFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 .day{position:absolute;transform:translateX(-50%);width:56px;height:56px;border-radius:50%;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   border:3px solid var(--line);background:var(--surface-2);color:var(--dim);
@@ -278,6 +285,31 @@ button,input,textarea{font-family:inherit}
   display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;
   color:var(--violet)}
 .profile-head{display:flex;align-items:center;gap:14px;margin-bottom:4px}
+.ava-wrap{position:relative;flex:none;cursor:pointer}
+.ava-wrap:active{transform:scale(.95)}
+.ava-edit{position:absolute;right:-2px;bottom:-2px;width:26px;height:26px;border-radius:50%;
+  background:var(--violet);border:2px solid var(--surface);display:flex;align-items:center;justify-content:center}
+.ava-edit svg{width:13px;height:13px}
+/* строки рейтинга */
+.prow{display:flex;align-items:center;gap:11px;padding:10px 0}
+.prow.me{background:color-mix(in srgb,var(--fire-2) 10%,transparent);
+  border-radius:10px;padding:10px 8px;margin:0 -8px}
+.prow.blocked{opacity:.5}
+.prow-n{font-size:15px;font-weight:900;color:var(--muted);min-width:24px;text-align:center;flex:none;
+  font-variant-numeric:tabular-nums}
+.prow-mid{flex:1;min-width:0}
+.prow-name{font-size:15px;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prow-sub{font-size:12px;font-weight:700;color:var(--muted);margin-top:2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prow-right{display:flex;flex-direction:column;align-items:center;gap:2px;flex:none}
+.prow-right span{display:flex;align-items:center;gap:3px;font-size:13px;font-weight:900;color:var(--fire-2)}
+.prow-right .bolt{width:13px;height:13px}
+.rowline{height:2px;background:var(--line-soft);margin:2px 0}
+
+.prof-rank{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:13px;font-weight:900}
+.prof-rank span{color:var(--muted)}
+.prof-rank .bolt{width:14px;height:14px;color:var(--fire-2);margin-left:4px}
+.prof-rank b{color:var(--fire-2)}
 
 .empty{text-align:center;padding:34px 20px;animation:fade .5s both}
 .empty svg{opacity:.35;margin-bottom:14px}
@@ -434,6 +466,31 @@ button,input,textarea{font-family:inherit}
   100%{box-shadow:0 4px 0 var(--plum-deep),0 0 0 16px rgba(255,155,90,0)}}
 
 /* три значка в рамках, как на эскизе */
+/* полоса кубка */
+.rankbar{background:var(--surface);border:3px solid var(--rc);border-radius:var(--r-md);
+  padding:12px 14px;margin-bottom:12px;animation:drop .4s both;
+  box-shadow:0 0 16px color-mix(in srgb,var(--rc) 30%,transparent)}
+.rank-head{display:flex;align-items:center;gap:9px}
+.rank-cup{display:flex;flex:none}
+.rank-name{font-size:16px;font-weight:900;color:var(--rd);flex:1}
+.rank-ch{display:flex;align-items:center;gap:4px;font-size:17px;font-weight:900;color:var(--fire-2)}
+.bolt{display:inline-flex;width:17px;height:17px}
+.bolt svg{width:100%;height:100%}
+.rank-line{height:7px;border-radius:5px;background:var(--line);overflow:hidden;margin:10px 0 7px}
+.rank-line i{display:block;height:100%;border-radius:5px;
+  background:linear-gradient(90deg,var(--rc),var(--rd));transition:width .6s cubic-bezier(.2,.8,.3,1)}
+.rank-hint{font-size:12px;font-weight:800;color:var(--muted)}
+
+/* всплывающие заряды */
+.chargefly{position:fixed;left:50%;top:38%;transform:translate(-50%,10px) scale(.7);
+  z-index:260;pointer-events:none;opacity:0;transition:all .4s cubic-bezier(.2,1.5,.4,1);
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  font-size:40px;font-weight:900;color:var(--fire-2);
+  text-shadow:0 4px 20px rgba(255,122,47,.45)}
+.chargefly.show{opacity:1;transform:translate(-50%,-30px) scale(1)}
+.chargefly .bolt{width:34px;height:34px}
+.chargefly b{font-size:14px;letter-spacing:1.5px;color:var(--violet)}
+
 .badges{display:flex;gap:8px;margin-bottom:16px;align-items:flex-end;animation:drop .4s both}
 .badge-box{flex:1;background:var(--surface);border:3px solid var(--line);
   border-radius:var(--r-md) var(--r-md) 0 0;
@@ -604,11 +661,9 @@ button,input,textarea{font-family:inherit}
    API_URL — адрес сервера. Без него работают личные цели,
    но соревнования и поиск людей недоступны: им нужна общая база.
    ================================================ */
-const APP_VERSION = 'v8 · орёл + празднование';
-// Синхронизация выключена: приложение работает полностью само по себе.
-// Чтобы включить — впиши сюда адрес сервера, например
-// 'https://sparkogoal.ru' или адрес туннеля cloudflared.
-const API_URL = '';
+const APP_VERSION = 'v9 · сервер elarisgoal.ru';
+// Постоянный адрес сервера. Меняется только при переезде на другой хостинг.
+const API_URL = 'https://elarisgoal.ru';
 const GROUP_URL = 'https://t.me/+qnCKdz1iuhAyMGEy';
 
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
@@ -706,12 +761,8 @@ ru:{today:'Сегодня',goals:'Цели',stats:'Путь',person:'Профи�
  tour1s:'Большая цель разбивается на шаги, а шаги — на дни. Каждый день ты делаешь один шаг и отмечаешь его.',
  tour2t:'Огонёк — главное',
  tour2s:'🔥 слева вверху — сколько дней подряд ты не пропускал. ❄️ в центре — заморозка, одна на неделю: спасёт серию, если пропустишь один день. 🏆 справа — твой рекорд.',
- tour3t:'Четыре раздела внизу',
- tour3s:'«Сегодня» — что сделать прямо сейчас. «Цели» — все твои цели и планы. «Путь» — цепочка прожитых дней. «Ещё» — профиль, напоминания и цвет.',
- tour4t:'Кнопка «Готово»',
- tour4s:'Нажимаешь её, когда шаг сделан. У каждой цели своя кнопка — их можно нажимать по отдельности. Огонёк за день растёт один раз, сколько бы целей ты ни закрыл.',
- tour5t:'Шаги и подшаги',
- tour5s:'Пиши шаги с новой строки — они нумеруются 1, 2, 3. Начни строку с двух пробелов — получится подшаг 1.1, 1.2. Подшаги это чек-лист внутри дня.',
+ tour3t:'Огонёк и заряды',
+ tour3s:'Закрыл все задачи цели — получаешь 10 зарядов ⚡ и растёт огонёк 🔥. Сохранил серию — ещё 20. За заряды дают кубки: бронза, серебро, золото и выше.',
  hintFire:'Дней подряд без пропусков',hintIce:'Заморозки: спасают серию при пропуске',hintBest:'Твой рекорд серии',
  community:'Сообщество',communitySub:'Обсуждения, поддержка и вопросы',openGroup:'Войти в группу',
  close:'Закрыть',
@@ -719,7 +770,7 @@ ru:{today:'Сегодня',goals:'Цели',stats:'Путь',person:'Профи�
  stepsLeft:'Осталось шагов: {n}',daysLeftShort:'дней осталось',
  finishLabel:'ЦЕЛЬ ВЗЯТА',goalPick:'Выбери цель',
  name:'Имя',nameSave:'Сохранить',nameSaved:'Имя сохранено',nick:'Ник в Telegram',
- noNick:'не указан',avatarHint:'Фото и ник берутся из твоего профиля Telegram',
+ noNick:'не указан',avatarHint:'Без своего фото подставляется аватар из Telegram',
  genPlan:'Предложить план',genWait:'Собираю план…',genOk:'План готов — проверь и правь',
  genFail:'Нейросеть не ответила',genNeedTitle:'Сначала впиши цель',
  genAgain:'Другой вариант',genLocal:'План собран из готовых наборов'},
@@ -792,12 +843,8 @@ en:{today:'Today',goals:'Goals',stats:'Path',person:'Profile',rivals:'Duels',mor
  tour1s:'A big goal splits into steps, and steps split into days. Each day you take one step and mark it.',
  tour2t:'The streak matters most',
  tour2s:'🔥 top left is how many days in a row you did not skip. ❄️ is a freeze, one per week: it saves your streak if you miss a day. 🏆 is your record.',
- tour3t:'Four sections below',
- tour3s:'Today is what to do now. Goals holds your plans. Path is the chain of days you lived. More has your profile, reminders and colours.',
- tour4t:'The Done button',
- tour4s:'Press it when a step is finished. Every goal has its own button and they work separately. The streak grows once a day no matter how many goals you close.',
- tour5t:'Steps and sub-steps',
- tour5s:'Write steps on new lines, they get numbered 1, 2, 3. Start a line with two spaces to make a sub-step 1.1, 1.2. Sub-steps are a checklist inside the day.',
+ tour3t:'Огонёк и заряды',
+ tour3s:'Закрыл все задачи цели — получаешь 10 зарядов ⚡ и растёт огонёк 🔥. Сохранил серию — ещё 20. За заряды дают кубки: бронза, серебро, золото и выше.',
  hintFire:'Days in a row',hintIce:'Freezes: they save your streak',hintBest:'Your best streak',
  community:'Community',communitySub:'Discussion, support and questions',openGroup:'Join the group',
  close:'Close',
@@ -914,6 +961,25 @@ function confetti(){
 }
 
 /* Короткая вспышка после каждой отметки — мгновенная награда */
+/* Всплывающие заряды: +10, +20, +50 */
+function chargeFly(events){
+  if(!events||!events.length) return;
+  let delay=0;
+  events.forEach(function(e){
+    setTimeout(function(){
+      const el=document.createElement('div');
+      el.className='chargefly';
+      const label=e.reason==='rank'?t('newRank',{r:rankName(e.rank)}):'';
+      el.innerHTML='<i class="bolt">'+BOLT_SVG+'</i>+'+e.n+(label?'<b>'+esc(label)+'</b>':'');
+      document.body.appendChild(el);
+      requestAnimationFrame(function(){ el.classList.add('show'); });
+      setTimeout(function(){ el.remove(); },1600);
+      haptic('ok');
+    },delay);
+    delay+=550;
+  });
+}
+
 function flash(text,color){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){ toast(text); return; }
   const el=document.createElement('div');
@@ -1071,6 +1137,57 @@ function myTimes(){
   return autoTimes(Math.max(0,Math.min(MAX_REMINDERS,Number(S.remindCount==null?2:S.remindCount))));
 }
 
+/* ================== ЗАРЯДЫ И КУБКИ ================== */
+const CHARGE_GOAL=10;    // за закрытие всех задач одной цели за день
+const CHARGE_STREAK=20;  // за сохранённый огонёк
+const CHARGE_RANK=50;    // за новый кубок
+
+const RANKS=[
+  {id:0,ru:'Новичок',  en:'Rookie',   need:0,    c:'#9AA7B2',d:'#6E7A85'},
+  {id:1,ru:'Бронза',   en:'Bronze',   need:150,  c:'#C87F3A',d:'#8E5620'},
+  {id:2,ru:'Серебро',  en:'Silver',   need:400,  c:'#A9B6C2',d:'#78868F'},
+  {id:3,ru:'Золото',   en:'Gold',     need:900,  c:'#E8B21F',d:'#A97D06'},
+  {id:4,ru:'Платина',  en:'Platinum', need:1800, c:'#4FD1C5',d:'#2C8F87'},
+  {id:5,ru:'Алмаз',    en:'Diamond',  need:3200, c:'#5AA9FF',d:'#2C6CB8'},
+  {id:6,ru:'Мастер',   en:'Master',   need:5500, c:'#B06BFF',d:'#7038C4'},
+  {id:7,ru:'Легенда',  en:'Legend',   need:9000, c:'#FF5A5A',d:'#B01414'}
+];
+
+function rankOf(charges){
+  let r=RANKS[0];
+  for(let i=0;i<RANKS.length;i++) if((charges||0)>=RANKS[i].need) r=RANKS[i];
+  return r;
+}
+function nextRank(charges){
+  for(let i=0;i<RANKS.length;i++) if((charges||0)<RANKS[i].need) return RANKS[i];
+  return null;
+}
+function rankName(r){ return (S&&S.lang==='en')?r.en:r.ru; }
+
+/* Начисление зарядов. Возвращает список событий для показа. */
+function addCharges(n,reason){
+  const before=rankOf(S.charges||0).id;
+  S.charges=(S.charges||0)+n;
+  const events=[{n:n,reason:reason}];
+  const after=rankOf(S.charges).id;
+  if(after>before){
+    S.charges+=CHARGE_RANK;
+    events.push({n:CHARGE_RANK,reason:'rank',rank:RANKS[after]});
+  }
+  return events;
+}
+
+/* Кубок: SVG под цвет ранга */
+function cupSvg(r,size){
+  const sz=size||22;
+  return '<svg viewBox="0 0 24 24" width="'+sz+'" height="'+sz+'" fill="none">'+
+    '<path d="M7 4h10v6a5 5 0 0 1-10 0z" fill="'+r.c+'" stroke="'+r.d+'" stroke-width="1.6" stroke-linejoin="round"/>'+
+    '<path d="M7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3" stroke="'+r.d+'" stroke-width="1.8" stroke-linecap="round"/>'+
+    '<path d="M9 20h6M12 15v5" stroke="'+r.d+'" stroke-width="2" stroke-linecap="round"/></svg>';
+}
+
+const BOLT_SVG='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>';
+
 /* ================== ЦВЕТОВЫЕ ТЕМЫ ================== */
 /* Две схемы: меняются только фон, панели, линии и текст.
    Акцентный цвет темы остаётся тем же, что выбрал человек. */
@@ -1178,6 +1295,8 @@ async function pullFromServer(silent){
       S.seq=Math.max(S.seq||1,(d.seq||0)+1);
       if(typeof d.remindCount==='number') S.remindCount=d.remindCount;
       if(typeof d.remindTimes==='string') S.remindTimes=d.remindTimes;
+      S.isAdmin=!!d.admin;
+      S.blocked=!!d.blocked;
       memory=JSON.parse(JSON.stringify(S));
       if(tg&&tg.CloudStorage&&tg.CloudStorage.setItem){
         try{ tg.CloudStorage.setItem(KEY,JSON.stringify(S),function(){}); }catch(e){}
@@ -1233,7 +1352,7 @@ function blank(){
     name:u.first_name||'Friend', nick:u.username||'', photo:u.photo_url||'',
     lang:tgLang(),streak:0,best:0,freezes:1,freezeWeek:weekTag(),
     lastDone:null,days:{},goals:[],seq:1,start:today(),mainGoal:null,
-    theme:'crimson',scheme:'light',tourDone:false,remindCount:2,remindTimes:''
+    theme:'crimson',scheme:'light',tourDone:false,charges:0,goalsAdded:{},blockUntil:null,avatar:'',paid:{},isAdmin:false,blocked:false,remindCount:2,remindTimes:''
   };
 }
 function weekTag(){ const d=new Date(); const w=(d.getDay()+6)%7; d.setDate(d.getDate()-w); return key(d); }
@@ -1263,6 +1382,26 @@ function spread(count,total){
   for(let i=count-1;rest>0;i--,rest--) out[i%count]+=1;
   return out;
 }
+/* Не больше 20 новых целей в день, иначе блок на трое суток */
+const GOALS_PER_DAY=20, BLOCK_DAYS=3;
+
+function blockedUntil(){
+  if(!S.blockUntil) return null;
+  return (S.blockUntil>today())?S.blockUntil:null;
+}
+function goalsAddedToday(){ return (S.goalsAdded&&S.goalsAdded[today()])||0; }
+
+function canAddGoal(){
+  if(S.blocked) return false;
+  if(blockedUntil()) return false;
+  return goalsAddedToday()<GOALS_PER_DAY;
+}
+function noteGoalAdded(){
+  if(!S.goalsAdded) S.goalsAdded={};
+  S.goalsAdded[today()]=goalsAddedToday()+1;
+  if(S.goalsAdded[today()]>=GOALS_PER_DAY) S.blockUntil=addDays(today(),BLOCK_DAYS);
+}
+
 function addGoal(title,targetDays,items){
   const g={id:S.seq++,title:title,targetDays:targetDays,created:today(),log:{},
     tasks:items.map(function(x){
@@ -1313,17 +1452,26 @@ function toggleTask(goalId,taskId){
   if(i>=0) arr.splice(i,1); else arr.push(taskId);
   g.log[d]=arr;
 
-  let completed=false, grew=false;
+  let completed=false, grew=false, events=[];
   if(allDone(g,d)){
     completed=true;
+    // за цель начисляем один раз в день
+    if(!S.paid) S.paid={};
+    const key=d+':'+g.id;
+    if(!S.paid[key]){
+      S.paid[key]=1;
+      events=events.concat(addCharges(CHARGE_GOAL,'goal'));
+    }
     if(!S.days[d]){
       S.streak=(S.lastDone===shift(-1))?S.streak+1:1;
       S.best=Math.max(S.best,S.streak);
       S.lastDone=d; S.days[d]='done'; grew=true;
+      events=events.concat(addCharges(CHARGE_STREAK,'streak'));
     }
   }
   saveState();
-  return {on:i<0, completed:completed, grew:grew, streak:S.streak, left:tasksLeft(g)};
+  return {on:i<0, completed:completed, grew:grew, streak:S.streak,
+          left:tasksLeft(g), events:events};
 }
 function addGoalPlan(title,targetDays,plan){
   const items=[];
@@ -1453,7 +1601,7 @@ function showTour(){
     if(a==='skip'){ endTour(); return; }
     if(a==='next'){
       tourStep++;
-      if(tourStep>=5){ endTour(); return; }
+      if(tourStep>=3){ endTour(); return; }
       haptic('tap'); renderTour();
     }
   });
@@ -1462,9 +1610,9 @@ function showTour(){
 function renderTour(){
   const el=document.getElementById('tour'); if(!el) return;
   const n=tourStep+1;
-  const last=tourStep===4;
+  const last=tourStep===2;
   let dots='';
-  for(let i=0;i<5;i++) dots+='<i class="tour-dot'+(i===tourStep?' on':'')+'"></i>';
+  for(let i=0;i<3;i++) dots+='<i class="tour-dot'+(i===tourStep?' on':'')+'"></i>';
   el.innerHTML='<div class="tour-card">'+
     '<div class="tour-ico">'+TOUR_ICONS[tourStep]+'</div>'+
     '<div class="tour-t">'+t('tour'+n+'t')+'</div>'+
@@ -1484,8 +1632,25 @@ function endTour(){
 }
 
 /* ================== ЭКРАН: СЕГОДНЯ ================== */
+function rankBar(){
+  const r=rankOf(S.charges||0), nx=nextRank(S.charges||0);
+  const from=r.need, to=nx?nx.need:r.need;
+  const pct=nx?Math.max(0,Math.min(100,Math.round(((S.charges-from)/(to-from))*100))):100;
+  return '<div class="rankbar" style="--rc:'+r.c+';--rd:'+r.d+'">'+
+    '<div class="rank-head">'+
+      '<span class="rank-cup">'+cupSvg(r,26)+'</span>'+
+      '<span class="rank-name">'+rankName(r)+'</span>'+
+      '<span class="rank-ch"><i class="bolt">'+BOLT_SVG+'</i>'+(S.charges||0)+'</span>'+
+    '</div>'+
+    '<div class="rank-line"><i style="width:'+pct+'%"></i></div>'+
+    '<div class="rank-hint">'+(nx
+      ? t('toNext',{n:to-(S.charges||0),r:rankName(nx)})
+      : t('maxRank'))+'</div>'+
+  '</div>';
+}
+
 function viewToday(){
-  let h=topbar(true);
+  let h=rankBar()+topbar(true);
   const goals=sortedGoals().filter(function(g){ return g.tasks&&g.tasks.length; });
 
   if(!goals.length) return h+emptyBlock(t('noGoals'),t('noGoalsSub'),t('createGoal'),'go-new');
@@ -1700,6 +1865,43 @@ function taskForDay(g,dateStr){
 }
 
 /* Цепочка одной цели: от первого дня до последнего дня срока */
+/* Украшения по бокам тропинки: вершины, флажки, облака, сундук.
+   Ставятся на пустой стороне от кружка, чтобы не перекрывать путь. */
+function chainDecor(count,STEP,TOP,g){
+  const gc=goalColor(g);
+  const st=goalStat(g);
+  let h='';
+  const cloud='<svg viewBox="0 0 64 34"><path d="M14 30c-7 0-12-5-12-11S7 8 14 8c2-5 7-8 12-8 7 0 13 5 14 12 6 0 12 4 12 10s-6 10-13 10z" fill="rgba(255,255,255,.34)"/></svg>';
+  const peak='<svg viewBox="0 0 70 56"><path d="M35 2 68 54H2z" fill="rgba(0,0,0,.13)"/><path d="M35 2 24 20l11 9 11-9z" fill="rgba(255,255,255,.5)"/></svg>';
+  const flag='<svg viewBox="0 0 40 56"><path d="M9 54V4" stroke="rgba(255,255,255,.6)" stroke-width="4" stroke-linecap="round"/><path d="M11 6h24l-7 9 7 9H11z" fill="'+gc.c+'"/></svg>';
+  const chest='<svg viewBox="0 0 56 46"><rect x="4" y="18" width="48" height="26" rx="4" fill="#8A5A2B"/><path d="M4 18c0-8 11-14 24-14s24 6 24 14z" fill="#A66C33"/><rect x="24" y="22" width="8" height="12" rx="2" fill="#FFC53D"/></svg>';
+  const star='<svg viewBox="0 0 40 40"><path d="m20 3 5 11 12 1-9 8 3 12-11-6-11 6 3-12-9-8 12-1z" fill="rgba(255,255,255,.42)"/></svg>';
+
+  const items=[
+    {y:TOP+STEP*1.2, side:'left',  w:78, el:cloud, o:.9},
+    {y:TOP+STEP*2.6, side:'left',  w:86, el:peak,  o:1},
+    {y:TOP+STEP*4.0, side:'right', w:56, el:flag,  o:1},
+    {y:TOP+STEP*5.6, side:'right', w:74, el:cloud, o:.8},
+    {y:TOP+STEP*7.0, side:'left',  w:52, el:star,  o:.9},
+    {y:TOP+STEP*8.4, side:'right', w:88, el:peak,  o:1},
+    {y:TOP+STEP*10.0,side:'left',  w:70, el:chest, o:1},
+    {y:TOP+STEP*11.6,side:'right', w:76, el:cloud, o:.85}
+  ];
+
+  items.forEach(function(it,i){
+    if(it.y>TOP+STEP*(count-0.5)) return;
+    const pos=it.side==='left'?'left:4%':'right:4%';
+    h+='<i class="decor" style="'+pos+';top:'+it.y.toFixed(0)+'px;width:'+it.w+'px;'+
+       'opacity:'+it.o+';animation-delay:'+(i*260)+'ms">'+it.el+'</i>';
+  });
+
+  // финишный флаг у последнего кружка
+  if(st.finished){
+    h+='<i class="decor win" style="left:6%;top:'+(TOP+STEP*(count-1))+'px;width:70px">'+flag+'</i>';
+  }
+  return h;
+}
+
 function renderChain(g){
   const gc=goalColor(g);
   const totalDays=Math.max(1,g.targetDays||30);
@@ -1712,6 +1914,7 @@ function renderChain(g){
   const xs=i=>PATTERN[i%PATTERN.length];
   const height=TOP+days.length*STEP+30;
   let h='<div class="chain" style="height:'+height+'px;--gc:'+gc.c+';--gcd:'+gc.d+'">';
+  h+=chainDecor(days.length,STEP,TOP,g);
 
   for(let i=0;i<days.length-1;i++){
     const x1=xs(i),y1=TOP+i*STEP,x2=xs(i+1),y2=TOP+(i+1)*STEP;
@@ -1809,6 +2012,7 @@ function openDay(goalId,dateStr){
       if(r&&r.completed){
         const rect=el.getBoundingClientRect();
         sparks(rect.left+rect.width/2,rect.top+rect.height/2);
+        if(r.events) chargeFly(r.events);
         closeSheet();
         // полноэкранное поздравление с орлом — как при закрытии дня
         setTimeout(function(){
@@ -1819,6 +2023,7 @@ function openDay(goalId,dateStr){
         },340);
       } else {
         if(r&&r.on) flash(r.left===1?t('flashLast'):t('flashOk'),'var(--fire-2)');
+        if(r&&r.events) chargeFly(r.events);
         const m=document.querySelector('.mascot');
         if(m){ m.classList.add('cheer'); setTimeout(function(){ m.classList.remove('cheer'); },800); }
         const b=document.getElementById('sheet-bubble')||document.getElementById('bubble');
@@ -1844,9 +2049,36 @@ function viewRivals(){
     '<div class="empty-s" style="margin-bottom:0">'+t('rivalSoonSub')+'</div></div>';
 }
 
+/* Загрузка своей аватарки: ужимаем до 160px, чтобы не раздувать хранилище */
+function pickAvatar(){
+  const inp=document.createElement('input');
+  inp.type='file'; inp.accept='image/*';
+  inp.addEventListener('change',function(){
+    const f=inp.files&&inp.files[0]; if(!f) return;
+    if(f.size>8*1024*1024){ toast(t('avaBig')); haptic('warn'); return; }
+    const fr=new FileReader();
+    fr.onload=function(){
+      const img=new Image();
+      img.onload=function(){
+        const N=160, cv=document.createElement('canvas');
+        cv.width=N; cv.height=N;
+        const ctx=cv.getContext('2d');
+        const side=Math.min(img.width,img.height);
+        ctx.drawImage(img,(img.width-side)/2,(img.height-side)/2,side,side,0,0,N,N);
+        S.avatar=cv.toDataURL('image/jpeg',0.72);
+        saveState(); haptic('ok'); toast(t('avaSaved')); render();
+      };
+      img.src=fr.result;
+    };
+    fr.readAsDataURL(f);
+  });
+  inp.click();
+}
+
 function avatarHtml(u,size){
   const sz=size||66;
-  if(u&&u.photo) return '<img class="ava" src="'+esc(u.photo)+'" style="width:'+sz+'px;height:'+sz+'px" alt="">';
+  const src=(u&&(u.avatar||u.photo))||'';
+  if(src) return '<img class="ava" src="'+esc(src)+'" style="width:'+sz+'px;height:'+sz+'px" alt="">';
   const letter=((u&&u.name)||'?').trim().charAt(0).toUpperCase();
   return '<div class="ava" style="width:'+sz+'px;height:'+sz+'px;font-size:'+Math.round(sz/2.7)+'px">'+esc(letter)+'</div>';
 }
@@ -1897,13 +2129,133 @@ function viewPerson(){
     '<div class="panel"><button class="btn btn-ghost" data-act="tour">'+t('tour1t')+'</button></div>';
 }
 
-/* ================== ЭКРАН: СОРЕВНОВАНИЯ ================== */
-function viewRivals(){
-  return '<div class="sec"><div class="sec-t">'+t('rivals')+'</div></div>'+
-    '<div class="panel" style="text-align:center;padding:30px 20px">'+
+function loadTop(){
+  if(!API_URL) return;
+  api('/api/top').then(function(d){ topData=d; render(); })
+    .catch(function(){ toast(t('syncFail')); });
+}
+function loadAdmin(){
+  if(!API_URL) return;
+  api('/api/admin',{action:'stats'}).then(function(d){ adminData=d; render(); })
+    .catch(function(){ toast(t('syncFail')); });
+}
 
-    '<div class="empty-t">'+t('rivalSoon')+'</div>'+
-    '<div class="empty-s" style="margin-bottom:0">'+t('rivalSoonSub')+'</div></div>';
+/* ================== ЭКРАН: РЕЙТИНГ ================== */
+let topData=null, foundPlayer=null, adminData=null;
+
+function viewRivals(){
+  if(S.isAdmin) return viewAdmin();
+
+  let h='<div class="sec"><div class="sec-t">'+t('rating')+'</div>'+
+        '<div class="sec-c">'+(topData?topData.total:'')+'</div></div>';
+
+  if(!API_URL){
+    return h+'<div class="panel" style="text-align:center;padding:28px 20px">'+
+      '<div class="empty-t">'+t('ratingOff')+'</div>'+
+      '<div class="empty-s" style="margin-bottom:0">'+t('ratingOffSub')+'</div></div>';
+  }
+
+  // поиск
+  h+='<div class="panel" style="margin-bottom:14px">'+
+     '<div class="label">'+t('findPlayer')+'</div>'+
+     '<div style="display:flex;gap:9px">'+
+     '<input class="field" id="r-nick" placeholder="@ник" style="flex:1" value="">'+
+     '<button class="btn btn-go" data-act="p-find">'+t('find')+'</button></div>';
+  if(foundPlayer){
+    h+='<div class="gap"></div>'+playerRow(foundPlayer,null);
+  } else if(foundPlayer===false){
+    h+='<div class="card-s" style="margin-top:12px">'+t('notFound')+'</div>';
+  }
+  h+='</div>';
+
+  // моя строка
+  if(topData&&topData.me){
+    h+='<div class="sec"><div class="sec-t">'+t('yourPlace')+'</div></div>'+
+       '<div class="panel" style="margin-bottom:14px;border-color:var(--fire-2)">'+
+       playerRow(topData.me,topData.me.place)+'</div>';
+  }
+
+  h+='<div class="sec"><div class="sec-t">'+t('topPlayers')+'</div>'+
+     '<button class="btn btn-ghost btn-sm" style="width:auto;padding:6px 12px" data-act="p-refresh">'+t('refresh')+'</button></div>';
+
+  if(!topData){
+    h+='<div class="panel"><div class="card-s" style="text-align:center">'+t('loading')+'</div></div>';
+  } else if(!topData.top.length){
+    h+='<div class="panel"><div class="card-s" style="text-align:center">'+t('noPlayers')+'</div></div>';
+  } else {
+    h+='<div class="panel">';
+    topData.top.forEach(function(pl,i){
+      h+=playerRow(pl,pl.place)+(i<topData.top.length-1?'<div class="rowline"></div>':'');
+    });
+    h+='</div>';
+  }
+  return h;
+}
+
+function playerRow(pl,place){
+  const r=rankOf(pl.charges||0);
+  const medal=place===1?'#E8B21F':place===2?'#A9B6C2':place===3?'#C87F3A':null;
+  return '<div class="prow'+(pl.me?' me':'')+'">'+
+    (place?'<b class="prow-n" style="'+(medal?'color:'+medal:'')+'">'+place+'</b>':'<b class="prow-n">·</b>')+
+    avatarHtml({avatar:pl.photo,name:pl.name},40)+
+    '<div class="prow-mid"><div class="prow-name">'+esc(pl.name||pl.nick||'—')+'</div>'+
+    '<div class="prow-sub">'+(pl.nick?'@'+esc(pl.nick)+' · ':'')+
+      '🔥 '+(pl.streak||0)+' · '+(pl.goals||0)+' '+t('goalsShort')+'</div></div>'+
+    '<div class="prow-right">'+cupSvg(r,20)+
+      '<span><i class="bolt">'+BOLT_SVG+'</i>'+(pl.charges||0)+'</span></div></div>';
+}
+
+/* ---------- секретный экран наблюдения ---------- */
+function viewAdmin(){
+  let h='<div class="sec"><div class="sec-t">'+t('adminTitle')+'</div>'+
+        '<button class="btn btn-ghost btn-sm" style="width:auto;padding:6px 12px" data-act="a-refresh">'+t('refresh')+'</button></div>';
+
+  if(!adminData){
+    return h+'<div class="panel"><div class="card-s" style="text-align:center">'+t('loading')+'</div></div>';
+  }
+  const st=adminData.stats||{};
+
+  const cell=function(v,l,c){
+    return '<div class="tile"><div class="tile-n" style="color:'+(c||'var(--text)')+'">'+v+'</div>'+
+           '<div class="tile-l">'+l+'</div></div>';
+  };
+  h+='<div class="tiles">'+
+    cell(st.players||0,t('aPlayers'),'var(--violet)')+
+    cell(st.activeWeek||0,t('aActive'),'var(--mint)')+
+    cell(st.goals||0,t('aGoals'),'var(--blue)')+
+    cell(st.goalsWeek||0,t('aGoalsWeek'),'var(--amber)')+
+    cell(st.withStreak||0,t('aStreak'),'var(--fire-2)')+
+    cell(st.streak7||0,t('aStreak7'),'var(--fire-2)')+
+    cell(st.streak30||0,t('aStreak30'),'var(--fire-3)')+
+    cell(st.maxStreak||0,t('aMaxStreak'),'var(--fire-3)')+
+    cell(st.checkToday||0,t('aToday'),'var(--mint)')+
+    cell(st.tasksToday||0,t('aTasks'),'var(--blue)')+
+    cell(st.avgCharges||0,t('aAvg'),'var(--amber)')+
+    cell(st.blocked||0,t('aBlocked'),'var(--dim)')+
+    '</div>';
+
+  h+='<div class="sec"><div class="sec-t">'+t('aManage')+'</div></div>'+
+     '<div class="panel" style="margin-bottom:14px">'+
+     '<div style="display:flex;gap:9px">'+
+     '<input class="field" id="a-nick" placeholder="@ник" style="flex:1">'+
+     '<button class="btn btn-go btn-sm" data-act="a-block">'+t('aBlock')+'</button>'+
+     '<button class="btn btn-ghost btn-sm" style="width:auto" data-act="a-unblock">'+t('aUnblock')+'</button>'+
+     '</div></div>';
+
+  h+='<div class="sec"><div class="sec-t">'+t('aList')+'</div></div><div class="panel">';
+  (adminData.players||[]).forEach(function(pl,i){
+    const r=rankOf(pl.charges||0);
+    h+='<div class="prow'+(pl.blocked?' blocked':'')+'">'+
+      '<b class="prow-n">'+(i+1)+'</b>'+
+      '<div class="prow-mid"><div class="prow-name">'+esc(pl.name||pl.nick||'—')+
+        (pl.blocked?' <span class="badge off">'+t('aBlockedMark')+'</span>':'')+'</div>'+
+      '<div class="prow-sub">@'+esc(pl.nick||'—')+' · 🔥 '+pl.streak+' / '+pl.best+
+        ' · '+pl.goals+' '+t('goalsShort')+' · '+esc(pl.seen||'')+'</div></div>'+
+      '<div class="prow-right">'+cupSvg(r,18)+
+        '<span><i class="bolt">'+BOLT_SVG+'</i>'+pl.charges+'</span></div></div>'+
+      (i<adminData.players.length-1?'<div class="rowline"></div>':'');
+  });
+  return h+'</div>';
 }
 
 /* ================== ЭКРАН: ЕЩЁ ================== */
@@ -1914,11 +2266,21 @@ function viewSettings(){
 
   return '<div class="sec"><div class="sec-t">'+t('profile')+'</div></div>'+
     '<div class="panel" style="margin-bottom:14px">'+
-    '<div class="profile-head">'+avatarHtml(S,66)+
+    '<div class="profile-head">'+
+    '<div class="ava-wrap" data-act="ava-pick">'+avatarHtml(S,72)+
+      '<i class="ava-edit"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M4 20h4l10-10-4-4L4 16z"/></svg></i></div>'+
     '<div style="min-width:0"><div class="card-t" style="font-size:19px">'+esc(S.name)+'</div>'+
-    '<div class="card-s">'+(S.nick?'@'+esc(S.nick):t('noNick'))+' · '+finished+' '+t('goalsDone')+'</div></div></div>'+
+    '<div class="card-s">'+(S.nick?'@'+esc(S.nick):t('noNick'))+'</div>'+
+    '<div class="prof-rank">'+cupSvg(rankOf(S.charges||0),18)+
+      '<span>'+rankName(rankOf(S.charges||0))+'</span>'+
+      '<i class="bolt">'+BOLT_SVG+'</i><b>'+(S.charges||0)+'</b></div></div></div>'+
+    '<div style="height:12px"></div>'+
+    '<div style="display:flex;gap:9px">'+
+      '<button class="btn btn-go btn-sm" style="flex:1" data-act="ava-pick">'+t('avaChange')+'</button>'+
+      (S.avatar?'<button class="btn btn-ghost btn-sm" style="flex:1;width:auto" data-act="ava-clear">'+t('avaClear')+'</button>':'')+
+    '</div>'+
     '<div class="gap"></div><div class="label">'+t('name')+'</div>'+
-    '<input class="field" id="p-name" value="'+esc(S.name)+'">'+
+    '<input class="field" id="p-name" value="'+esc(S.name)+'" maxlength="40">'+
     '<div style="height:10px"></div>'+
     '<button class="btn btn-main" data-act="save-name">'+t('nameSave')+'</button>'+
     '<div class="card-s" style="margin:11px 3px 0">'+t('avatarHint')+'</div></div>'+
@@ -2133,6 +2495,7 @@ document.getElementById('nav').addEventListener('click',function(e){
   screen=tab.dataset.tab;
   if(screen!=='goals') draft=null;
   haptic('tap'); render();
+  if(screen==='rivals'){ foundPlayer=null; S.isAdmin?loadAdmin():loadTop(); }
 });
 
 document.getElementById('app').addEventListener('click',function(e){
@@ -2199,6 +2562,7 @@ document.getElementById('app').addEventListener('click',function(e){
       return;
     }
     if(r&&r.on) flash(r.left===1?t('flashLast'):t('flashOk'),'var(--fire-2)');
+    if(r&&r.events) chargeFly(r.events);
     render(); return;
   }
 
@@ -2239,6 +2603,34 @@ document.getElementById('app').addEventListener('click',function(e){
     if(tg&&tg.openTelegramLink) tg.openTelegramLink(GROUP_URL);
     else window.open(GROUP_URL,'_blank');
     return;
+  }
+
+  if(act==='p-refresh'||act==='p-find'||act==='a-refresh'||act==='a-block'||act==='a-unblock'){
+    haptic('tap');
+    if(act==='p-refresh'){ loadTop(); return; }
+    if(act==='a-refresh'){ loadAdmin(); return; }
+    if(act==='p-find'){
+      const inp=document.getElementById('r-nick');
+      const nick=(inp?inp.value:'').trim().replace(/^@/,'');
+      if(!nick) return;
+      api('/api/find',{nick:nick}).then(function(d){
+        foundPlayer=(d&&d.nick)?d:false; render();
+      }).catch(function(){ toast(t('syncFail')); });
+      return;
+    }
+    const inp=document.getElementById('a-nick');
+    const nick=(inp?inp.value:'').trim().replace(/^@/,'');
+    if(!nick){ toast(t('aNeedNick')); return; }
+    api('/api/admin',{action:(act==='a-block')?'block':'unblock',nick:nick})
+      .then(function(){ toast(act==='a-block'?t('aDoneBlock'):t('aDoneUnblock')); loadAdmin(); })
+      .catch(function(){ toast(t('syncFail')); });
+    return;
+  }
+
+  if(act==='ava-pick'){ haptic('tap'); pickAvatar(); return; }
+
+  if(act==='ava-clear'){
+    S.avatar=''; saveState(); haptic('tap'); toast(t('avaReset')); render(); return;
   }
 
   if(act==='save-name'){
@@ -2307,6 +2699,11 @@ document.getElementById('app').addEventListener('click',function(e){
     const steps=(draft.tasks||[]).map(function(x){ return String(x||'').trim(); })
                                  .filter(Boolean).map(function(x){ return {text:x.slice(0,160)}; });
     const days=Math.max(1,Math.min(365,Number(draft.days)||30));
+    if(!canAddGoal()){
+      const till=blockedUntil();
+      toast(till?t('blockedTill',{d:till}):t('limitReached',{n:GOALS_PER_DAY}));
+      haptic('warn'); return;
+    }
     if(!title){ toast(t('needTitle')); haptic('warn'); return; }
     if(!steps.length){ toast(t('needStep')); haptic('warn'); return; }
     // если шаги пришли от нейросети и не правились — сохраняем её распределение дней
