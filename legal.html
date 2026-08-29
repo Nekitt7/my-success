@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Sparko — документы</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#F2F6F8; --surface:#FFFFFF; --line:#D3E3EC; --line-soft:#E6EFF4;
+  --accent:#B01E33; --accent-d:#7C1523; --fire:#FF7A2F;
+  --text:#17222B; --muted:#5C7484; --dim:#8FA6B4;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Nunito',system-ui,sans-serif;background:var(--ink);color:var(--text);
+  padding:16px 16px 40px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto}
+
+h1{font-size:22px;font-weight:900;margin-bottom:4px}
+.sub{font-size:13px;color:var(--muted);font-weight:700;margin-bottom:18px}
+
+.tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:14px;
+  position:sticky;top:0;background:var(--ink);z-index:5;padding-top:4px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;background:var(--surface);border:2px solid var(--line);border-radius:20px;
+  padding:9px 15px;font-size:13.5px;font-weight:900;color:var(--muted);cursor:pointer;
+  white-space:nowrap;transition:all .18s}
+.tab.on{background:var(--accent);border-color:var(--accent-d);color:#fff}
+
+.doc{background:var(--surface);border:2px solid var(--line);border-radius:16px;
+  padding:20px 18px;display:none;animation:in .3s both}
+.doc.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.doc h2{font-size:19px;font-weight:900;margin:0 0 6px}
+.doc h3{font-size:15px;font-weight:900;margin:22px 0 8px;color:var(--accent)}
+.doc h4{font-size:14px;font-weight:900;margin:16px 0 6px}
+.doc p{font-size:14.5px;margin:0 0 12px}
+.doc ul{margin:0 0 12px 20px}
+.doc li{font-size:14.5px;margin-bottom:6px}
+.doc b{font-weight:900}
+.date{font-size:12.5px;color:var(--dim);font-weight:700;margin-bottom:16px}
+.note{background:#FFF4EC;border-left:4px solid var(--fire);border-radius:8px;
+  padding:12px 14px;margin:0 0 14px;font-size:14px;font-weight:700}
+table{width:100%;border-collapse:collapse;margin:0 0 14px;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+th{background:var(--line-soft);font-weight:900}
+.contact{background:var(--line-soft);border-radius:10px;padding:12px 14px;
+  font-size:13.5px;font-weight:800;margin-top:18px}
+.back{display:block;width:100%;margin-top:20px;background:var(--accent);color:#fff;
+  border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:900;
+  font-family:inherit;cursor:pointer;text-transform:uppercase;letter-spacing:.4px}
+.back:active{opacity:.8}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Документы Sparko</h1>
+  <div class="sub">Редакция от 29 августа 2026 года</div>
+
+  <div class="tabs">
+    <div class="tab on" data-doc="p">Конфиденциальность</div>
+    <div class="tab" data-doc="t">Соглашение</div>
+    <div class="tab" data-doc="r">Правила</div>
+  </div>
+
+  <!-- ============ ПОЛИТИКА ============ -->
+  <div class="doc on" id="p">
+    <h2>Политика конфиденциальности</h2>
+    <div class="date">Приложение Sparko · Telegram Mini App</div>
+
+    <div class="note">Коротко: мы храним ваши цели, чтобы приложение работало, и
+      показываем в рейтинге только имя, фото и очки. Тексты ваших целей не видит никто.</div>
+
+    <h3>1. Какие данные мы обрабатываем</h3>
+    <p><b>Из вашего профиля Telegram:</b> идентификатор аккаунта, имя, username,
+      ссылку на фотографию профиля, язык интерфейса. Мы не получаем номер телефона,
+      контакты и переписку.</p>
+    <p><b>Созданные вами:</b> названия целей и задач, отметки выполнения, серии,
+      заряды и кубки, имя и фотографию, если вы их изменили, часовой пояс,
+      настройки напоминаний.</p>
+    <p><b>Технические:</b> дата последнего входа и служебные записи о работе сервера.</p>
+    <p>Мы не собираем геолокацию, платёжные данные, биометрию и сведения о здоровье.</p>
+
+    <h3>2. Зачем</h3>
+    <table>
+      <tr><th>Цель</th><th>Основание</th></tr>
+      <tr><td>Хранение целей и отметок</td><td>работа сервиса</td></tr>
+      <tr><td>Напоминания в Telegram</td><td>ваше согласие</td></tr>
+      <tr><td>Общий рейтинг</td><td>ваше согласие</td></tr>
+      <tr><td>Подсказка плана нейросетью</td><td>ваше согласие</td></tr>
+    </table>
+
+    <h3>3. Передача третьим лицам</h3>
+    <p>При нажатии кнопки <b>«Предложить план»</b> название цели и срок передаются
+      в сервис GigaChat (ПАО Сбербанк) для составления списка задач. Ваше имя,
+      идентификатор и другие цели не передаются. Не хотите — вводите задачи вручную.</p>
+    <p>Приложение работает внутри Telegram, поэтому сообщения идут через их
+      инфраструктуру. Данные хранятся на сервере в России.</p>
+    <p>Мы не продаём данные и не передаём их рекламным сетям.</p>
+
+    <h3>4. Что видят другие</h3>
+    <p>В рейтинге видны имя, username, фотография, заряды, серия и число целей.
+      <b>Названия целей и задач не видны никому.</b></p>
+
+    <h3>5. Сколько храним</h3>
+    <p>Пока вы пользуетесь приложением и 12 месяцев после последнего входа.
+      Резервные копии — не более 30 дней.</p>
+
+    <h3>6. Ваши права</h3>
+    <ul>
+      <li>узнать, какие данные о вас есть;</li>
+      <li>потребовать исправить или удалить их;</li>
+      <li>отозвать согласие в любой момент;</li>
+      <li>обратиться с жалобой в Роскомнадзор.</li>
+    </ul>
+    <p>Удалить данные на устройстве: «Персонализация» → «Сбросить всё».
+      Для полного удаления с сервера напишите нам — удалим в течение 30 дней.</p>
+
+    <h3>7. Возраст</h3>
+    <p>Приложение не предназначено для лиц младше 14 лет. С 14 до 18 лет —
+      с согласия родителей.</p>
+
+    <h3>8. Согласие</h3>
+    <p>Нажимая «Согласиться и продолжить», вы подтверждаете, что ознакомились
+      с настоящей Политикой и даёте согласие на обработку перечисленных данных,
+      включая показ вашего профиля в рейтинге и передачу названия цели в GigaChat
+      при использовании подсказки плана. Согласие можно отозвать в любой момент.</p>
+
+    <div class="contact">Вопросы и удаление данных: <span id="mail1">[почта]</span></div>
+  </div>
+
+  <!-- ============ СОГЛАШЕНИЕ ============ -->
+  <div class="doc" id="t">
+    <h2>Пользовательское соглашение</h2>
+    <div class="date">Публичная оферта</div>
+
+    <h3>1. О приложении</h3>
+    <p>Sparko — дневник целей. Вы ставите цель, разбиваете её на ежедневные задачи
+      и отмечаете выполнение. За регулярность начисляются заряды и присваиваются кубки.</p>
+    <p><b>Заряды и кубки не являются деньгами</b> и не подлежат обмену, продаже
+      или выводу. Правила начисления могут меняться.</p>
+
+    <h3>2. Правила использования</h3>
+    <p>Приложение бесплатное и предоставляется «как есть». Пользователь обязуется:</p>
+    <ul>
+      <li>не нарушать закон;</li>
+      <li>не размещать оскорбления, угрозы, порнографию, рекламу и спам;</li>
+      <li>не накручивать показатели и не использовать несколько аккаунтов;</li>
+      <li>не пытаться получить доступ к чужим данным;</li>
+      <li>не выдавать себя за другое лицо.</li>
+    </ul>
+
+    <h3>3. Ограничения</h3>
+    <p>При создании более <b>20 целей в сутки</b> создание блокируется на 3 суток.
+      За нарушение правил доступ может быть ограничен.</p>
+
+    <h3>4. Важный отказ от гарантий</h3>
+    <div class="note">Приложение не является медицинским, психологическим,
+      спортивным или образовательным сервисом. Оно не даёт рекомендаций
+      и не заменяет консультацию специалиста.</div>
+    <p>Подсказки планов формирует нейросеть автоматически, они могут быть неточными.
+      Вы оцениваете их самостоятельно.</p>
+    <p>Если цель связана со здоровьем, питанием, нагрузками или психологическим
+      состоянием — проконсультируйтесь с врачом. Мы не отвечаем за последствия
+      выполнения задач, которые вы поставили себе сами.</p>
+
+    <h3>5. Ответственность</h3>
+    <p>Мы не гарантируем бесперебойную работу и не отвечаем за недостижение целей,
+      потерю данных по независящим от нас причинам и действия третьих лиц.
+      Не храните в приложении сведения, утрата которых критична.</p>
+
+    <h3>6. Изменения</h3>
+    <p>Мы можем менять соглашение и функциональность. Действующая редакция
+      публикуется здесь. Вы можете прекратить использование в любой момент.</p>
+
+    <div class="contact">Претензии: <span id="mail2">[почта]</span> · срок ответа 30 дней</div>
+  </div>
+
+  <!-- ============ ПРАВИЛА ============ -->
+  <div class="doc" id="r">
+    <h2>Правила сообщества</h2>
+    <div class="date">Рейтинг и группа</div>
+
+    <h3>1. Что видно другим</h3>
+    <p>Имя, username, фотография, заряды, серия, число целей.
+      <b>Названия целей не видит никто.</b> Но имя и фото видны всем — не ставьте
+      туда лишнего.</p>
+
+    <h3>2. Запрещено</h3>
+    <ul>
+      <li>оскорбления, угрозы, разжигание ненависти;</li>
+      <li>порнография и изображения сексуального характера;</li>
+      <li>реклама и приглашения в другие сервисы;</li>
+      <li>выдача себя за другого человека;</li>
+      <li>накрутка: пустые цели, автоматизация, несколько аккаунтов.</li>
+    </ul>
+
+    <h3>3. Честная игра</h3>
+    <table>
+      <tr><th>За что</th><th>Заряды</th></tr>
+      <tr><td>Закрыты все задачи цели за день</td><td>10</td></tr>
+      <tr><td>Сохранена серия</td><td>20</td></tr>
+      <tr><td>Взят новый кубок</td><td>50</td></tr>
+    </table>
+    <p>За одну цель начисление раз в сутки. Не более 20 новых целей в день.</p>
+
+    <h3>4. Последствия</h3>
+    <table>
+      <tr><th>Нарушение</th><th>Что будет</th></tr>
+      <tr><td>Превышение лимита целей</td><td>блок создания на 3 суток</td></tr>
+      <tr><td>Неподходящее имя или фото</td><td>скрытие из рейтинга</td></tr>
+      <tr><td>Накрутка</td><td>обнуление зарядов</td></tr>
+      <tr><td>Повторные нарушения</td><td>полная блокировка</td></tr>
+    </table>
+
+    <h3>5. Модерация</h3>
+    <p>Администрация просматривает только общедоступные данные профилей.
+      Личные цели и задачи не просматриваются.</p>
+
+    <div class="contact">Сообщить о нарушении: <span id="mail3">[почта]</span></div>
+  </div>
+
+  <button class="back" id="back">Закрыть</button>
+</div>
+
+<script>
+var tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+if (tg) {
+  tg.ready(); tg.expand();
+  try { tg.setHeaderColor('#F2F6F8'); tg.setBackgroundColor('#F2F6F8'); } catch(e){}
+}
+
+// переключение документов
+document.querySelector('.tabs').addEventListener('click', function(e){
+  var t = e.target.closest('.tab'); if (!t) return;
+  document.querySelectorAll('.tab').forEach(function(x){ x.classList.toggle('on', x===t); });
+  document.querySelectorAll('.doc').forEach(function(d){
+    d.classList.toggle('on', d.id === t.dataset.doc);
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+// открытие нужного раздела по ссылке вида legal.html#t
+if (location.hash) {
+  var id = location.hash.replace('#','');
+  var tab = document.querySelector('.tab[data-doc="'+id+'"]');
+  if (tab) tab.click();
+}
+
+document.getElementById('back').addEventListener('click', function(){
+  if (tg && tg.close) tg.close(); else history.back();
+});
+</script>
+</body>
+</html>
