@@ -87,8 +87,10 @@ button,input,textarea{font-family:inherit}
 .stack{display:flex;flex-direction:column;gap:15px;margin-bottom:26px}
 .card-wrap{animation:drop .45s both;background:var(--surface);border:2px solid var(--line);
   border-radius:var(--r-lg);padding:15px;box-shadow:0 4px 0 var(--line-soft)}
-.card-t{font-size:16px;font-weight:800;line-height:1.25}
-.card-s{font-size:12.5px;font-weight:700;color:var(--muted);line-height:1.4}
+.card-t{font-size:16px;font-weight:800;line-height:1.3;overflow-wrap:anywhere;
+  word-break:break-word}
+.card-s{font-size:12.5px;font-weight:700;color:var(--muted);line-height:1.4;
+  overflow-wrap:anywhere}
 .mini{height:5px;border-radius:4px;background:rgba(255,255,255,.09);overflow:hidden;
   margin-top:5px;width:100%}
 .mini i{display:block;height:100%;background:var(--blue);border-radius:4px;
@@ -96,16 +98,19 @@ button,input,textarea{font-family:inherit}
 
 .goal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;
   padding-bottom:13px;border-bottom:2px solid var(--line-soft)}
+.goal-head>div{min-width:0}
 .goal-head.full .card-t{color:var(--muted)}
 .tick-done{width:34px;height:34px;border-radius:50%;flex:none;background:linear-gradient(160deg,#FF9D2F,#E01F1F);
   display:flex;align-items:center;justify-content:center;box-shadow:0 3px 0 #B01414}
 .tick-done svg{width:17px;height:17px;color:#fff}
-.tick-count{font-size:15px;font-weight:900;color:var(--fire-3);flex:none}
+.tick-count{font-size:15px;font-weight:900;color:var(--fire-3);flex:none;
+  white-space:nowrap;font-variant-numeric:tabular-nums}
 
 .tasks{display:flex;flex-direction:column;gap:9px;margin-top:13px}
 .task{display:flex;align-items:flex-start;gap:10px;background:var(--ink);
   border:2px solid var(--line);border-radius:var(--r-sm);padding:12px 13px;
   font-size:14.5px;font-weight:700;cursor:pointer;transition:all .18s;line-height:1.35}
+.task span{min-width:0;overflow-wrap:anywhere;word-break:break-word}
 .task.on{border-color:var(--fire-2);background:color-mix(in srgb,var(--fire-2) 12%,transparent)}
 .task.on span{color:var(--dim);text-decoration:line-through}
 .task:active{transform:scale(.985)}
@@ -266,10 +271,10 @@ button,input,textarea{font-family:inherit}
 .row{display:flex;align-items:center;justify-content:space-between;gap:12px;
   padding:14px 0;border-bottom:2px solid var(--line-soft)}
 .row:last-child{border-bottom:none}
-.row-t{font-size:15px;font-weight:800}
-.row-s{font-size:12.5px;font-weight:700;color:var(--muted);margin-top:3px}
+.row-t{font-size:15px;font-weight:800;overflow-wrap:anywhere}
+.row-s{font-size:12.5px;font-weight:700;color:var(--muted);margin-top:3px;line-height:1.4;overflow-wrap:anywhere}
 .badge{font-size:11px;font-weight:900;padding:5px 10px;border-radius:20px;letter-spacing:.6px;
-  text-transform:uppercase;flex:none}
+  text-transform:uppercase;flex:none;white-space:nowrap}
 .badge.ok{background:rgba(124,224,208,.15);color:var(--mint)}
 .badge.off{background:rgba(180,173,224,.13);color:var(--muted)}
 .badge.star{background:rgba(255,178,63,.16);color:var(--amber)}
@@ -277,8 +282,9 @@ button,input,textarea{font-family:inherit}
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:22px}
 .tile{background:var(--surface);border:2px solid var(--line);border-radius:var(--r-md);
   padding:15px;box-shadow:0 4px 0 var(--line-soft);animation:drop .45s both}
-.tile-n{font-size:28px;font-weight:900;line-height:1;margin-bottom:5px}
-.tile-l{font-size:12px;font-weight:800;color:var(--muted)}
+.tile-n{font-size:26px;font-weight:900;line-height:1;margin-bottom:5px;
+  font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.tile-l{font-size:12px;font-weight:800;color:var(--muted);line-height:1.3;overflow-wrap:anywhere}
 
 .ava{width:66px;height:66px;border-radius:50%;flex:none;object-fit:cover;
   border:3px solid var(--violet-deep);background:var(--surface-2);
@@ -301,8 +307,8 @@ button,input,textarea{font-family:inherit}
 .prow-name{font-size:15px;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .prow-sub{font-size:12px;font-weight:700;color:var(--muted);margin-top:2px;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.prow-right{display:flex;flex-direction:column;align-items:center;gap:2px;flex:none}
-.prow-right span{display:flex;align-items:center;gap:3px;font-size:13px;font-weight:900;color:var(--fire-2)}
+.prow-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex:none;min-width:52px}
+.prow-right span{display:flex;align-items:center;gap:3px;font-size:13px;font-weight:900;color:var(--fire-2);white-space:nowrap;font-variant-numeric:tabular-nums}
 .prow-right .bolt{width:13px;height:13px}
 .doc-links{display:flex;flex-direction:column;gap:8px;margin-top:4px}
 .doc-links .btn{width:100%}
@@ -474,14 +480,17 @@ button,input,textarea{font-family:inherit}
   box-shadow:0 0 16px color-mix(in srgb,var(--rc) 30%,transparent)}
 .rank-head{display:flex;align-items:center;gap:9px}
 .rank-cup{display:flex;flex:none}
-.rank-name{font-size:16px;font-weight:900;color:var(--rd);flex:1}
-.rank-ch{display:flex;align-items:center;gap:4px;font-size:17px;font-weight:900;color:var(--fire-2)}
+.rank-name{font-size:16px;font-weight:900;color:var(--rd);flex:1;min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rank-ch{display:flex;align-items:center;gap:4px;font-size:17px;font-weight:900;
+  color:var(--fire-2);flex:none;white-space:nowrap;font-variant-numeric:tabular-nums}
 .bolt{display:inline-flex;width:17px;height:17px}
 .bolt svg{width:100%;height:100%}
 .rank-line{height:7px;border-radius:5px;background:var(--line);overflow:hidden;margin:10px 0 7px}
 .rank-line i{display:block;height:100%;border-radius:5px;
   background:linear-gradient(90deg,var(--rc),var(--rd));transition:width .6s cubic-bezier(.2,.8,.3,1)}
-.rank-hint{font-size:12px;font-weight:800;color:var(--muted)}
+.rank-hint{font-size:12px;font-weight:800;color:var(--muted);line-height:1.35;
+  overflow-wrap:anywhere}
 
 /* всплывающие заряды */
 .chargefly{position:fixed;left:50%;top:38%;transform:translate(-50%,10px) scale(.7);
@@ -494,9 +503,10 @@ button,input,textarea{font-family:inherit}
 .chargefly b{font-size:14px;letter-spacing:1.5px;color:var(--violet)}
 
 .badges{display:flex;gap:8px;margin-bottom:16px;align-items:flex-end;animation:drop .4s both}
-.badge-box{flex:1;background:var(--surface);border:3px solid var(--line);
+.badge-box{flex:1;min-width:0;background:var(--surface);border:3px solid var(--line);
   border-radius:var(--r-md) var(--r-md) 0 0;
-  padding:10px 6px 12px;display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:10px 4px 12px;display:flex;flex-direction:row;align-items:center;
+  justify-content:center;gap:6px;
   cursor:pointer;transition:transform .12s;position:relative}
 .badge-box:active{transform:translateY(2px)}
 /* центральный выше — пьедестал */
@@ -513,7 +523,7 @@ button,input,textarea{font-family:inherit}
 .badge-box.goals{border-color:var(--amber)}
 .badge-ico{width:30px;height:30px;flex:none;display:flex;align-items:center;justify-content:center}
 .badge-ico svg{width:100%;height:100%}
-.badge-n{font-size:24px;font-weight:900;color:var(--text);line-height:1;font-variant-numeric:tabular-nums}
+.badge-n{font-size:24px;flex:none;white-space:nowrap;font-weight:900;color:var(--text);line-height:1;font-variant-numeric:tabular-nums}
 
 /* заголовок карусели — «книга» в огне */
 /* карусель целей: активная в центре и подсвечена */
@@ -538,7 +548,7 @@ button,input,textarea{font-family:inherit}
 @keyframes emberFlow{0%{background-position:0% 50%}100%{background-position:300% 50%}}
 @keyframes emberPulse{0%,100%{box-shadow:0 0 0 4px rgba(242,101,34,.18),0 0 22px rgba(242,101,34,.45),0 6px 18px rgba(214,40,40,.22)}
   50%{box-shadow:0 0 0 6px rgba(242,101,34,.26),0 0 34px rgba(242,101,34,.7),0 6px 22px rgba(214,40,40,.3)}}
-.gpill-t{font-size:17px;font-weight:900;line-height:1.25;overflow:hidden;
+.gpill-t{font-size:16px;font-weight:900;line-height:1.25;overflow:hidden;
   text-overflow:ellipsis;white-space:nowrap}
 .gpill-s{font-size:13.5px;font-weight:800;color:var(--muted);margin-top:6px;line-height:1.3}
 .gpill.add{border-style:dashed;color:var(--violet)}
@@ -561,7 +571,8 @@ button,input,textarea{font-family:inherit}
 .life.off{opacity:.45}
 @keyframes heartBeat{0%,100%{transform:scale(1)}12%{transform:scale(1.22)}24%{transform:scale(1)}
   36%{transform:scale(1.14)}48%{transform:scale(1)}}
-.chain-title{font-size:20px;font-weight:900;letter-spacing:.3px;text-align:center;
+.chain-title{font-size:20px;font-weight:900;letter-spacing:.3px;padding:0 8px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;
   margin:2px 0 4px;letter-spacing:.3px}
 .field-icon{position:absolute;width:44px;height:44px}
 .field-icon.bicep{left:14px;top:44%}
@@ -569,7 +580,8 @@ button,input,textarea{font-family:inherit}
 
 .mascot-zone{position:relative;display:block;margin:0 0 14px}
 .motto{position:relative;background:var(--surface);border:3px solid var(--fire-2);
-  border-radius:14px;padding:17px 18px;font-size:18px;font-weight:900;line-height:1.4;
+  border-radius:14px;padding:17px 18px;font-size:17px;font-weight:900;line-height:1.45;
+  overflow-wrap:anywhere;
   text-align:center;cursor:pointer;color:var(--text);
   box-shadow:0 0 18px rgba(242,101,34,.28);animation:bubbleIn .45s cubic-bezier(.2,1.4,.4,1) both}
 .motto::before{content:'';position:absolute;inset:-3px;border-radius:14px;pointer-events:none;
@@ -768,6 +780,12 @@ ru:{today:'Сегодня',goals:'Цели',stats:'Путь',person:'Профи�
  tour3t:'Огонёк и заряды',
  tour3s:'Закрыл все задачи цели — получаешь 10 зарядов ⚡ и растёт огонёк 🔥. Сохранил серию — ещё 20. За заряды дают кубки: бронза, серебро, золото и выше.',
  hintFire:'Дней подряд без пропусков',hintIce:'Заморозки: спасают серию при пропуске',hintBest:'Твой рекорд серии',
+ inRating:'Участие в рейтинге',
+ inRatingOn:'Тебя видно другим игрокам и в поиске',
+ inRatingOff:'Ты скрыт: тебя не найдут и не увидят',
+ visibleMark:'виден',hiddenMark:'скрыт',
+ joinRating:'Участвовать в рейтинге',leaveRating:'Выйти из рейтинга',
+ nowHidden:'Ты скрыт из рейтинга',nowVisible:'Ты снова в рейтинге',
  legal:'Документы',legalSub:'Что мы храним и по каким правилам работаем',
  docPrivacy:'Конфиденциальность',docTerms:'Соглашение',docRules:'Правила',
  community:'Сообщество',communitySub:'Обсуждения, поддержка и вопросы',openGroup:'Войти в группу',
@@ -852,6 +870,12 @@ en:{today:'Today',goals:'Goals',stats:'Path',person:'Profile',rivals:'Duels',mor
  tour3t:'Огонёк и заряды',
  tour3s:'Закрыл все задачи цели — получаешь 10 зарядов ⚡ и растёт огонёк 🔥. Сохранил серию — ещё 20. За заряды дают кубки: бронза, серебро, золото и выше.',
  hintFire:'Days in a row',hintIce:'Freezes: they save your streak',hintBest:'Your best streak',
+ inRating:'Rating visibility',
+ inRatingOn:'Other players can see and find you',
+ inRatingOff:'You are hidden from the list and search',
+ visibleMark:'visible',hiddenMark:'hidden',
+ joinRating:'Join the rating',leaveRating:'Leave the rating',
+ nowHidden:'You are hidden now',nowVisible:'You are back in the rating',
  legal:'Documents',legalSub:'What we store and how the service works',
  docPrivacy:'Privacy',docTerms:'Terms',docRules:'Rules',
  community:'Community',communitySub:'Discussion, support and questions',openGroup:'Join the group',
@@ -1316,6 +1340,7 @@ async function pullFromServer(silent){
       // приходит всегда, даже когда целей ещё нет
       S.isAdmin=!!d.admin;
       S.blocked=!!d.blocked;
+      if(typeof d.hidden==='boolean') S.hidden=d.hidden;
     }
     if(d&&d.goals){
       S.goals=(d.goals||[]).map(function(g){ return migrateGoal(g); });
@@ -1389,7 +1414,7 @@ function blank(){
     name:u.first_name||'Friend', nick:u.username||'', photo:u.photo_url||'',
     lang:tgLang(),streak:0,best:0,freezes:1,freezeWeek:weekTag(),
     lastDone:null,days:{},goals:[],seq:1,start:today(),mainGoal:null,
-    theme:'crimson',scheme:'light',tourDone:false,charges:0,goalsAdded:{},blockUntil:null,avatar:'',paid:{},isAdmin:false,blocked:false,remindCount:2,remindTimes:''
+    theme:'crimson',scheme:'light',tourDone:false,charges:0,goalsAdded:{},blockUntil:null,avatar:'',paid:{},isAdmin:false,blocked:false,hidden:false,remindCount:2,remindTimes:''
   };
 }
 function weekTag(){ const d=new Date(); const w=(d.getDay()+6)%7; d.setDate(d.getDate()-w); return key(d); }
@@ -2206,7 +2231,11 @@ function viewRivals(){
   h+='</div>';
 
   // моя строка
-  if(topData&&topData.me){
+  if(topData&&topData.me&&topData.me.hidden){
+    h+='<div class="panel" style="margin-bottom:14px;border-color:var(--dim)">'+
+       '<div class="card-t" style="margin-bottom:5px">'+t('hiddenTitle')+'</div>'+
+       '<div class="card-s">'+t('hiddenSub')+'</div></div>';
+  } else if(topData&&topData.me){
     h+='<div class="sec"><div class="sec-t">'+t('yourPlace')+'</div></div>'+
        '<div class="panel" style="margin-bottom:14px;border-color:var(--fire-2)">'+
        playerRow(topData.me,topData.me.place)+'</div>';
@@ -2395,6 +2424,15 @@ function viewSettings(){
     '<button class="btn btn-main" data-act="group">'+
     '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 4.5 2.8 11.4c-.9.3-.9 1.6 0 1.9l4.7 1.5 1.8 5.4c.3.8 1.3 1 1.8.3l2.5-3 4.7 3.5c.7.5 1.7.1 1.9-.7l3-14c.2-1-.8-1.8-1.7-1.4z"/><path d="m8.2 14.8 9.6-7.6-6.6 8.7"/></svg>'+
     t('openGroup')+'</button></div>'+
+
+    '<div class="panel" style="margin-bottom:14px">'+
+    '<div class="row" style="padding-top:0"><div style="min-width:0">'+
+    '<div class="row-t">'+t('inRating')+'</div>'+
+    '<div class="row-s">'+(S.hidden?t('inRatingOff'):t('inRatingOn'))+'</div></div>'+
+    '<span class="badge '+(S.hidden?'off':'ok')+'">'+(S.hidden?t('hiddenMark'):t('visibleMark'))+'</span></div>'+
+    '<div style="height:10px"></div>'+
+    '<button class="btn '+(S.hidden?'btn-go':'btn-ghost')+'" data-act="rating-toggle">'+
+      (S.hidden?t('joinRating'):t('leaveRating'))+'</button></div>'+
 
     '<div class="panel" style="margin-bottom:14px">'+
     '<div class="row" style="padding-top:0"><div style="min-width:0">'+
@@ -2652,6 +2690,18 @@ document.getElementById('app').addEventListener('click',function(e){
 
   if(act==='setmain'){
     S.mainGoal=Number(el.dataset.g); saveState(); haptic('ok'); toast(t('mainSet')); render(); return;
+  }
+
+  if(act==='rating-toggle'){
+    haptic('tap');
+    const next=!S.hidden;
+    S.hidden=next; saveState(); render();
+    if(API_URL){
+      api('/api/privacy',{hidden:next})
+        .then(function(){ toast(next?t('nowHidden'):t('nowVisible')); topData=null; loadTop(); })
+        .catch(function(){ S.hidden=!next; saveState(); toast(lastApiError||t('syncFail')); render(); });
+    }
+    return;
   }
 
   if(act==='doc'){
