@@ -139,6 +139,45 @@ button,input,textarea{font-family:inherit}
 .btn:disabled{opacity:.45;cursor:default;transform:none;box-shadow:none}
 .btn-sm{padding:10px 14px;font-size:13px}
 
+/* кнопка популярных целей */
+.btn-ideas{position:relative;width:100%;border:none;border-radius:var(--r-sm);cursor:pointer;
+  padding:13px 16px;font-family:inherit;overflow:hidden;
+  background:linear-gradient(120deg,#1E6FB0,#2E9EE0 45%,#5AC8F5);
+  color:#fff;box-shadow:0 5px 0 #14507F,0 0 22px rgba(46,158,224,.5);
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  transition:transform .08s,box-shadow .08s}
+.btn-ideas:active{transform:translateY(4px);box-shadow:0 1px 0 #14507F}
+.btn-ideas::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);
+  background-size:250% 100%;animation:shine 3.2s linear infinite}
+.bi-top{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:900;
+  letter-spacing:1.2px;text-transform:uppercase;position:relative}
+.bi-spark{width:16px;height:16px}
+.bi-run{font-size:13.5px;font-weight:800;color:rgba(255,255,255,.95);position:relative;
+  transition:opacity .24s,transform .24s;max-width:100%;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.bi-run.out{opacity:0;transform:translateY(-7px)}
+
+@keyframes shine{0%{background-position:250% 0}100%{background-position:-50% 0}}
+
+/* экран выбора цели */
+.icats{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 0 14px}
+.icats::-webkit-scrollbar{display:none}
+.icat{flex:none;background:var(--surface);border:2px solid var(--line);border-radius:20px;
+  padding:8px 14px;font-size:13px;font-weight:900;color:var(--muted);cursor:pointer;
+  white-space:nowrap;transition:all .18s}
+.icat.on{background:var(--blue);border-color:var(--blue-deep);color:#fff}
+.icard{display:flex;align-items:center;gap:12px;background:var(--ink);
+  border:2px solid var(--line);border-radius:var(--r-md);padding:14px;margin-bottom:9px;
+  cursor:pointer;transition:all .18s}
+.icard:active{transform:scale(.985);border-color:var(--blue)}
+.icard-mid{flex:1;min-width:0}
+.icard-t{font-size:15.5px;font-weight:900;overflow-wrap:anywhere}
+.icard-s{font-size:12.5px;font-weight:700;color:var(--muted);margin-top:3px}
+.icard-go{flex:none;width:32px;height:32px;border-radius:50%;background:var(--blue);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:900;
+  box-shadow:0 3px 0 var(--blue-deep)}
+
 /* ---------- дорожка и подшаги ---------- */
 .sub-num{font-size:11px;font-weight:900;color:var(--dim);flex:none;min-width:24px;margin-top:2px}
 .sub-box{width:19px;height:19px;border-radius:6px;flex:none;margin-top:1px;
@@ -226,10 +265,20 @@ button,input,textarea{font-family:inherit}
 .panel{background:var(--surface);border:2px solid var(--line);border-radius:var(--r-lg);
   padding:16px;box-shadow:0 4px 0 var(--line-soft);animation:drop .45s both}
 .field{width:100%;background:var(--surface);border:2px solid var(--line);border-radius:var(--r-sm);
-  padding:13px 15px;color:var(--text);font-size:16px;font-weight:700;outline:none;
-  transition:border-color .2s;resize:none;-webkit-text-fill-color:var(--text)}
-.field::placeholder{color:var(--dim);font-weight:700}
+  padding:13px 15px;font-size:16px;font-weight:800;outline:none;caret-color:var(--violet);
+  transition:border-color .2s;resize:none;
+  color:var(--text) !important;-webkit-text-fill-color:var(--text) !important;
+  opacity:1 !important}
+.field::placeholder{color:var(--dim) !important;-webkit-text-fill-color:var(--dim) !important;
+  font-weight:700;opacity:1}
 .field:focus{border-color:var(--violet)}
+/* автозаполнение браузера иногда красит текст своим цветом — возвращаем наш */
+.field:-webkit-autofill,
+.field:-webkit-autofill:hover,
+.field:-webkit-autofill:focus{
+  -webkit-text-fill-color:var(--text) !important;
+  -webkit-box-shadow:0 0 0 60px var(--surface) inset !important;
+  caret-color:var(--violet)}
 .label{font-size:12px;font-weight:900;letter-spacing:1.1px;text-transform:uppercase;
   color:var(--muted);margin:0 0 8px 3px}
 .gap{height:16px}
@@ -426,6 +475,11 @@ button,input,textarea{font-family:inherit}
 .tour-t{font-size:21px;font-weight:900;text-align:center;margin-bottom:10px;line-height:1.2}
 .tour-s{font-size:14.5px;font-weight:700;color:var(--muted);text-align:center;
   line-height:1.55;margin-bottom:20px}
+.tour-group{background:var(--ink);border:2px solid var(--line);border-radius:14px;
+  padding:14px 15px;margin-bottom:18px;text-align:left}
+.tour-group b{display:block;font-size:14px;font-weight:900;color:var(--violet);margin-bottom:5px}
+.tour-group span{display:block;font-size:13px;font-weight:700;color:var(--muted);line-height:1.5}
+
 .tour-dots{display:flex;gap:6px;justify-content:center;margin-bottom:18px}
 .tour-dot{width:8px;height:8px;border-radius:50%;background:var(--line);transition:all .3s}
 .tour-dot.on{background:var(--violet);width:22px;border-radius:5px}
@@ -773,6 +827,9 @@ ru:{today:'Сегодня',goals:'Цели',stats:'Путь',person:'Профи�
  thYellow:'Жёлтый',thCyan:'Голубой',thPink:'Розовый',
  preview:'Как это будет выглядеть',
  tourSkip:'Пропустить',tourNext:'Дальше',tourDone:'Начать',
+ tourGroupT:'Ты не один',
+ tourGroupS:'В нашей группе — люди, которые тоже идут к своим целям каждый день. Делятся прогрессом, поддерживают в трудную минуту и радуются чужим победам как своим.',
+ tourGroupBtn:'Вступить в группу',
  tour1t:'Это твой путь',
  tour1s:'Большая цель разбивается на шаги, а шаги — на дни. Каждый день ты делаешь один шаг и отмечаешь его.',
  tour2t:'Огонёк — главное',
@@ -863,6 +920,9 @@ en:{today:'Today',goals:'Goals',stats:'Path',person:'Profile',rivals:'Duels',mor
  thYellow:'Yellow',thCyan:'Cyan',thPink:'Pink',
  preview:'How it will look',
  tourSkip:'Skip',tourNext:'Next',tourDone:'Start',
+ tourGroupT:'You are not alone',
+ tourGroupS:'Our group is full of people chasing their own goals every day. They share progress, support each other on hard days, and celebrate wins together.',
+ tourGroupBtn:'Join the group',
  tour1t:'This is your path',
  tour1s:'A big goal splits into steps, and steps split into days. Each day you take one step and mark it.',
  tour2t:'The streak matters most',
@@ -1069,6 +1129,94 @@ function celebrate(streak,title,sub){
   };
   el.addEventListener('click',function(e){ if(e.target.closest('[data-cel]')) close(); });
   setTimeout(function(){ if(document.getElementById('celebrate')) close(); },7000);
+}
+
+/* ================== ПОПУЛЯРНЫЕ ЦЕЛИ ==================
+   Готовые цели: название, срок и ежедневные задачи.
+   Тап по карточке создаёт цель целиком, без заполнения формы.
+   ====================================================== */
+const IDEAS=[
+ {c:'body', ru:'Начать бегать', en:'Start running', d:30, i:'run',
+  t:{ru:['Пробежать дневную норму','Разминка 10 минут','Растяжка после бега','Записать дистанцию'],
+     en:['Run the daily distance','Warm up 10 minutes','Stretch after the run','Log the distance']}},
+ {c:'body', ru:'Подтягиваться 20 раз', en:'20 pull-ups', d:60, i:'gym',
+  t:{ru:['Подходы на турнике','Отжимания','Планка 1 минута','Записать результат'],
+     en:['Pull-up sets','Push-ups','1 minute plank','Log the result']}},
+ {c:'body', ru:'Зарядка каждое утро', en:'Morning workout', d:30, i:'gym',
+  t:{ru:['Зарядка 15 минут','Стакан воды после сна','Не листать телефон до зарядки'],
+     en:['15 minutes workout','Glass of water after waking','No phone before the workout']}},
+ {c:'body', ru:'10 000 шагов в день', en:'10 000 steps a day', d:30, i:'run',
+  t:{ru:['Пройти 10 000 шагов','Прогулка без наушников 20 минут','Записать шаги'],
+     en:['Walk 10 000 steps','20 minute walk without headphones','Log the steps']}},
+ {c:'body', ru:'Прийти в форму', en:'Get in shape', d:60, i:'gym',
+  t:{ru:['Тренировка 30 минут','Выпить 2 литра воды','Пройти 8000 шагов','Лечь до 23:00'],
+     en:['Train for 30 minutes','Drink 2 litres of water','Walk 8000 steps','Sleep before 11 pm']}},
+ {c:'body', ru:'Начать высыпаться', en:'Sleep well', d:30, i:'sleep',
+  t:{ru:['Лечь до 23:00','Убрать телефон за час до сна','Проснуться по будильнику','Без кофе после 16:00'],
+     en:['In bed by 11 pm','Phone away an hour before bed','Wake with the alarm','No coffee after 4 pm']}},
+
+ {c:'mind', ru:'Выучить английский', en:'Learn English', d:90, i:'lang',
+  t:{ru:['Выучить 20 новых слов','Повторить вчерашние','Подкаст 15 минут','Серия с субтитрами'],
+     en:['Learn 20 new words','Review yesterday words','Podcast for 15 minutes','Episode with subtitles']}},
+ {c:'mind', ru:'Читать каждый день', en:'Read every day', d:30, i:'book',
+  t:{ru:['Прочитать 20 страниц','Выписать одну мысль','Читать без телефона рядом'],
+     en:['Read 20 pages','Write down one idea','Read with the phone away']}},
+ {c:'mind', ru:'Выучить Python', en:'Learn Python', d:60, i:'code',
+  t:{ru:['Решить одну задачу','Писать код 45 минут','Разобрать чужое решение','Статья по теме'],
+     en:['Solve one problem','Code for 45 minutes','Study someone else code','Read an article']}},
+ {c:'mind', ru:'Сдать экзамен', en:'Pass the exam', d:60, i:'book',
+  t:{ru:['Разобрать одну тему','Прорешать 10 заданий','Повторить вчерашнее','Проверить ошибки'],
+     en:['Cover one topic','Solve 10 exercises','Review yesterday','Check the mistakes']}},
+ {c:'mind', ru:'Научиться играть', en:'Learn an instrument', d:90, i:'music',
+  t:{ru:['Заниматься 30 минут','Отработать один такт','Записать себя на видео'],
+     en:['Practice 30 minutes','Drill one bar','Record yourself']}},
+
+ {c:'order', ru:'Взять деньги под контроль', en:'Control the money', d:30, i:'money',
+  t:{ru:['Записать все траты','Отложить дневную сумму','Отказаться от лишней покупки','Проверить баланс'],
+     en:['Log every expense','Put aside the daily amount','Skip one impulse buy','Check the balance']}},
+ {c:'order', ru:'Навести порядок дома', en:'Tidy up the home', d:21, i:'home',
+  t:{ru:['Разобрать одну зону 15 минут','Выбросить одну ненужную вещь','Помыть посуду сразу'],
+     en:['Clear one area for 15 minutes','Throw away one useless thing','Wash dishes right away']}},
+ {c:'order', ru:'Планировать неделю', en:'Plan the week', d:30, i:'plan',
+  t:{ru:['Записать три главные задачи','Разобрать почту','Подвести итог дня'],
+     en:['Write three main tasks','Clear the inbox','Sum up the day']}},
+ {c:'order', ru:'Запустить свой проект', en:'Launch my project', d:60, i:'rocket',
+  t:{ru:['Сделать один шаг по проекту','Поговорить с клиентом','Опубликовать материал','Записать идеи'],
+     en:['Take one step','Talk to a customer','Publish something','Note the ideas']}},
+
+ {c:'stop', ru:'Бросить курить', en:'Quit smoking', d:60, i:'stop',
+  t:{ru:['Продержаться день без сигарет','Пройти 20 минут пешком','Вода при тяге','Записать, когда тянуло'],
+     en:['A day without cigarettes','Walk for 20 minutes','Water when craving','Note when it hit']}},
+ {c:'stop', ru:'Меньше сахара', en:'Less sugar', d:30, i:'stop',
+  t:{ru:['День без сладкого','Прочитать состав перед покупкой','Стакан воды вместо перекуса'],
+     en:['A day without sweets','Read the label before buying','Water instead of a snack']}},
+ {c:'stop', ru:'Меньше в телефоне', en:'Less screen time', d:30, i:'stop',
+  t:{ru:['Не листать ленту до обеда','Час без телефона вечером','Записать экранное время'],
+     en:['No feed before noon','An hour without the phone','Log the screen time']}},
+
+ {c:'calm', ru:'Научиться спокойствию', en:'Learn to be calm', d:30, i:'calm',
+  t:{ru:['Медитация 10 минут','Дыхательное упражнение','Прогулка без наушников','Записать благодарность'],
+     en:['Meditate 10 minutes','Breathing exercise','Walk without headphones','Write one gratitude']}},
+ {c:'calm', ru:'Вести дневник', en:'Keep a journal', d:30, i:'book',
+  t:{ru:['Записать, как прошёл день','Отметить одну победу','Наметить шаг на завтра'],
+     en:['Write how the day went','Note one win','Plan tomorrow step']}}
+];
+
+const IDEA_CATS=[
+  {id:'body', ru:'Тело', en:'Body'},
+  {id:'mind', ru:'Голова', en:'Mind'},
+  {id:'order',ru:'Порядок', en:'Order'},
+  {id:'stop', ru:'Отказ', en:'Quit'},
+  {id:'calm', ru:'Спокойствие', en:'Calm'}
+];
+
+function ideaTitle(x){ return (S&&S.lang==='en')?x.en:x.ru; }
+function ideaTasks(x){ return ((S&&S.lang==='en')?x.t.en:x.t.ru).slice(); }
+
+/* Не показываем то, что уже стоит у человека */
+function freshIdeas(){
+  const have=(S.goals||[]).map(function(g){ return (g.title||'').toLowerCase().trim(); });
+  return IDEAS.filter(function(x){ return have.indexOf(ideaTitle(x).toLowerCase())<0; });
 }
 
 /* ================== ПЛАНЫ БЕЗ СЕРВЕРА ==================
@@ -1490,6 +1638,33 @@ function migrateGoal(g){
   return g;
 }
 
+/* Правка цели: сохраняем отметки по задачам, которые остались */
+function updateGoal(goalId,title,targetDays,items){
+  const g=S.goals.find(function(x){ return x.id===goalId; });
+  if(!g) return null;
+  g.title=title;
+  g.targetDays=targetDays;
+
+  const keep=[];
+  const tasks=items.map(function(it){
+    if(it.id&&g.tasks.some(function(t){ return t.id===it.id; })){
+      keep.push(it.id);
+      return {id:it.id,text:it.text};      // была раньше — отметки сохранятся
+    }
+    return {id:S.seq++,text:it.text};      // новая
+  });
+  g.tasks=tasks;
+
+  // отметки удалённых задач убираем, иначе день не закроется никогда
+  const alive=tasks.map(function(t){ return t.id; });
+  for(const d in (g.log||{})){
+    g.log[d]=(g.log[d]||[]).filter(function(id){ return alive.indexOf(id)>=0; });
+    if(!g.log[d].length) delete g.log[d];
+  }
+  saveState();
+  return g;
+}
+
 /* ---------- ежедневные задачи ---------- */
 function dayLog(g,date){ return (g.log&&g.log[date])||[]; }
 function isTaskDone(g,date,tid){ return dayLog(g,date).indexOf(tid)>=0; }
@@ -1632,6 +1807,38 @@ function topbar(big){
       '</div><b class="badge-n">'+goalsCount+'</b></div>'+
   '</div>';
 }
+/* Кнопка «Популярные цели»: под ней бегут названия из каталога */
+function ideasBtn(){
+  const list=freshIdeas();
+  if(!list.length) return '';
+  return '<button class="btn-ideas" data-act="ideas">'+
+    '<span class="bi-top">'+
+      '<svg class="bi-spark" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 1.9 5.6L19.5 9l-4.4 3.6 1.4 5.7L12 15.3 7.5 18.3l1.4-5.7L4.5 9l5.6-1.4z"/></svg>'+
+      t('ideasTitle')+'</span>'+
+    '<span class="bi-run" id="bi-run">'+esc(ideaTitle(list[0]))+'</span>'+
+  '</button>';
+}
+
+/* Перелистывание названий на кнопке */
+function startIdeasTicker(){
+  clearInterval(window.__ideas);
+  const el=document.getElementById('bi-run');
+  if(!el) return;
+  const list=freshIdeas();
+  if(list.length<2) return;
+  let i=0;
+  window.__ideas=setInterval(function(){
+    const box=document.getElementById('bi-run');
+    if(!box){ clearInterval(window.__ideas); return; }
+    i=(i+1)%list.length;
+    box.classList.add('out');
+    setTimeout(function(){
+      box.textContent=ideaTitle(list[i]);
+      box.classList.remove('out');
+    },240);
+  },2400);
+}
+
 function emptyBlock(title,sub,btn,act){
   return '<div class="empty">'+
     '<svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg>'+
@@ -1661,6 +1868,12 @@ function showTour(){
     const b=e.target.closest('[data-tour]'); if(!b) return;
     const a=b.dataset.tour;
     if(a==='skip'){ endTour(); return; }
+    if(a==='group'){
+      haptic('tap');
+      if(tg&&tg.openTelegramLink) tg.openTelegramLink(GROUP_URL);
+      else window.open(GROUP_URL,'_blank');
+      return;
+    }
     if(a==='next'){
       tourStep++;
       if(tourStep>=3){ endTour(); return; }
@@ -1679,9 +1892,13 @@ function renderTour(){
     '<div class="tour-ico">'+TOUR_ICONS[tourStep]+'</div>'+
     '<div class="tour-t">'+t('tour'+n+'t')+'</div>'+
     '<div class="tour-s">'+t('tour'+n+'s')+'</div>'+
+    (last?'<div class="tour-group"><b>'+t('tourGroupT')+'</b><span>'+t('tourGroupS')+'</span></div>':'')+
     '<div class="tour-dots">'+dots+'</div>'+
     '<button class="btn btn-main" data-tour="next">'+(last?t('tourDone'):t('tourNext'))+'</button>'+
-    (last?'':'<div style="height:9px"></div><button class="btn btn-ghost" data-tour="skip">'+t('tourSkip')+'</button>')+
+    (last?'<div style="height:9px"></div><button class="btn btn-go" data-tour="group">'+
+       '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 4.5 2.8 11.4c-.9.3-.9 1.6 0 1.9l4.7 1.5 1.8 5.4c.3.8 1.3 1 1.8.3l2.5-3 4.7 3.5c.7.5 1.7.1 1.9-.7l3-14c.2-1-.8-1.8-1.7-1.4z"/><path d="m8.2 14.8 9.6-7.6-6.6 8.7"/></svg>'+
+       t('tourGroupBtn')+'</button>'
+     :'<div style="height:9px"></div><button class="btn btn-ghost" data-tour="skip">'+t('tourSkip')+'</button>')+
     '</div>';
 }
 
@@ -1813,11 +2030,14 @@ function viewGoals(){
       '<div style="font-size:19px;font-weight:900;color:var(--violet);flex:none">'+gs.pct+'%</div></div>'+
       '<div class="mini" style="width:100%;margin-top:11px"><i style="width:'+gs.pct+'%"></i></div>'+
       (isOpen?renderPath(g)+'<div class="gap"></div>'+
+        '<button class="btn btn-go" style="width:100%" data-act="edit-goal" data-g="'+g.id+'">'+
+          t('editGoal')+'</button><div style="height:9px"></div>'+
         (isMain?'':'<button class="btn btn-main" data-act="setmain" data-g="'+g.id+'">★ '+t('makeMain')+'</button><div style="height:9px"></div>')+
         '<button class="btn btn-ghost" data-act="drop" data-g="'+g.id+'">'+t('deleteGoal')+'</button>':'')+
       '</div>';
   });
-  return h+'<div class="gap"></div><button class="btn btn-main" data-act="go-new">+ '+t('newGoal')+'</button>';
+  return h+'<div class="gap"></div><button class="btn btn-main" data-act="go-new">+ '+t('newGoal')+'</button>'+
+    '<div style="height:10px"></div>'+ideasBtn();
 }
 
 function renderPath(g){
@@ -1836,13 +2056,14 @@ function renderPath(g){
 /* ================== ЭКРАН: НОВАЯ ЦЕЛЬ ================== */
 function viewDraft(){
   const presets=[14,30,60,90];
-  if(!draft.tasks||!draft.tasks.length) draft.tasks=['','',''];
+  if(!draft.tasks||!draft.tasks.length) draft.tasks=[{id:null,text:''},{id:null,text:''},{id:null,text:''}];
 
   let rows='';
   draft.tasks.forEach(function(v,i){
+    const txt=(v&&typeof v==='object')?(v.text||''):(v||'');
     rows+='<div class="task-row">'+
       '<b class="task-row-n">'+(i+1)+'</b>'+
-      '<input class="field task-input" data-i="'+i+'" placeholder="'+t('taskPh',{n:i+1})+'" value="'+esc(v)+'">'+
+      '<input class="field task-input" data-i="'+i+'" placeholder="'+t('taskPh',{n:i+1})+'" value="'+esc(txt)+'">'+
       (draft.tasks.length>1
         ? '<button class="task-del" data-act="task-del" data-i="'+i+'" title="'+t('removeTask')+'">'+
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>'
@@ -1850,7 +2071,7 @@ function viewDraft(){
       '</div>';
   });
 
-  return '<div class="sec"><div class="sec-t">'+t('newGoal')+'</div></div><div class="panel">'+
+  return '<div class="sec"><div class="sec-t">'+(draft.id?t('editGoal'):t('newGoal'))+'</div></div><div class="panel">'+
     '<div class="label">'+t('what')+'</div>'+
     '<input class="field" id="d-title" placeholder="'+t('titlePh')+'" value="'+esc(draft.title)+'">'+
     '<div class="card-s" style="margin:8px 3px 0">'+t('goalHint')+'</div>'+
@@ -1868,7 +2089,8 @@ function viewDraft(){
       '<svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 1.9 5.6L19.5 9l-4.4 3.6 1.4 5.7L12 15.3 7.5 18.3l1.4-5.7L4.5 9l5.6-1.4z"/></svg>'+
       (draft.aiPlan?t('genAgain'):t('genPlan'))+'</button>'+
 
-    '<div class="gap"></div><button class="btn btn-main" data-act="save-goal">'+t('createGoal')+'</button>'+
+    '<div class="gap"></div><button class="btn btn-main" data-act="save-goal">'+
+      (draft.id?t('saveGoal'):t('createGoal'))+'</button>'+
     '<div style="height:9px"></div><button class="btn btn-ghost" data-act="cancel">'+t('cancel')+'</button></div>';
 }
 
@@ -2202,6 +2424,40 @@ function loadAdmin(){
     .catch(function(){ adminData={err:lastApiError}; render(); });
 }
 
+/* ================== ЭКРАН: ПОПУЛЯРНЫЕ ЦЕЛИ ================== */
+let ideaCat='all';
+
+function viewIdeas(){
+  const list=freshIdeas().filter(function(x){ return ideaCat==='all'||x.c===ideaCat; });
+  let h='<div class="sec"><div class="sec-t">'+t('ideasTitle')+'</div>'+
+        '<div class="sec-c">'+list.length+'</div></div>'+
+        '<div class="card-s" style="margin:0 3px 14px">'+t('ideasSub')+'</div>';
+
+  h+='<div class="icats"><div class="icat'+(ideaCat==='all'?' on':'')+'" data-act="icat" data-c="all">'+
+     t('catAll')+'</div>';
+  IDEA_CATS.forEach(function(c){
+    h+='<div class="icat'+(ideaCat===c.id?' on':'')+'" data-act="icat" data-c="'+c.id+'">'+
+       ((S.lang==='en')?c.en:c.ru)+'</div>';
+  });
+  h+='</div>';
+
+  if(!list.length){
+    h+='<div class="panel"><div class="card-s" style="text-align:center">'+t('ideasEmpty')+'</div></div>';
+  } else {
+    h+='<div class="panel">';
+    list.forEach(function(x,i){
+      h+='<div class="icard" data-act="idea-add" data-i="'+IDEAS.indexOf(x)+'">'+
+         '<div class="icard-mid"><div class="icard-t">'+esc(ideaTitle(x))+'</div>'+
+         '<div class="icard-s">'+x.d+' '+t('daysWord')+' · '+ideaTasks(x).length+' '+t('tasksWord')+'</div></div>'+
+         '<div class="icard-go">+</div></div>';
+    });
+    h+='</div>';
+  }
+
+  return h+'<div class="gap"></div>'+
+    '<button class="btn btn-ghost" data-act="go-new">'+t('ownGoal')+'</button>';
+}
+
 /* ================== ЭКРАН: РЕЙТИНГ ================== */
 let topData=null, foundPlayer=null, adminData=null;
 
@@ -2475,6 +2731,7 @@ function render(){
   app.innerHTML = screen==='today'?viewToday()
                 : screen==='goals'?viewGoals()
                 : screen==='person'?viewPerson()
+                : screen==='ideas'?viewIdeas()
                 : screen==='rivals'?viewRivals()
                 : viewSettings();
   document.getElementById('nav').innerHTML=navHtml();
@@ -2494,6 +2751,8 @@ function render(){
       setTimeout(function(){ msc.classList.remove('cheer'); },800);
     },7000);
   }
+
+  startIdeasTicker();
 
   const gcar=document.getElementById('gcar');
   if(gcar){
@@ -2634,14 +2893,14 @@ document.getElementById('app').addEventListener('click',function(e){
 
   if(act==='task-add'){
     syncDraft();
-    if(draft.tasks.length<15) draft.tasks.push('');
+    if(draft.tasks.length<15) draft.tasks.push({id:null,text:''});
     haptic('tap'); render(); return;
   }
 
   if(act==='task-del'){
     syncDraft();
     draft.tasks.splice(Number(el.dataset.i),1);
-    if(!draft.tasks.length) draft.tasks=[''];
+    if(!draft.tasks.length) draft.tasks=[{id:null,text:''}];
     haptic('tap'); render(); return;
   }
 
@@ -2762,7 +3021,7 @@ document.getElementById('app').addEventListener('click',function(e){
       const list=localPlan(draft.title);
       // при повторном нажатии слегка меняем порядок, чтобы вариант отличался
       if(draft.aiPlan) list.push(list.shift());
-      draft.tasks=list.slice(0,15);
+      draft.tasks=list.slice(0,15).map(function(v){ return {id:null,text:v}; });
       draft.aiPlan=list.map(function(x){ return {step:x}; });
       haptic('ok'); toast(t('genLocal')); render();
     };
@@ -2781,7 +3040,7 @@ document.getElementById('app').addEventListener('click',function(e){
             (x.subs||[]).forEach(function(tx){ list.push(String(tx)); });
           });
           draft.aiPlan=d.plan;
-          draft.tasks=list.slice(0,15);
+          draft.tasks=list.slice(0,15).map(function(v){ return {id:null,text:v}; });
           haptic('ok'); toast(t('genOk')); render();
         } else applyLocal();
       })
@@ -2789,7 +3048,36 @@ document.getElementById('app').addEventListener('click',function(e){
     return;
   }
 
-  if(act==='go-new'){ draft={title:'',days:30,tasks:['','',''],aiPlan:null}; screen='goals'; haptic('tap'); render(); return; }
+  if(act==='edit-goal'){
+    const g=S.goals.find(function(x){ return x.id===Number(el.dataset.g); });
+    if(!g) return;
+    draft={id:g.id, title:g.title, days:g.targetDays||30, aiPlan:null,
+           tasks:(g.tasks||[]).map(function(tk){ return {id:tk.id,text:tk.text}; })};
+    if(!draft.tasks.length) draft.tasks=[{id:null,text:''}];
+    screen='goals'; haptic('tap'); render();
+    return;
+  }
+
+  if(act==='ideas'){ screen='ideas'; ideaCat='all'; haptic('tap'); render(); return; }
+
+  if(act==='icat'){ ideaCat=el.dataset.c; haptic('tap'); render(); return; }
+
+  if(act==='idea-add'){
+    if(!canAddGoal()){
+      const till=blockedUntil();
+      toast(till?t('blockedTill',{d:till}):t('limitReached',{n:GOALS_PER_DAY}));
+      haptic('warn'); return;
+    }
+    const x=IDEAS[Number(el.dataset.i)];
+    if(!x) return;
+    // открываем форму с подставленными задачами — их можно править перед сохранением
+    draft={id:null, title:ideaTitle(x), days:x.d, aiPlan:null,
+           tasks:ideaTasks(x).map(function(v){ return {id:null,text:v}; })};
+    screen='goals'; haptic('tap'); render();
+    return;
+  }
+
+  if(act==='go-new'){ draft={id:null,title:'',days:30,aiPlan:null,tasks:[{id:null,text:''},{id:null,text:''},{id:null,text:''}]}; screen='goals'; haptic('tap'); render(); return; }
   if(act==='cancel'){ draft=null; haptic('tap'); render(); return; }
   if(act==='days'){ syncDraft(); draft.days=Number(el.dataset.n); haptic('tap'); render(); return; }
 
@@ -2810,8 +3098,10 @@ document.getElementById('app').addEventListener('click',function(e){
   if(act==='save-goal'){
     syncDraft();
     const title=draft.title.trim();
-    const steps=(draft.tasks||[]).map(function(x){ return String(x||'').trim(); })
-                                 .filter(Boolean).map(function(x){ return {text:x.slice(0,160)}; });
+    const steps=(draft.tasks||[]).map(function(x){
+      const txt=((x&&typeof x==='object')?(x.text||''):(x||'')).trim();
+      return {id:(x&&typeof x==='object')?x.id:null, text:txt.slice(0,160)};
+    }).filter(function(x){ return x.text; });
     const days=Math.max(1,Math.min(365,Number(draft.days)||30));
     if(!canAddGoal()){
       const till=blockedUntil();
@@ -2821,7 +3111,8 @@ document.getElementById('app').addEventListener('click',function(e){
     if(!title){ toast(t('needTitle')); haptic('warn'); return; }
     if(!steps.length){ toast(t('needStep')); haptic('warn'); return; }
     // если шаги пришли от нейросети и не правились — сохраняем её распределение дней
-    addGoal(title,days,steps);
+    if(draft.id){ updateGoal(draft.id,title,days,steps); toast(t('goalSaved')); }
+    else addGoal(title,days,steps);
     if(tg&&tg.sendData){ try{ tg.sendData(JSON.stringify({action:'add_goal',title:title,days:days,steps:steps})); }catch(err){} }
     draft=null; haptic('ok'); toast(t('goalCreated')); screen='today'; render(); return;
   }
@@ -2851,8 +3142,12 @@ function syncDraft(){
   const inputs=document.querySelectorAll('.task-input');
   if(inputs.length){
     const arr=[];
-    inputs.forEach(function(el){ arr[Number(el.dataset.i)]=el.value; });
-    draft.tasks=arr.map(function(x){ return x||''; });
+    inputs.forEach(function(el){
+      const i=Number(el.dataset.i);
+      const old=draft.tasks[i];
+      arr[i]={id:(old&&typeof old==='object')?old.id:null, text:el.value};
+    });
+    draft.tasks=arr.map(function(x){ return x||{id:null,text:''}; });
   }
 }
 
