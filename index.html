@@ -264,14 +264,14 @@ button,input,textarea{font-family:inherit}
 /* ---------- панели и формы ---------- */
 .panel{background:var(--surface);border:2px solid var(--line);border-radius:var(--r-lg);
   padding:16px;box-shadow:0 4px 0 var(--line-soft);animation:drop .45s both}
-.field{width:100%;background:var(--surface);border:2px solid var(--line);border-radius:var(--r-sm);
+.field{width:100%;background:var(--surface);border:2px solid #000;border-radius:var(--r-sm);
   padding:13px 15px;font-size:16px;font-weight:800;outline:none;caret-color:var(--violet);
   transition:border-color .2s;resize:none;
   color:var(--text) !important;-webkit-text-fill-color:var(--text) !important;
   opacity:1 !important}
 .field::placeholder{color:var(--dim) !important;-webkit-text-fill-color:var(--dim) !important;
   font-weight:700;opacity:1}
-.field:focus{border-color:var(--violet)}
+.field:focus{border-color:var(--violet);border-width:2px}
 /* автозаполнение браузера иногда красит текст своим цветом — возвращаем наш */
 .field:-webkit-autofill,
 .field:-webkit-autofill:hover,
@@ -358,14 +358,16 @@ button,input,textarea{font-family:inherit}
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .prow-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex:none;min-width:52px}
 .prow-right span{display:flex;align-items:center;gap:3px;font-size:13px;font-weight:900;color:var(--fire-2);white-space:nowrap;font-variant-numeric:tabular-nums}
-.prow-right .bolt{width:13px;height:13px}
+.prow-right .cbolt{width:13px;height:13px}
 .doc-links{display:flex;flex-direction:column;gap:8px;margin-top:4px}
 .doc-links .btn{width:100%}
 .rowline{height:2px;background:var(--line-soft);margin:2px 0}
 
+.pcard{display:flex;align-items:center;gap:14px;margin-bottom:4px}
+.invpill{border-color:var(--blue) !important}
 .prof-rank{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:13px;font-weight:900}
 .prof-rank span{color:var(--muted)}
-.prof-rank .bolt{width:14px;height:14px;color:var(--fire-2);margin-left:4px}
+.prof-rank .cbolt{width:14px;height:14px;color:var(--fire-2);margin-left:4px}
 .prof-rank b{color:var(--fire-2)}
 
 .empty{text-align:center;padding:34px 20px;animation:fade .5s both}
@@ -538,8 +540,8 @@ button,input,textarea{font-family:inherit}
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rank-ch{display:flex;align-items:center;gap:4px;font-size:17px;font-weight:900;
   color:var(--fire-2);flex:none;white-space:nowrap;font-variant-numeric:tabular-nums}
-.bolt{display:inline-flex;width:17px;height:17px}
-.bolt svg{width:100%;height:100%}
+.cbolt{display:inline-flex;width:17px;height:17px;flex:none}
+.cbolt svg{width:100%;height:100%;display:block}
 .rank-line{height:7px;border-radius:5px;background:var(--line);overflow:hidden;margin:10px 0 7px}
 .rank-line i{display:block;height:100%;border-radius:5px;
   background:linear-gradient(90deg,var(--rc),var(--rd));transition:width .6s cubic-bezier(.2,.8,.3,1)}
@@ -553,7 +555,7 @@ button,input,textarea{font-family:inherit}
   font-size:40px;font-weight:900;color:var(--fire-2);
   text-shadow:0 4px 20px rgba(255,122,47,.45)}
 .chargefly.show{opacity:1;transform:translate(-50%,-30px) scale(1)}
-.chargefly .bolt{width:34px;height:34px}
+.chargefly .cbolt{width:34px;height:34px}
 .chargefly b{font-size:14px;letter-spacing:1.5px;color:var(--violet)}
 
 .badges{display:flex;gap:8px;margin-bottom:16px;align-items:flex-end;animation:drop .4s both}
@@ -1062,7 +1064,7 @@ function chargeFly(events){
       const el=document.createElement('div');
       el.className='chargefly';
       const label=e.reason==='rank'?t('newRank',{r:rankName(e.rank)}):'';
-      el.innerHTML='<i class="bolt">'+BOLT_SVG+'</i>+'+e.n+(label?'<b>'+esc(label)+'</b>':'');
+      el.innerHTML='<i class="cbolt">'+BOLT_SVG+'</i>+'+e.n+(label?'<b>'+esc(label)+'</b>':'');
       document.body.appendChild(el);
       requestAnimationFrame(function(){ el.classList.add('show'); });
       setTimeout(function(){ el.remove(); },1600);
@@ -1919,7 +1921,7 @@ function rankBar(){
     '<div class="rank-head">'+
       '<span class="rank-cup">'+cupSvg(r,26)+'</span>'+
       '<span class="rank-name">'+rankName(r)+'</span>'+
-      '<span class="rank-ch"><i class="bolt">'+BOLT_SVG+'</i>'+(S.charges||0)+'</span>'+
+      '<span class="rank-ch"><i class="cbolt">'+BOLT_SVG+'</i>'+(S.charges||0)+'</span>'+
     '</div>'+
     '<div class="rank-line"><i style="width:'+pct+'%"></i></div>'+
     '<div class="rank-hint">'+(nx
@@ -2071,7 +2073,10 @@ function viewDraft(){
       '</div>';
   });
 
-  return '<div class="sec"><div class="sec-t">'+(draft.id?t('editGoal'):t('newGoal'))+'</div></div><div class="panel">'+
+  const inviteMode=!!draft.inviteTo;
+  return '<div class="sec"><div class="sec-t">'+
+    (inviteMode?t('proposeTo',{n:draft.inviteTo}):(draft.id?t('editGoal'):t('newGoal')))+
+    '</div></div><div class="panel">'+
     '<div class="label">'+t('what')+'</div>'+
     '<input class="field" id="d-title" placeholder="'+t('titlePh')+'" value="'+esc(draft.title)+'">'+
     '<div class="card-s" style="margin:8px 3px 0">'+t('goalHint')+'</div>'+
@@ -2090,7 +2095,7 @@ function viewDraft(){
       (draft.aiPlan?t('genAgain'):t('genPlan'))+'</button>'+
 
     '<div class="gap"></div><button class="btn btn-main" data-act="save-goal">'+
-      (draft.id?t('saveGoal'):t('createGoal'))+'</button>'+
+      (inviteMode?t('sendInvite'):(draft.id?t('saveGoal'):t('createGoal')))+'</button>'+
     '<div style="height:9px"></div><button class="btn btn-ghost" data-act="cancel">'+t('cancel')+'</button></div>';
 }
 
@@ -2413,6 +2418,69 @@ function viewPerson(){
     '<div class="panel"><button class="btn btn-ghost" data-act="tour">'+t('tour1t')+'</button></div>';
 }
 
+function loadInvites(){
+  if(!API_URL) return;
+  api('/api/invites-list').then(function(d){ invitesData=(d&&d.invites)||[]; render(); })
+    .catch(function(){});
+}
+
+function invitesStrip(){
+  if(!invitesData||!invitesData.length) return '';
+  let h='<div class="sec"><div class="sec-t">'+t('invitesTitle')+'</div>'+
+        '<div class="sec-c">'+invitesData.length+'</div></div>'+
+        '<div class="gcar" id="invcar" style="margin-bottom:22px">';
+  invitesData.forEach(function(iv){
+    h+='<div class="gpill invpill" data-act="inv-open" data-i="'+iv.id+'">'+
+       '<div class="gpill-dot" style="background:var(--blue)"></div>'+
+       '<div class="gpill-t">'+esc(iv.title)+'</div>'+
+       '<div class="gpill-s">'+t('invFrom',{n:iv.fromName||iv.fromNick||'?'})+'</div></div>';
+  });
+  h+='</div>';
+  return h;
+}
+
+function openInviteCard(iv){
+  const back=document.createElement('div'); back.className='backdrop'; back.id='backdrop';
+  const sheet=document.createElement('div'); sheet.className='sheet'; sheet.id='sheet';
+  let tasksHtml='';
+  (iv.tasks||[]).forEach(function(tx,k){
+    tasksHtml+='<div class="sheet-sub" style="cursor:default"><i class="sub-box"></i>'+
+      '<b class="sub-num">'+(k+1)+'</b><span>'+esc(tx)+'</span></div>';
+  });
+  sheet.innerHTML='<div class="sheet-grip"></div>'+
+    '<div class="sheet-num"><div class="sheet-badge now">'+ICON_CHECK+'</div>'+
+    '<div><div class="sheet-t">'+esc(iv.title)+'</div>'+
+    '<div class="sheet-s">'+t('invFrom',{n:iv.fromName||iv.fromNick})+' · '+iv.days+' '+t('daysWord')+'</div></div></div>'+
+    '<div class="sheet-task-l" style="margin:0 0 10px">'+t('subsLabel')+'</div>'+
+    '<div class="sheet-subs">'+tasksHtml+'</div><div style="height:14px"></div>'+
+    '<button class="btn btn-main" data-act="inv-accept" data-id="'+iv.id+'">'+t('invAccept')+'</button>'+
+    '<div style="height:9px"></div>'+
+    '<button class="btn btn-ghost" data-act="inv-decline" data-id="'+iv.id+'">'+t('invDecline')+'</button>'+
+    '<div style="height:9px"></div>'+
+    '<button class="btn btn-ghost" data-act="sheet-close">'+t('close')+'</button>';
+  document.body.appendChild(back); document.body.appendChild(sheet);
+  requestAnimationFrame(function(){ back.classList.add('show'); sheet.classList.add('show'); });
+  back.addEventListener('click',closeSheet);
+  sheet.addEventListener('click',function(e){
+    const el=e.target.closest('[data-act]'); if(!el) return;
+    if(el.dataset.act==='sheet-close'){ closeSheet(); return; }
+    if(el.dataset.act==='inv-accept'||el.dataset.act==='inv-decline'){
+      const accept=el.dataset.act==='inv-accept';
+      haptic('tap');
+      api('/api/invite-goal-respond',{inviteId:Number(el.dataset.id),accept:accept})
+        .then(function(){
+          if(accept){
+            addGoal(iv.title,iv.days,(iv.tasks||[]).map(function(x){ return {text:x}; }));
+            toast(t('invAccepted'));
+          } else toast(t('invDeclined'));
+          invitesData=(invitesData||[]).filter(function(x){ return x.id!==iv.id; });
+          closeSheet();
+        })
+        .catch(function(){ toast(lastApiError||t('syncFail')); });
+    }
+  });
+}
+
 function loadTop(){
   if(!API_URL) return;
   api('/api/top').then(function(d){ topData=d; render(); })
@@ -2459,12 +2527,13 @@ function viewIdeas(){
 }
 
 /* ================== ЭКРАН: РЕЙТИНГ ================== */
-let topData=null, foundPlayer=null, adminData=null;
+let topData=null, foundPlayer=null, adminData=null, invitesData=null;
 
 function viewRivals(){
   if(S.isAdmin) return viewAdmin();
 
-  let h='<div class="sec"><div class="sec-t">'+t('rating')+'</div>'+
+  let h=invitesStrip();
+  h+='<div class="sec"><div class="sec-t">'+t('rating')+'</div>'+
         '<div class="sec-c">'+(topData?topData.total:'')+'</div></div>';
 
   if(!API_URL){
@@ -2520,14 +2589,54 @@ function viewRivals(){
 function playerRow(pl,place){
   const r=rankOf(pl.charges||0);
   const medal=place===1?'#E8B21F':place===2?'#A9B6C2':place===3?'#C87F3A':null;
-  return '<div class="prow'+(pl.me?' me':'')+'">'+
+  return '<div class="prow'+(pl.me?' me':'')+'" '+
+    (pl.me?'':'data-act="p-open" data-nick="'+esc(pl.nick||'')+'" data-name="'+esc(pl.name||'')+'" '+
+      'data-photo="'+esc(pl.photo||'')+'" data-charges="'+(pl.charges||0)+'" '+
+      'data-streak="'+(pl.streak||0)+'" data-best="'+(pl.best||0)+'" data-goals="'+(pl.goals||0)+'"')+
+    '>'+
     (place?'<b class="prow-n" style="'+(medal?'color:'+medal:'')+'">'+place+'</b>':'<b class="prow-n">·</b>')+
     avatarHtml({avatar:pl.photo,name:pl.name},40)+
     '<div class="prow-mid"><div class="prow-name">'+esc(pl.name||pl.nick||'—')+'</div>'+
     '<div class="prow-sub">'+(pl.nick?'@'+esc(pl.nick)+' · ':'')+
       '🔥 '+(pl.streak||0)+' · '+(pl.goals||0)+' '+t('goalsShort')+'</div></div>'+
     '<div class="prow-right">'+cupSvg(r,20)+
-      '<span><i class="bolt">'+BOLT_SVG+'</i>'+(pl.charges||0)+'</span></div></div>';
+      '<span><i class="cbolt">'+BOLT_SVG+'</i>'+(pl.charges||0)+'</span></div></div>';
+}
+
+/* Карточка чужого профиля: тап по строке рейтинга или найденному игроку */
+function openPlayerCard(pl){
+  const r=rankOf(pl.charges||0);
+  const back=document.createElement('div'); back.className='backdrop'; back.id='backdrop';
+  const sheet=document.createElement('div'); sheet.className='sheet'; sheet.id='sheet';
+  sheet.innerHTML='<div class="sheet-grip"></div>'+
+    '<div class="pcard">'+avatarHtml({avatar:pl.photo,name:pl.name},64)+
+      '<div><div class="sheet-t">'+esc(pl.name||pl.nick||'—')+'</div>'+
+      '<div class="sheet-s">'+(pl.nick?'@'+esc(pl.nick):'')+'</div>'+
+      '<div class="prof-rank" style="margin-top:8px">'+cupSvg(r,18)+
+        '<span>'+rankName(r)+'</span><i class="cbolt">'+BOLT_SVG+'</i><b>'+pl.charges+'</b></div></div></div>'+
+    '<div class="tiles" style="margin:18px 0 4px">'+
+      '<div class="tile"><div class="tile-n">'+pl.streak+'</div><div class="tile-l">'+t('bFire')+'</div></div>'+
+      '<div class="tile"><div class="tile-n">'+pl.best+'</div><div class="tile-l">'+t('aMaxStreak')+'</div></div>'+
+      '<div class="tile"><div class="tile-n">'+pl.goals+'</div><div class="tile-l">'+t('goalsShort')+'</div></div>'+
+    '</div>'+
+    '<button class="btn btn-go" style="width:100%" data-act="p-invite" data-nick="'+esc(pl.nick)+'">'+
+      '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>'+
+      t('proposeGoal')+'</button>'+
+    '<div style="height:9px"></div>'+
+    '<button class="btn btn-ghost" data-act="sheet-close">'+t('close')+'</button>';
+  document.body.appendChild(back); document.body.appendChild(sheet);
+  requestAnimationFrame(function(){ back.classList.add('show'); sheet.classList.add('show'); });
+  back.addEventListener('click',closeSheet);
+  sheet.addEventListener('click',function(e){
+    const el=e.target.closest('[data-act]'); if(!el) return;
+    if(el.dataset.act==='sheet-close'){ closeSheet(); return; }
+    if(el.dataset.act==='p-invite'){
+      closeSheet();
+      draft={id:null,title:'',days:30,aiPlan:null,tasks:[{id:null,text:''},{id:null,text:''},{id:null,text:''}],
+             inviteTo:el.dataset.nick};
+      screen='goals'; haptic('tap'); render();
+    }
+  });
 }
 
 /* ---------- секретный экран наблюдения ---------- */
@@ -2583,7 +2692,7 @@ function viewAdmin(){
       '<div class="prow-sub">@'+esc(pl.nick||'—')+' · 🔥 '+pl.streak+' / '+pl.best+
         ' · '+pl.goals+' '+t('goalsShort')+' · '+esc(pl.seen||'')+'</div></div>'+
       '<div class="prow-right">'+cupSvg(r,18)+
-        '<span><i class="bolt">'+BOLT_SVG+'</i>'+pl.charges+'</span></div></div>'+
+        '<span><i class="cbolt">'+BOLT_SVG+'</i>'+pl.charges+'</span></div></div>'+
       (i<adminData.players.length-1?'<div class="rowline"></div>':'');
   });
   return h+'</div>';
@@ -2604,7 +2713,7 @@ function viewSettings(){
     '<div class="card-s">'+(S.nick?'@'+esc(S.nick):t('noNick'))+'</div>'+
     '<div class="prof-rank">'+cupSvg(rankOf(S.charges||0),18)+
       '<span>'+rankName(rankOf(S.charges||0))+'</span>'+
-      '<i class="bolt">'+BOLT_SVG+'</i><b>'+(S.charges||0)+'</b></div></div></div>'+
+      '<i class="cbolt">'+BOLT_SVG+'</i><b>'+(S.charges||0)+'</b></div></div></div>'+
     '<div style="height:12px"></div>'+
     '<div style="display:flex;gap:9px">'+
       '<button class="btn btn-go btn-sm" style="flex:1" data-act="ava-pick">'+t('avaChange')+'</button>'+
@@ -2667,12 +2776,6 @@ function viewSettings(){
     '<div class="label" style="margin-bottom:10px">'+t('language')+'</div><div class="chips">'+
     '<div class="chip'+(S.lang==='ru'?' on':'')+'" data-act="lang" data-v="ru">Русский</div>'+
     '<div class="chip'+(S.lang==='en'?' on':'')+'" data-act="lang" data-v="en">English</div></div></div>'+
-
-    '<div class="panel" style="margin-bottom:14px">'+
-    '<div class="row"><div style="min-width:0"><div class="row-t">'+t('storage')+'</div>'+
-    '<div class="row-s">'+(cloud?t('storageCloud'):t('storageLocal'))+'</div></div>'+
-    '<span class="badge ok">'+t('syncOffline')+'</span></div>'+
-    '</div>'+
 
     '<div class="panel" style="margin-bottom:14px">'+
     '<div class="row" style="padding-top:0"><div style="min-width:0">'+
@@ -2848,7 +2951,7 @@ document.getElementById('nav').addEventListener('click',function(e){
   screen=tab.dataset.tab;
   if(screen!=='goals') draft=null;
   haptic('tap'); render();
-  if(screen==='rivals'){ foundPlayer=null; S.isAdmin?loadAdmin():loadTop(); }
+  if(screen==='rivals'){ foundPlayer=null; S.isAdmin?loadAdmin():(loadTop(),loadInvites()); }
 });
 
 document.getElementById('app').addEventListener('click',function(e){
@@ -2975,6 +3078,20 @@ document.getElementById('app').addEventListener('click',function(e){
     haptic('tap');
     if(tg&&tg.openTelegramLink) tg.openTelegramLink(GROUP_URL);
     else window.open(GROUP_URL,'_blank');
+    return;
+  }
+
+  if(act==='inv-open'){
+    const iv=(invitesData||[]).find(function(x){ return x.id===Number(el.dataset.i); });
+    if(iv){ haptic('tap'); openInviteCard(iv); }
+    return;
+  }
+
+  if(act==='p-open'){
+    haptic('tap');
+    openPlayerCard({nick:el.dataset.nick,name:el.dataset.name,photo:el.dataset.photo,
+                    charges:Number(el.dataset.charges),streak:Number(el.dataset.streak),
+                    best:Number(el.dataset.best),goals:Number(el.dataset.goals)});
     return;
   }
 
@@ -3111,6 +3228,14 @@ document.getElementById('app').addEventListener('click',function(e){
     if(!title){ toast(t('needTitle')); haptic('warn'); return; }
     if(!steps.length){ toast(t('needStep')); haptic('warn'); return; }
     // если шаги пришли от нейросети и не правились — сохраняем её распределение дней
+    if(draft.inviteTo){
+      if(!API_URL){ toast(t('syncOffline')); return; }
+      api('/api/invite-goal',{toNick:draft.inviteTo,title:title,days:days,
+                              tasks:steps.map(function(x){ return x.text; })})
+        .then(function(){ toast(t('inviteSent',{n:draft.inviteTo})); draft=null; screen='rivals'; render(); })
+        .catch(function(){ toast(lastApiError||t('syncFail')); });
+      return;
+    }
     if(draft.id){ updateGoal(draft.id,title,days,steps); toast(t('goalSaved')); }
     else addGoal(title,days,steps);
     if(tg&&tg.sendData){ try{ tg.sendData(JSON.stringify({action:'add_goal',title:title,days:days,steps:steps})); }catch(err){} }
@@ -3180,8 +3305,7 @@ function syncDraft(){
   if(API_URL) setTimeout(function(){
     pullFromServer(true).then(function(ok){
       if(ok) render();
-      // подтягиваем рейтинг заранее, чтобы раздел открывался уже заполненным
-      if(S.isAdmin) loadAdmin(); else loadTop();
+      if(S.isAdmin) loadAdmin(); else { loadTop(); loadInvites(); }
     });
   },300);
 
