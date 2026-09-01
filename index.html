@@ -216,8 +216,6 @@ button,input,textarea{font-family:inherit}
   box-shadow:0 4px 0 #17518E,0 0 12px rgba(63,169,217,.45)}
 .day.miss{background:#B8C2C9;border-color:#8E9AA3;color:#5C6870;box-shadow:0 3px 0 #8E9AA3}
 .gpill-dot{width:100%;height:4px;border-radius:3px;background:var(--gc,#E01F1F);margin-bottom:8px}
-.chain .day.done{background:linear-gradient(160deg,var(--gc),var(--gcd));border-color:var(--gcd);
-  box-shadow:0 4px 0 var(--gcd),0 0 14px color-mix(in srgb,var(--gc) 55%,transparent)}
 .chain .link.on{background:var(--gc)}
 .day.future{background:linear-gradient(160deg,#FF6B6B,#E01F1F);border-color:#B01414;color:#fff;box-shadow:0 4px 0 #8E1010;opacity:1}
 .day.now{background:linear-gradient(160deg,#FFD24A,#F26522 55%,#D62828);
@@ -764,7 +762,7 @@ function haptic(k){
 
 /* ================== ЯЗЫКИ ================== */
 const T={
-ru:{today:'Сегодня',goals:'Цели',stats:'Путь',person:'Профиль',rivals:'Дуэли',more:'Ещё',
+ru:{today:'Сегодня',goals:'Цели',stats:'Путь',person:'Профиль',rivals:'Рейтинг',more:'Ещё',
  mainGoal:'Главная цель',planToday:'План на сегодня',myGoals:'Мои цели',
  newGoal:'Новая цель',createGoal:'Запустить цель',cancel:'Отмена',done:'Готово',
  dayOf:'День {a} из {b}',left:'Осталось {n} {w}',overdue:'Срок вышел {n} {w} назад',
@@ -856,7 +854,7 @@ ru:{today:'Сегодня',goals:'Цели',stats:'Путь',person:'Профи�
  noNick:'не указан',avatarHint:'Без своего фото подставляется аватар из Telegram',
  genPlan:'Предложить план',genWait:'Собираю план…',genOk:'План готов — проверь и правь',
  genFail:'Нейросеть не ответила',genNeedTitle:'Сначала впиши цель',
- genAgain:'Другой вариант',genLocal:'План собран из готовых наборов'},
+ genAgain:'Другой вариант',genLocal:'План собран из готовых наборов',rating:'Рейтинг',ratingOff:'Рейтинг недоступен',ratingOffSub:'Нужен сервер: он хранит общий список игроков.',findPlayer:'Найти игрока',find:'Найти',notFound:'Никого не нашёл',yourPlace:'Твоё место',topPlayers:'Лучшие',refresh:'Обновить',loading:'Загружаю…',noPlayers:'Пока никого нет',goalsShort:'целей',adminTitle:'Наблюдение',aPlayers:'Игроков',aActive:'Активны за неделю',aGoals:'Целей всего',aGoalsWeek:'Целей за неделю',aStreak:'С огоньком',aStreak7:'Серия 7+',aStreak30:'Серия 30+',aMaxStreak:'Рекорд серии',aToday:'Закрыли день',aTasks:'Задач сегодня',aAvg:'Средние заряды',aBlocked:'Заблокировано',aManage:'Управление',aBlock:'Блок',aUnblock:'Снять',aNeedNick:'Впиши ник',aDoneBlock:'Игрок заблокирован',aDoneUnblock:'Блокировка снята',aList:'Игроки',aBlockedMark:'блок',errTitle:'Не получилось',errHintAdmin:'Доступ только у аккаунта наблюдения. Проверь, что в Telegram задан твой username.',hiddenTitle:'Ты скрыт из рейтинга',hiddenSub:'Другие тебя не видят и не найдут. Вернуться можно в «Персонализации».',limitReached:'Лимит {n} целей в день',blockedTill:'Создание целей заблокировано до {d}',avaChange:'Сменить фото',avaClear:'Убрать',avaSaved:'Фото обновлено',avaReset:'Вернул фото из Telegram',avaBig:'Файл слишком большой',ideasTitle:'Популярные цели',ideasSub:'Готовые цели с задачами на каждый день. Тап — и цель уже стоит.',ideasEmpty:'Все цели из подборки у тебя уже есть',catAll:'Все',daysWord:'дней',tasksWord:'задач',ownGoal:'Придумаю свою',editGoal:'Изменить цель',saveGoal:'Сохранить',proposeGoal:'Предложить цель',proposeTo:'Цель для @{n}',sendInvite:'Отправить',inviteSent:'Отправлено @{n}',invitesTitle:'Приглашения',invFrom:'от {n}',invAccept:'Принять',invDecline:'Отклонить',invAccepted:'Цель принята',invDeclined:'Отклонено',lives:'ЖИЗНИ',maxRank:'Высший кубок взят',newRank:'НОВЫЙ КУБОК: {r}',toNext:'ещё {n} зарядов до «{r}»',flashOk:'ЕСТЬ!',flashLast:'ПОСЛЕДНЯЯ!',goalSaved:'Цель обновлена',},
 en:{today:'Today',goals:'Goals',stats:'Path',person:'Profile',rivals:'Duels',more:'More',
  mainGoal:'Main goal',planToday:"Today's plan",myGoals:'My goals',
  newGoal:'New goal',createGoal:'Start the goal',cancel:'Cancel',done:'Done',
@@ -949,7 +947,7 @@ en:{today:'Today',goals:'Goals',stats:'Path',person:'Profile',rivals:'Duels',mor
  noNick:'not set',avatarHint:'Photo and nick come from your Telegram profile',
  genPlan:'Suggest a plan',genWait:'Building the plan…',genOk:'Plan is ready — review and edit',
  genFail:'The model did not answer',genNeedTitle:'Enter the goal first',
- genAgain:'Another version',genLocal:'Plan built from built-in sets'}
+ genAgain:'Another version',genLocal:'Plan built from built-in sets',rating:'Rating',ratingOff:'Rating unavailable',ratingOffSub:'It needs the server that keeps the shared list.',findPlayer:'Find a player',find:'Find',notFound:'Nobody found',yourPlace:'Your place',topPlayers:'Top',refresh:'Refresh',loading:'Loading…',noPlayers:'Nobody here yet',goalsShort:'goals',adminTitle:'Monitoring',aPlayers:'Players',aActive:'Active this week',aGoals:'Goals total',aGoalsWeek:'Goals this week',aStreak:'With streak',aStreak7:'Streak 7+',aStreak30:'Streak 30+',aMaxStreak:'Best streak',aToday:'Closed today',aTasks:'Tasks today',aAvg:'Avg charges',aBlocked:'Blocked',aManage:'Manage',aBlock:'Block',aUnblock:'Unblock',aNeedNick:'Enter a nick',aDoneBlock:'Player blocked',aDoneUnblock:'Player unblocked',aList:'Players',aBlockedMark:'blocked',errTitle:'Something went wrong',errHintAdmin:'Only the monitoring account has access. Check that your Telegram username is set.',hiddenTitle:'You are hidden',hiddenSub:'Others cannot see or find you. You can return in Personal settings.',limitReached:'Limit is {n} goals per day',blockedTill:'Goal creation is blocked until {d}',avaChange:'Change photo',avaClear:'Remove',avaSaved:'Photo updated',avaReset:'Telegram photo restored',avaBig:'File is too large',ideasTitle:'Popular goals',ideasSub:'Ready goals with daily tasks. One tap and it is set.',ideasEmpty:'You already have every goal from the list',catAll:'All',daysWord:'days',tasksWord:'tasks',ownGoal:'I will make my own',editGoal:'Edit goal',saveGoal:'Save',proposeGoal:'Propose a goal',proposeTo:'Goal for @{n}',sendInvite:'Send',inviteSent:'Sent to @{n}',invitesTitle:'Invites',invFrom:'from {n}',invAccept:'Accept',invDecline:'Decline',invAccepted:'Goal accepted',invDeclined:'Declined',lives:'LIVES',maxRank:'Top cup reached',newRank:'NEW CUP: {r}',toNext:'{n} charges to {r}',flashOk:'YES!',flashLast:'LAST ONE!',goalSaved:'Goal updated',}
 };
 function t(k,v){
   const lang=(S&&S.lang)?S.lang:'ru';
@@ -2038,8 +2036,7 @@ function viewGoals(){
         '<button class="btn btn-ghost" data-act="drop" data-g="'+g.id+'">'+t('deleteGoal')+'</button>':'')+
       '</div>';
   });
-  return h+'<div class="gap"></div><button class="btn btn-main" data-act="go-new">+ '+t('newGoal')+'</button>'+
-    '<div style="height:10px"></div>'+ideasBtn();
+  return h+'<div class="gap"></div><button class="btn btn-main" data-act="go-new">+ '+t('newGoal')+'</button>';
 }
 
 function renderPath(g){
@@ -2414,14 +2411,13 @@ function viewPerson(){
     }).join('')+
     '</div><div class="card-s" style="margin:11px 3px 0">'+t('themeSub')+'</div></div>'+
 
-    '<div class="card-s" style="text-align:center;margin:0 0 14px;color:var(--dim)">'+APP_VERSION+'</div>'+
     '<div class="panel"><button class="btn btn-ghost" data-act="tour">'+t('tour1t')+'</button></div>';
 }
 
 function loadInvites(){
   if(!API_URL) return;
   api('/api/invites-list').then(function(d){ invitesData=(d&&d.invites)||[]; render(); })
-    .catch(function(){});
+    .catch(function(){ console.warn('invites-list:',lastApiError); invitesData=invitesData||[]; });
 }
 
 function invitesStrip(){
